@@ -1619,6 +1619,12 @@
                                 * { font-family: 'Cairo', system-ui, -apple-system, 'Segoe UI', sans-serif !important; }
                                 body { direction: rtl !important; }
                                 table { direction: rtl !important; }
+                                .leaderboard-table, .leaderboard-table * {
+                                    letter-spacing: normal !important;
+                                    font-kerning: normal !important;
+                                    text-rendering: geometricPrecision !important;
+                                    -webkit-font-smoothing: antialiased !important;
+                                }
                                 .leaderboard-table-wrapper { overflow: visible !important; }
                             `;
                             clonedDoc.head.appendChild(style);
