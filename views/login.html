@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="كاتدرائية السمائيين – «اِفْرَحُوا فِي الرَّبِّ كُلَّ حِينٍ» (فيلبي ٤: ٤)" />
+  <meta name="keywords" content="كاتدرائية السمائيين – «اِفْرَحُوا فِي الرَّبِّ كُلَّ حِينٍ» (فيلبي ٤: ٤)" />
+  <meta name="author" content="كاتدرائية السمائيين" />
+  <meta name="theme-color" content="#402958" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta property="og:title" content="تسجيل الدخول | كاتدرائية السمائيين" />
+  <meta property="og:description" content="كاتدرائية السمائيين – «اِفْرَحُوا فِي الرَّبِّ كُلَّ حِينٍ» (فيلبي ٤: ٤)" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary" />
+  <title>تسجيل الدخول | كاتدرائية السمائيين</title>
+  <link rel="icon" href="/UI/icon.png" type="image/png" sizes="16x16" />
+  <link rel="apple-touch-icon" href="/UI/icon.png" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+  <link rel="stylesheet" href="/design/theme.css" />
+  <link rel="stylesheet" href="/design/app.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    .auth-shell {
+      max-width: 500px;
+    }
+
+    #login-form {
+      gap: 1rem;
+    }
+
+    #login-form button {
+      width: 100%;
+    }
+
+    #verification-code-section {
+      display: none;
+      margin-top: 1rem;
+      padding: 1.25rem;
+      background: var(--accent-soft);
+      border-radius: var(--radius);
+      border: 2px solid rgba(255, 204, 0, 0.3);
+    }
+
+    #verification-code {
+      text-align: center;
+      font-size: 1.5rem;
+      letter-spacing: 8px;
+      font-weight: 700;
+    }
+
+    #error-message {
+      min-height: 20px;
+      color: #ff7a8a;
+      font-size: 0.9rem;
+      text-align: center;
+      margin: 0;
+    }
+
+    .site-footer {
+      margin-top: 2rem;
+      padding: 1rem;
+      text-align: center;
+      background: #2a1b3c;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-copy {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin: 0;
+    }
+
+    small {
+      margin-top: 1rem;
+    }
+
+    small a {
+      color: var(--accent);
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="nav-container">
+    <div class="nav-bar">
+      <div class="nav-left">
+        <div class="nav-logo-container">
+          <img src="/UI/logo.png" alt="كاتدرائية السمائيين" class="nav-logo" />
+        </div>
+      </div>
+      <div class="nav-right">
+        <a href="/" class="btn-primary" aria-label="العودة إلى الصفحة الرئيسية">
+          <i class="fas fa-home" aria-hidden="true"></i>
+          <span>العودة للرئيسية</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="auth-shell">
+    <section class="login-panel">
+      <h2>تسجيل الدخول</h2>
+      <p>أدخل بياناتك للمتابعة</p>
+      <form id="login-form">
+        <label for="username">اسم المستخدم / البريد الإلكتروني / رقم الهاتف</label>
+        <input type="text" id="username" autocomplete="username" required />
+
+        <label for="password">كلمة المرور</label>
+        <input type="password" id="password" autocomplete="current-password" required placeholder="" />
+
+        <div id="verification-code-section">
+          <label for="verification-code">🔑 كود التحقق (6 أرقام)</label>
+          <input type="text" id="verification-code" maxlength="6" pattern="[0-9]{6}" placeholder="123456" />
+          <small>أدخل كود التحقق الذي استلمته من المسؤول</small>
+        </div>
+
+        <button type="submit" id="login-submit-btn">تسجيل الدخول</button>
+        <p id="error-message" aria-live="polite"></p>
+      </form>
+      <small>ليس لديك حساب؟ <a href="/register">إنشاء حساب جديد</a></small>
+    </section>
+  </div>
+
+  <footer class="site-footer">
+    <p class="footer-copy">&copy; 2026 كاتدرائية السمائيين. جميع الحقوق محفوظة.</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js" defer></script>
+  <script src="/scripts/utils.js" defer></script>
+  <script src="/scripts/login.js" defer></script>
+</body>
+
+</html>

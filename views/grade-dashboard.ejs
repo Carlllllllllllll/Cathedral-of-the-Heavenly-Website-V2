@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="كاتدرائية السمائيين – «اِفْرَحُوا فِي الرَّبِّ كُلَّ حِينٍ» (فيلبي ٤: ٤)">
+    <meta name="keywords" content="كاتدرائية السمائيين – «اِفْرَحُوا فِي الرَّبِّ كُلَّ حِينٍ» (فيلبي ٤: ٤)">
+    <meta name="author" content="كاتدرائية السمائيين">
+    <meta name="theme-color" content="#402958">
+    <meta name="robots" content="noindex, nofollow">
+    <meta property="og:title" content="<%= gradeLabel.short || 'لوحة التحكم' %> | كاتدرائية السمائيين">
+    <meta property="og:description" content="كاتدرائية السمائيين – «اِفْرَحُوا فِي الرَّبِّ كُلَّ حِينٍ» (فيلبي ٤: ٤)">
+    <meta property="og:image" content="/UI/icon.png">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="ar_AR">
+    <title>
+        <%= gradeLabel.short || 'لوحة التحكم' %> | كاتدرائية السمائيين
+    </title>
+    <link rel="icon" href="/UI/icon.png" type="image/png" sizes="16x16">
+    <link rel="apple-touch-icon" href="/UI/icon.png">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="<%= vite('src/assets/styles/theme.css', '/design/theme.css') %>">
+    <link rel="stylesheet" href="<%= vite('src/assets/styles/admin.css', '/design/admin.css') %>">
+    <style>
+        :root {
+            --bg: radial-gradient(circle at top right, #402958, #2a1b3c 60%);
+            --card-bg: rgba(64, 41, 88, 0.85);
+            --accent: #ffcc00;
+            --accent-soft: rgba(255, 204, 0, 0.12);
+            --text: #f2f4ff;
+            --muted: #d1c4e9;
+            --border: rgba(255, 255, 255, 0.15);
+            --radius-lg: 28px;
+            --shadow: 0 25px 45px rgba(15, 20, 40, 0.12);
+            --shadow-lg: 0 35px 60px rgba(0, 0, 0, 0.3);
+            font-family: 'Cairo', system-ui, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Cairo', sans-serif;
+            min-height: 100vh;
+            padding-top: 90px;
+            scrollbar-width: thin;
+            scrollbar-color: #ffcc00 rgba(255, 204, 0, 0.15);
+        }
+
+        body::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        body::-webkit-scrollbar-track {
+            background: rgba(255, 204, 0, 0.1);
+        }
+
+        body::-webkit-scrollbar-thumb {
+            background: #ffcc00;
+            border-radius: 12px;
+        }
+
+        body::-webkit-scrollbar-thumb:hover {
+            background: #ffd84d;
+        }
+
+        .main-nav {
+            background: rgba(64, 41, 88, 0.97);
+            backdrop-filter: blur(8px);
+            padding: 0 30px;
+            height: 70px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-brand img {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: 2px solid var(--accent);
+            padding: 2px;
+            background: var(--accent-soft);
+        }
+
+        .brand-text h2 {
+            color: var(--accent);
+            font-size: 1.2rem;
+            font-weight: 800;
+        }
+
+        .brand-text p {
+            color: var(--muted);
+            font-size: 0.75rem;
+        }
+
+        .nav-center {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            height: 100%;
+        }
+
+        .points-badge {
+            background: linear-gradient(135deg, rgba(255, 204, 0, 0.15), rgba(255, 204, 0, 0.08));
+            border: 1px solid rgba(255, 204, 0, 0.3);
+            border-radius: 20px;
+            padding: 0 16px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 12px rgba(255, 204, 0, 0.1);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .points-badge:hover {
+            opacity: 0.95;
+        }
+
+        .points-badge-static {
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .nav-buttons {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            height: 100%;
+        }
+
+        .nav-button {
+            padding: 6px 12px;
+            border-radius: 14px;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            height: 36px;
+            white-space: nowrap;
+            background: var(--accent-soft);
+            color: var(--accent);
+            border: 1px solid rgba(255, 204, 0, 0.3);
+        }
+
+        .nav-button:hover {
+            background: rgba(255, 204, 0, 0.2);
+        }
+
+        .suggestion-container {
+            position: relative;
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .suggestion-button {
+            padding: 6px 12px;
+            border-radius: 14px;
+            background: var(--accent-soft);
+            color: var(--accent);
+            border: 1px solid rgba(255, 204, 0, 0.3);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            height: 36px;
+        }
+
+        .suggestion-button:hover {
+            background: rgba(255, 204, 0, 0.2);
+        }
+
+        .suggestion-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(64, 41, 88, 0.98);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 10px;
+            min-width: 200px;
+            z-index: 1001;
+            margin-top: 5px;
+        }
+
+        .suggestion-dropdown.active {
+            display: block;
+        }
+
+        .suggestion-dropdown a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text);
+            text-decoration: none;
+            padding: 10px 12px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .suggestion-dropdown a:hover {
+            background: var(--accent-soft);
+            color: var(--accent);
+        }
+
+        .arrow-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .arrow-icon.rotated {
+            transform: rotate(-180deg);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: var(--accent-soft);
+            border: 1px solid var(--border);
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+            z-index: 1002;
+        }
+
+        .mobile-menu-btn span {
+            position: absolute;
+            width: 20px;
+            height: 2px;
+            background: var(--accent);
+            border-radius: 2px;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            left: 50%;
+        }
+
+        .mobile-menu-btn span:nth-child(1) {
+            transform: translate(-50%, -6px);
+        }
+
+        .mobile-menu-btn span:nth-child(2) {
+            transform: translate(-50%, 0);
+        }
+
+        .mobile-menu-btn span:nth-child(3) {
+            transform: translate(-50%, 6px);
+        }
+
+        .mobile-menu-btn.open span:nth-child(1) {
+            transform: translate(-50%, 0) rotate(45deg);
+        }
+
+        .mobile-menu-btn.open span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .mobile-menu-btn.open span:nth-child(3) {
+            transform: translate(-50%, 0) rotate(-45deg);
+        }
+
+        .mobile-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(64, 41, 88, 0.98);
+            backdrop-filter: blur(6px);
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            border-left: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            box-shadow: var(--shadow);
+            z-index: 1001;
+        }
+
+        .mobile-dropdown.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .mobile-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .logout-btn-mobile-dropdown {
+            background: rgba(231, 76, 60, 0.15) !important;
+            color: #e74c3c !important;
+            border: 1px solid rgba(231, 76, 60, 0.3) !important;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .mobile-header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mobile-logout-btn {
+            background: #e74c3c;
+            color: #fff;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+        }
+
+        .mobile-logout-btn:hover {
+            background: #c0392b;
+        }
+
+        .mobile-suggestion-menu {
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            padding-left: 20px;
+        }
+
+        .mobile-suggestion-menu.active {
+            display: flex;
+        }
+
+        .mobile-suggestion-menu a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text);
+            text-decoration: none;
+            padding: 8px 10px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .mobile-suggestion-menu a:hover {
+            background: var(--accent-soft);
+            color: var(--accent);
+        }
+
+        .hero-section {
+            padding: 30px;
+        }
+
+        .welcome-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 40px 30px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, rgba(255, 204, 0, 0.08), transparent 70%);
+            pointer-events: none;
+        }
+
+        .welcome-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .welcome-title {
+            color: var(--accent);
+            font-size: 2.8rem;
+            font-weight: 900;
+            margin-bottom: 12px;
+            line-height: 1.1;
+        }
+
+        .welcome-subtitle {
+            color: var(--muted);
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            max-width: 600px;
+            line-height: 1.5;
+        }
+
+        .user-badges {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 10px 18px;
+            border-radius: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .badge-role {
+            background: linear-gradient(135deg, rgba(255, 204, 0, 0.2), rgba(255, 204, 0, 0.1));
+            color: var(--accent);
+            border: 1px solid rgba(255, 204, 0, 0.3);
+        }
+
+        .badge-grade {
+            background: linear-gradient(135deg, rgba(209, 196, 233, 0.2), rgba(209, 196, 233, 0.1));
+            color: var(--muted);
+            border: 1px solid rgba(209, 196, 233, 0.3);
+        }
+
+        .dashboard-content {
+            padding: 0 30px 30px;
+        }
+
+        .dashboard-section {
+            margin-top: 30px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            color: var(--accent);
+            font-size: 1.5rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            font-size: 1.2rem;
+        }
+
+        .section-count {
+            background: var(--accent-soft);
+            color: var(--accent);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            font-weight: 800;
+        }
+
+        .forms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .form-card {
+            background: rgba(64, 41, 88, 0.6);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-card:hover {
+            border-color: rgba(255, 204, 0, 0.4);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .form-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--accent-soft);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 1.2rem;
+        }
+
+        .form-status {
+            padding: 6px 12px;
+            border-radius: 14px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .status-active {
+            background: rgba(255, 204, 0, 0.15);
+            color: var(--accent);
+            border: 1px solid rgba(255, 204, 0, 0.3);
+        }
+
+        .form-title {
+            color: var(--text);
+            font-size: 1.2rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+
+        .form-description {
+            color: var(--muted);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .form-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .form-date {
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .form-arrow {
+            color: var(--accent);
+            font-size: 1rem;
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(64, 41, 88, 0.4);
+            border-radius: 20px;
+            border: 2px dashed var(--border);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--muted);
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            color: var(--text);
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .empty-state p {
+            color: var(--muted);
+            font-size: 1rem;
+            max-width: 400px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        .loading-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        .loader {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--accent-soft);
+            border-radius: 50%;
+            border-top-color: var(--accent);
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .welcome-title {
+                font-size: 2.4rem;
+            }
+
+            .forms-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.15), rgba(231, 76, 60, 0.08));
+            color: #e74c3c;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            padding: 6px 12px;
+            border-radius: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            height: 36px;
+            white-space: nowrap;
+        }
+
+        .logout-btn:hover {
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.25), rgba(231, 76, 60, 0.15));
+        }
+
+        @media (max-width: 992px) {
+            .main-nav {
+                padding: 12px 20px;
+            }
+
+            .nav-buttons {
+                display: none;
+            }
+
+            .nav-center {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .nav-points-always {
+                display: flex !important;
+            }
+
+            .mobile-menu-btn {
+                display: flex;
+            }
+
+            .mobile-header-right {
+                gap: 8px;
+            }
+
+            .mobile-logout-btn {
+                display: flex;
+            }
+
+            .hero-section,
+            .dashboard-content {
+                padding: 20px;
+            }
+
+            .welcome-card {
+                padding: 30px 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .forms-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .welcome-title {
+                font-size: 2rem;
+            }
+
+            .welcome-subtitle {
+                font-size: 1rem;
+            }
+
+            .user-badges {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .form-card {
+                padding: 20px;
+            }
+
+            .points-badge {
+                padding: 6px 12px;
+                font-size: 0.9rem;
+                gap: 6px;
+            }
+
+            .mobile-menu-btn {
+                width: 34px;
+                height: 34px;
+            }
+
+            .mobile-menu-btn span {
+                width: 14px;
+            }
+
+            .mobile-logout-btn {
+                width: 34px;
+                height: 34px;
+                font-size: 15px;
+            }
+
+            .mobile-header-right {
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .section-count {
+                align-self: flex-start;
+            }
+
+            .welcome-title {
+                font-size: 1.6rem;
+            }
+
+            .brand-text h2 {
+                font-size: 1rem;
+            }
+
+            .nav-brand img {
+                width: 36px;
+                height: 36px;
+            }
+
+            .mobile-dropdown {
+                padding: 12px;
+            }
+
+            .mobile-buttons {
+                gap: 8px;
+            }
+
+            .mobile-menu-btn {
+                width: 32px;
+                height: 32px;
+            }
+
+            .mobile-logout-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
+            }
+
+            .mobile-header-right {
+                gap: 6px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .main-nav {
+                padding: 10px 15px;
+            }
+
+            .points-badge {
+                padding: 5px 10px;
+                font-size: 0.85rem;
+            }
+
+            .points-badge i {
+                font-size: 0.9rem;
+            }
+
+            .brand-text h2 {
+                font-size: 0.9rem;
+            }
+
+            .brand-text p {
+                font-size: 0.7rem;
+            }
+
+            .mobile-menu-btn {
+                width: 30px;
+                height: 30px;
+            }
+
+            .mobile-logout-btn {
+                width: 30px;
+                height: 30px;
+                font-size: 13px;
+            }
+
+            .mobile-header-right {
+                gap: 4px;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f0f0f0;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #f4c400;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #e0b200;
+        }
+
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: #f4c400 #f0f0f0;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="main-nav">
+        <div class="nav-brand">
+            <div class="brand-text">
+                <h2>كاتدرائية السمائيين</h2>
+                <p>
+                    <%= gradeLabel.short || 'نظام الإدارة' %>
+                </p>
+            </div>
+        </div>
+
+        <div class="nav-center">
+            <span class="points-badge points-badge-static nav-points-always" title="نقاطك">
+                <i class="fas fa-coins"></i>
+                <span id="pointsValue">0</span>
+            </span>
+            <div class="nav-buttons">
+                <a href="/grades/<%= gradeSlug %>" class="nav-button" data-page="dashboard">
+                    <i class="fas fa-home"></i>
+                    صفحة الصف
+                </a>
+                <div class="suggestion-container" data-page="suggestion">
+                    <button class="suggestion-button" id="suggestionBtn">
+                        <i class="fas fa-lightbulb"></i>
+                        اقتراحات
+                        <i class="fas fa-chevron-down arrow-icon" id="desktopArrow"></i>
+                    </button>
+                    <div class="suggestion-dropdown" id="suggestionDropdown">
+                        <a href="/grades/<%= gradeSlug %>/suggestion/ektm3at" id="suggestionLink">
+                            <i class="fas fa-hand-point-up"></i>
+                            اقتراح الاجتماع
+                        </a>
+                    </div>
+                </div>
+
+                <a href="/gift-shop" class="nav-button gift" data-page="gift-shop">
+                    <i class="fas fa-gift"></i>
+                    متجر الهدايا
+                </a>
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    تسجيل الخروج
+                </button>
+            </div>
+        </div>
+
+        <div class="mobile-header-right">
+
+
+            <div class="mobile-menu-btn" id="mobileMenuBtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+
+        <div class="mobile-dropdown" id="mobileDropdown">
+            <div class="mobile-buttons">
+                <a href="/grades/<%= gradeSlug %>" class="nav-button" data-page="dashboard">
+                    <i class="fas fa-home"></i>
+                    صفحة الصف
+                </a>
+
+                <button class="nav-button suggestion-button" id="mobileSuggestionBtn" data-page="suggestion">
+                    <i class="fas fa-lightbulb"></i>
+                    اقتراحات
+                    <i class="fas fa-chevron-down arrow-icon" id="mobileArrow"></i>
+                </button>
+
+                <div class="mobile-suggestion-menu" id="mobileSuggestionMenu">
+                    <a href="/grades/<%= gradeSlug %>/suggestion/ektm3at" id="mobileSuggestionLink">
+                        <i class="fas fa-hand-point-up"></i>
+                        اقتراح الاجتماع
+                    </a>
+                </div>
+
+                <a href="/gift-shop" class="nav-button gift" data-page="gift-shop">
+                    <i class="fas fa-gift"></i>
+                    متجر الهدايا
+                </a>
+                <button class="nav-button logout-btn-mobile-dropdown" id="logoutBtnMobile">
+                    <i class="fas fa-sign-out-alt"></i>
+                    تسجيل الخروج
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero-section">
+        <div class="welcome-card">
+            <div class="welcome-content">
+                <h1 class="welcome-title">اهلا, <%= user.username %>@</h1>
+                <p class="welcome-subtitle">
+                    <%= gradeMeta.heroSubtitle || 'مرحباً بك في لوحة التحكم' %>
+                </p>
+                <div class="user-badges">
+                    <div class="badge badge-role">
+                        <i class="fas fa-user-tag"></i>
+                        <%= user.role==='student' ? 'طالب' : 'خادم' %>
+                    </div>
+                    <div class="badge badge-grade">
+                        <i class="fas fa-graduation-cap"></i>
+                        <%= gradeLabel.short || gradeSlug %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="dashboard-content">
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-file-alt"></i>
+                    النماذج النشطة
+                </h2>
+                <div class="section-count" id="formsCount">0</div>
+            </div>
+            <div class="forms-grid" id="formsContainer">
+                <div class="loading-state">
+                    <div class="loader"></div>
+                    <p>جاري تحميل النماذج...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    </main>
+
+    <footer style="text-align: center;">
+        <p>&copy; 2026 كاتدرائية السمائيين. جميع الحقوق محفوظة.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js" defer></script>
+    <script src="<%= vite('src/assets/scripts/notifications.js', '/scripts/notifications.js') %>" defer></script>
+    <script>
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileDropdown = document.getElementById('mobileDropdown');
+        const suggestionBtn = document.getElementById('suggestionBtn');
+        const suggestionDropdown = document.getElementById('suggestionDropdown');
+        const mobileSuggestionBtn = document.getElementById('mobileSuggestionBtn');
+        const mobileSuggestionMenu = document.getElementById('mobileSuggestionMenu');
+        const desktopArrow = document.getElementById('desktopArrow');
+        const mobileArrow = document.getElementById('mobileArrow');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const logoutBtnMobile = document.getElementById('logoutBtnMobile');
+        const mobileLogoutBtn = document.getElementById('mobileLogoutBtn');
+
+        mobileMenuBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            const isOpen = mobileDropdown.classList.toggle('active');
+            mobileMenuBtn.classList.toggle('open', isOpen);
+        });
+
+        if (suggestionBtn) {
+            suggestionBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                suggestionDropdown.classList.toggle('active');
+                desktopArrow.classList.toggle('rotated');
+            });
+        }
+
+        if (mobileSuggestionBtn) {
+            mobileSuggestionBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                mobileSuggestionMenu.classList.toggle('active');
+                mobileArrow.classList.toggle('rotated');
+            });
+        }
+
+        function hideCurrentPageFromNav() {
+            const currentPage = 'dashboard';
+            const navButtonsToHide = document.querySelectorAll('[data-page]');
+            navButtonsToHide.forEach(element => {
+                if (element.getAttribute('data-page') === currentPage) {
+                    element.style.display = 'none';
+                }
+            });
+        }
+        document.addEventListener('DOMContentLoaded', hideCurrentPageFromNav);
+
+        async function loadUserPoints() {
+            try {
+                const response = await fetch('/api/gift-shop/my-points');
+                if (response.ok) {
+                    const data = await response.json();
+                    const points = data.points || 0;
+                    document.getElementById('pointsValue').textContent = points;
+                }
+            } catch (error) {
+                console.error('Error loading points:', error);
+            }
+        }
+
+        async function loadActiveForms() {
+            const formsContainer = document.getElementById('formsContainer');
+            const formsCount = document.getElementById('formsCount');
+
+            formsContainer.innerHTML = `
+                <div class="loading-state">
+                    <div class="loader"></div>
+                    <p>جاري تحميل النماذج...</p>
+                </div>
+            `;
+
+            try {
+                const response = await fetch(`/api/forms/active?grade=<%= gradeSlug %>`);
+
+                if (!response.ok) {
+                    formsContainer.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-file-alt"></i>
+                            <h3>لا توجد نماذج نشطة</h3>
+                            <p>لا توجد نماذج متاحة حالياً. سيتم إعلامك عند توفر نماذج جديدة.</p>
+                        </div>
+                    `;
+                    formsCount.textContent = '0';
+                    return;
+                }
+
+                const forms = await response.json();
+
+                if (!Array.isArray(forms) || forms.length === 0) {
+                    formsContainer.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-file-alt"></i>
+                            <h3>لا توجد نماذج نشطة</h3>
+                            <p>لا توجد نماذج متاحة حالياً. سيتم إعلامك عند توفر نماذج جديدة.</p>
+                        </div>
+                    `;
+                    formsCount.textContent = '0';
+                    return;
+                }
+
+                formsCount.textContent = forms.length;
+
+                formsContainer.innerHTML = forms.map(form => `
+                    <div class="form-card" onclick="window.location.href='/form/${form.link || form.id}'">
+                        <div class="form-card-header">
+                            <div class="form-icon">
+                                <i class="fas ${form.icon || 'fa-file-alt'}"></i>
+                            </div>
+                            <span class="form-status status-active">
+                                ${form.status === 'active' ? 'نشط' : 'مطلوب'}
+                            </span>
+                        </div>
+                        <h3 class="form-title">${form.topic || form.title || 'نموذج بدون عنوان'}</h3>
+                        <p class="form-description">${form.description || 'املأ هذا النموذج للمشاركة في النشاط.'}</p>
+                        <div class="form-footer">
+                            <span class="form-date">
+                                ${form.expiry || form.deadline ? `ينتهي: ${new Date(form.expiry || form.deadline).toLocaleDateString('ar-EG')}` : 'بدون تاريخ انتهاء'}
+                            </span>
+                            <i class="fas fa-arrow-left form-arrow"></i>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                formsContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-file-alt"></i>
+                        <h3>لا توجد نماذج نشطة</h3>
+                        <p>لا توجد نماذج متاحة حالياً. سيتم إعلامك عند توفر نماذج جديدة.</p>
+                    </div>
+                `;
+                formsCount.textContent = '0';
+            }
+        }
+
+        async function performLogout() {
+            const result = await Swal.fire({
+                title: 'تسجيل الخروج',
+                text: 'هل تريد فعلاً تسجيل الخروج من النظام؟',
+                icon: 'question',
+                iconColor: '#ffcc00',
+                showCancelButton: true,
+                confirmButtonText: 'نعم، تسجيل خروج',
+                cancelButtonText: 'إلغاء',
+                confirmButtonColor: '#e74c3c',
+                cancelButtonColor: '#666',
+                background: '#2a1b3c',
+                color: '#fff',
+                backdrop: 'rgba(0,0,0,0.8)',
+                allowOutsideClick: false
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    const response = await fetch('/logout', { method: 'POST' });
+                    if (response.ok) {
+                        await Swal.fire({
+                            title: 'تم تسجيل الخروج',
+                            text: 'وداعاً! تم تسجيل خروجك بنجاح',
+                            icon: 'success',
+                            iconColor: '#27ae60',
+                            background: '#2a1b3c',
+                            color: '#fff',
+                            backdrop: 'rgba(0,0,0,0.8)',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        setTimeout(() => {
+                            window.location.href = '/';
+                        }, 500);
+                    }
+                } catch (error) {
+                    console.error('Logout error:', error);
+                    window.location.href = '/';
+                }
+            }
+        }
+
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', performLogout);
+        }
+        if (logoutBtnMobile) {
+            logoutBtnMobile.addEventListener('click', performLogout);
+        }
+        if (mobileLogoutBtn) {
+            mobileLogoutBtn.addEventListener('click', performLogout);
+        }
+
+        document.addEventListener('click', function (event) {
+            if (!mobileMenuBtn.contains(event.target) && !mobileDropdown.contains(event.target)) {
+                mobileDropdown.classList.remove('active');
+                mobileMenuBtn.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            loadUserPoints();
+            loadActiveForms();
+        });
+    </script>
+</body>
+
+</html>

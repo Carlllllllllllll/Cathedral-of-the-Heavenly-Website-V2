@@ -1,0 +1,31 @@
+{
+  "_metadata": {
+    "version": "1.0",
+    "createdAt": "2025-12-17T19:27:09.873Z",
+    "lastModified": "2025-12-17T19:27:09.873Z",
+    "totalUsers": 1,
+    "checksum": null
+  },
+  "users": [
+    {
+      "_id": "6941ee6a8b03894251713273",
+      "username": "carl",
+      "password": "$2b$10$zxiU2WLKP1t62Ld0ObHpNOeIvk80iGOPAYQIn/qAwQtCty2vjQss6",
+      "firstName": "Carl",
+      "secondName": "Mounir",
+      "email": "carlmony1@gmail.com",
+      "phone": "01200249240",
+      "grade": "sec1",
+      "role": "student",
+      "approvalStatus": "approved",
+      "verificationCode": "322614",
+      "verificationCodeVerified": true,
+      "verificationDate": "2025-12-16T23:43:14.076Z",
+      "lastLoginAt": "2025-12-16T23:46:19.294Z",
+      "createdAt": "2025-12-16T23:42:34.992Z",
+      "reviewedAt": "2025-12-16T23:43:14.075Z",
+      "reviewedBy": "carlmounir",
+      "_isLocal": true
+    }  
+  ]
+}

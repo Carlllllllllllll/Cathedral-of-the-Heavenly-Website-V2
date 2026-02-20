@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="كاتدرائية السمائيين – «اِفْرَحُوا فِي الرَّبِّ كُلَّ حِينٍ» (فيلبي ٤: ٤)" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#402958" />
+    <title>خطأ 500 | خطأ في الخادم</title>
+    <link rel="icon" href="/UI/icon.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="/UI/icon.png" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Cairo", sans-serif;
+        background: linear-gradient(135deg, #402958 0%, #2a1b3c 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        direction: rtl;
+        padding: 20px;
+      }
+
+      .error-container {
+        text-align: center;
+        max-width: 600px;
+        width: 100%;
+      }
+
+      .error-code {
+        font-size: 8rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #ff6b6b, #ff5252);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1;
+        margin-bottom: 20px;
+        text-shadow: 0 0 30px rgba(255, 107, 107, 0.3);
+      }
+
+      .error-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: #ff6b6b;
+      }
+
+      .error-message {
+        font-size: 1.2rem;
+        color: #d1c4e9;
+        margin-bottom: 40px;
+        line-height: 1.8;
+      }
+
+      .error-actions {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 16px 32px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        display: inline-block;
+        border: none;
+        cursor: pointer;
+        font-family: "Cairo", sans-serif;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #ffcc00, #ffaa00);
+        color: #402958;
+        box-shadow: 0 4px 15px rgba(255, 204, 0, 0.3);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 204, 0, 0.4);
+      }
+
+      .btn-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+      }
+
+      @media (max-width: 768px) {
+        .error-code {
+          font-size: 5rem;
+        }
+
+        .error-title {
+          font-size: 2rem;
+        }
+
+        .error-message {
+          font-size: 1rem;
+        }
+
+        .error-actions {
+          flex-direction: column;
+        }
+
+        .btn {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="error-container">
+      <div class="error-code">500</div>
+      <h1 class="error-title">خطأ في الخادم</h1>
+      <p class="error-message">
+        عذراً، حدث خطأ داخلي في الخادم.<br />
+        يرجى المحاولة مرة أخرى لاحقاً أو الاتصال بالمسؤول إذا استمرت المشكلة.
+      </p>
+      <div class="error-actions">
+        <a href="/" class="btn btn-primary">🏠 العودة إلى الصفحة الرئيسية</a>
+        <a href="javascript:location.reload()" class="btn btn-secondary"
+          >🔄 إعادة المحاولة</a
+        >
+      </div>
+    </div>
+  </body>
+</html>

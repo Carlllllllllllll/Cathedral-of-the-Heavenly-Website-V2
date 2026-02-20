@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="كاتدرائية السمائيين – «اِفْرَحُوا فِي الرَّبِّ كُلَّ حِينٍ» (فيلبي ٤: ٤)" />
+  <meta name="keywords" content="كاتدرائية السمائيين – «اِفْرَحُوا فِي الرَّبِّ كُلَّ حِينٍ» (فيلبي ٤: ٤)" />
+  <meta name="author" content="كاتدرائية السمائيين" />
+  <meta name="theme-color" content="#402958" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>لوحة الإدارة الرسمية للنماذج | كاتدرائية السمائيين</title>
+  <link rel="icon" href="/UI/icon.png" type="image/png" sizes="16x16" />
+  <link rel="apple-touch-icon" href="/UI/icon.png" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="/design/theme.css" />
+  <link rel="stylesheet" href="/design/admin.css" />
+  <link rel="stylesheet" href="/design/admin-dashboard.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js" defer></script>
+  <link rel="stylesheet" href="/design/form-panel.css" />
+  <script src="/scripts/utils.js" defer></script>
+  <script src="/scripts/console.js" defer></script>
+  <script src="/scripts/form-panel-core.js" defer></script>
+  <script src="/scripts/form-panel.js" defer></script>
+</head>
+
+<body>
+  <div class="mobile-toggle" id="mobileToggle">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-container">
+        <img src="/UI/logo.png" alt="اللوغو" />
+        <div class="logo-text">
+          <h1>كاتدرائية السمائيين</h1>
+          <p>لوحة الإدارة الرسمية للنماذج</p>
+        </div>
+      </div>
+    </div>
+
+    <nav class="nav-menu">
+      <div class="nav-item">
+        <a href="https://kenisa-el-sama2eyeen.ooguy.com" class="nav-link">
+          <i class="fas fa-home"></i>
+          الصفحة الرئيسية
+        </a>
+      </div>
+      <div class="nav-item" data-nav-access="hasFormEditorRole">
+        <a href="/admin/form-panel" class="nav-link active">
+          <i class="fas fa-tachometer-alt"></i>
+          النماذج
+        </a>
+      </div>
+
+      <div class="nav-item grades-nav-item">
+        <div class="nav-link grades-toggle" id="gradesToggle">
+          <i class="fas fa-graduation-cap"></i>
+          الصفوف الدراسية
+          <i class="fas fa-chevron-down toggle-icon"></i>
+        </div>
+        <div class="grades-submenu-container">
+          <div class="grades-submenu" id="gradesSubmenu">
+            <div class="submenu-header">
+              <div class="nav-link section-toggle" data-section="prep">
+                <i class="fas fa-school"></i>
+                الإعدادية
+                <i class="fas fa-chevron-down toggle-icon"></i>
+              </div>
+              <div class="section-submenu" data-section="prep">
+                <a href="/grades/prep1" class="nav-link submenu-link">
+                  <i class="fas fa-arrow-left"></i>
+                  أولي إعدادي
+                </a>
+                <a href="/grades/prep2" class="nav-link submenu-link">
+                  <i class="fas fa-arrow-left"></i>
+                  ثانية إعدادي
+                </a>
+                <a href="/grades/prep3" class="nav-link submenu-link">
+                  <i class="fas fa-arrow-left"></i>
+                  ثالثة إعدادي
+                </a>
+              </div>
+            </div>
+
+            <div class="submenu-header">
+              <div class="nav-link section-toggle" data-section="sec">
+                <i class="fas fa-university"></i>
+                الثانوية
+                <i class="fas fa-chevron-down toggle-icon"></i>
+              </div>
+              <div class="section-submenu" data-section="sec">
+                <a href="/grades/sec1" class="nav-link submenu-link">
+                  <i class="fas fa-arrow-left"></i>
+                  أولي ثانوي
+                </a>
+                <a href="/grades/sec2" class="nav-link submenu-link">
+                  <i class="fas fa-arrow-left"></i>
+                  ثانية ثانوي
+                </a>
+                <a href="/grades/sec3" class="nav-link submenu-link">
+                  <i class="fas fa-arrow-left"></i>
+                  ثالثة ثانوي
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-item" data-nav-access="hasUserApproverRole">
+        <a href="/admin/user-approvals" class="nav-link">
+          <i class="fas fa-user-check"></i>
+          <span>طلبات التسجيل</span>
+          <span class="nav-unread-badge" id="nav-badge-login" aria-hidden="true"></span>
+        </a>
+      </div>
+      <div class="nav-item" data-nav-access="hasUserApproverRole">
+        <a href="/admin/user-management" class="nav-link">
+          <i class="fas fa-users"></i>
+          إدارة المستخدمين
+        </a>
+      </div>
+      <div class="nav-item" data-nav-access="hasFormEditorRole">
+        <a href="/admin/gift-shop/add" class="nav-link">
+          <i class="fas fa-plus-circle"></i>
+          إضافة هدية
+        </a>
+      </div>
+      <div class="nav-item" data-nav-access="hasGiftApproverRole">
+        <a href="/admin/gift-shop/approvals" class="nav-link">
+          <i class="fas fa-check-circle"></i>
+          <span>طلبات المراجعة</span>
+          <span class="nav-unread-badge" id="nav-badge-gift" aria-hidden="true"></span>
+        </a>
+      </div>
+
+      <div class="nav-item suggestions-nav-item">
+        <div class="nav-link suggestions-toggle" id="suggestionsToggle">
+          <i class="fas fa-lightbulb"></i>
+          الاقتراحات
+          <i class="fas fa-chevron-down toggle-icon"></i>
+        </div>
+        <div class="suggestions-submenu-container">
+          <div class="suggestions-submenu" id="suggestionsSubmenu">
+            <a href="/admin/suggestion/ektma3at" class="nav-link submenu-link">
+              <i class="fas fa-users"></i>
+              اقتراحات الاجتماعات
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button type="button" class="logout-btn" id="logoutBtn">
+        <i class="fas fa-sign-out-alt"></i>
+        تسجيل الخروج
+      </button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="top-nav">
+      <div class="user-info">
+        <img src="/UI/pfp.jpg" alt="المستخدم" class="user-avatar" />
+        <div class="user-details">
+          <h3 id="username-display">جاري التحميل...</h3>
+          <span id="user-role-pill" class="role-badge">مشرف</span>
+        </div>
+        <button class="logout-btn-mobile" id="logoutBtnMobile">
+          <i class="fas fa-sign-out-alt"></i>
+        </button>
+      </div>
+    </header>
+
+    <div class="admin-container">
+      <h1><i class="fas fa-file-alt"></i> النماذج</h1>
+
+      <div id="dashboard-stats" class="dashboard-stats"></div>
+
+      <div class="create-form-card">
+        <div class="create-form-card-inner">
+          <i class="fas fa-file-alt create-form-icon"></i>
+          <h2 class="create-form-title">إنشاء نموذج جديد</h2>
+          <p class="create-form-desc">أضف نموذجاً للاختبارات أو الاستبيانات وحدد الفئة والصلاحية.</p>
+          <button id="create-form" class="create-form-btn" type="button">
+            <i class="fas fa-plus-circle"></i>
+            إنشاء نموذج جديد
+          </button>
+        </div>
+      </div>
+
+      <div id="forms-list" class="forms-grid"></div>
+    </div>
+  </main>
+
+  <div id="form-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="fas fa-plus-circle"></i> إنشاء نموذج</h2>
+        <div class="modal-header-actions">
+          <button type="button" class="modal-tool-btn" id="modal-copy-link" aria-label="Copy Link" style="display:none;">
+            <i class="fas fa-link"></i>
+            رابط
+          </button>
+          <button type="button" class="close-button" aria-label="إغلاق">&times;</button>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <form id="form-creator">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="topic">موضوع النموذج:</label>
+              <input type="text" id="topic" required />
+            </div>
+            <div class="form-group">
+              <label for="target-grade">الفئة المستهدفة:</label>
+              <div class="grade-multiselect" id="target-grade" role="group" aria-label="الفئة المستهدفة">
+                <button type="button" class="grade-multiselect-toggle" id="target-grade-toggle">
+                  <span class="grade-multiselect-placeholder" id="target-grade-placeholder">اختر الصفوف</span>
+                  <span class="grade-multiselect-chips" id="target-grade-chips"></span>
+                  <span class="grade-multiselect-caret" aria-hidden="true">
+                    <i class="fas fa-chevron-down"></i>
+                  </span>
+                </button>
+                <div class="grade-multiselect-menu" id="target-grade-menu" aria-hidden="true">
+                  <div class="grade-multiselect-menu-head">
+                    <div class="grade-multiselect-title">اختر الصفوف</div>
+                    <button type="button" class="grade-multiselect-close" id="target-grade-close" aria-label="إغلاق">&times;</button>
+                  </div>
+                  <div class="grade-multiselect-options" id="target-grade-options">
+                    <label class="grade-multiselect-option"><input type="checkbox" value="all" /> جميع الصفوف</label>
+                    <label class="grade-multiselect-option"><input type="checkbox" value="prep1" /> أولي إعدادي</label>
+                    <label class="grade-multiselect-option"><input type="checkbox" value="prep2" /> ثانية إعدادي</label>
+                    <label class="grade-multiselect-option"><input type="checkbox" value="prep3" /> ثالثة إعدادي</label>
+                    <label class="grade-multiselect-option"><input type="checkbox" value="sec1" /> أولي ثانوي</label>
+                    <label class="grade-multiselect-option"><input type="checkbox" value="sec2" /> ثانية ثانوي</label>
+                    <label class="grade-multiselect-option"><input type="checkbox" value="sec3" /> ثالثة ثانوي</label>
+                  </div>
+                </div>
+                <input type="hidden" id="target-grades" name="targetGrades" value="[\"all\"]" />
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="description">وصف النموذج:</label>
+            <textarea id="description" rows="3" placeholder="وصف مختصر للنموذج..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="expiry">تاريخ انتهاء الصلاحية:</label>
+            <input type="datetime-local" id="expiry" style="width: 100%; max-width: 100%; box-sizing: border-box" />
+          </div>
+
+          <div class="questions-section">
+            <div class="questions-header">
+              <h3><i class="fas fa-question-circle"></i> الأسئلة</h3>
+              <button type="button" id="add-question" class="admin-btn add-btn">
+                <i class="fas fa-plus"></i>
+                إضافة سؤال
+              </button>
+            </div>
+
+            <div id="questions-container"></div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="cancel-btn">إلغاء</button>
+            <button type="submit" class="submit-btn">
+              <i class="fas fa-check"></i>
+              إرسال النموذج
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+  <script>
+    const suggestionsToggle = document.getElementById("suggestionsToggle");
+    const suggestionsSubmenu = document.getElementById("suggestionsSubmenu");
+
+    if (suggestionsToggle) {
+      suggestionsToggle.addEventListener("click", function (e) {
+        e.stopPropagation();
+        this.classList.toggle("active");
+        const icon = this.querySelector(".toggle-icon");
+        if (this.classList.contains("active")) {
+          icon.classList.remove("fa-chevron-down");
+          icon.classList.add("fa-chevron-up");
+          suggestionsSubmenu.style.maxHeight =
+            suggestionsSubmenu.scrollHeight + "px";
+        } else {
+          icon.classList.remove("fa-chevron-up");
+          icon.classList.add("fa-chevron-down");
+          suggestionsSubmenu.style.maxHeight = "0";
+        }
+      });
+    }
+
+    document.addEventListener("click", function (e) {
+      if (!e.target.closest(".suggestions-nav-item")) {
+        const suggestionsToggle =
+          document.getElementById("suggestionsToggle");
+        const suggestionsSubmenu =
+          document.getElementById("suggestionsSubmenu");
+
+        if (
+          suggestionsToggle &&
+          suggestionsToggle.classList.contains("active")
+        ) {
+          suggestionsToggle.classList.remove("active");
+          const icon = suggestionsToggle.querySelector(".toggle-icon");
+          icon.classList.remove("fa-chevron-up");
+          icon.classList.add("fa-chevron-down");
+          suggestionsSubmenu.style.maxHeight = "0";
+        }
+      }
+    });
+  </script>
+  <script>
+    (function () {
+      function updatePendingBadges() {
+        if (document.visibilityState !== "visible") return;
+        fetch("/api/admin/pending-counts")
+          .then(function (r) { return r.json(); })
+          .then(function (d) {
+            var loginBadge = document.getElementById("nav-badge-login");
+            var giftBadge = document.getElementById("nav-badge-gift");
+            var loginCount = d.pendingRegistration || 0;
+            var giftCount = d.pendingGift || 0;
+            if (loginBadge) {
+              loginBadge.textContent = loginCount;
+              loginBadge.classList.toggle("empty", loginCount === 0);
+              loginBadge.setAttribute("aria-hidden", loginCount === 0 ? "true" : "false");
+            }
+            if (giftBadge) {
+              giftBadge.textContent = giftCount;
+              giftBadge.classList.toggle("empty", giftCount === 0);
+              giftBadge.setAttribute("aria-hidden", giftCount === 0 ? "true" : "false");
+            }
+          })
+          .catch(function () { });
+      }
+      updatePendingBadges();
+      setInterval(updatePendingBadges, 10000);
+      document.addEventListener("visibilitychange", function () {
+        if (document.visibilityState === "visible") updatePendingBadges();
+      });
+    })();
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,1953 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="كاتدرائية السمائيين – «اِفْرَحُوا فِي الرَّبِّ كُلَّ حِينٍ» (فيلبي ٤: ٤)" />
+  <meta name="keywords" content="كاتدرائية السمائيين – «اِفْرَحُوا فِي الرَّبِّ كُلَّ حِينٍ» (فيلبي ٤: ٤)" />
+  <meta name="author" content="كاتدرائية السمائيين" />
+  <meta name="theme-color" content="#402958" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta property="og:title" content="متجر الهدايا | كاتدرائية السمائيين" />
+  <meta property="og:description" content="كاتدرائية السمائيين – «اِفْرَحُوا فِي الرَّبِّ كُلَّ حِينٍ» (فيلبي ٤: ٤)" />
+  <meta property="og:image" content="/UI/icon.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="ar_AR" />
+  <title>متجر الهدايا | كاتدرائية السمائيين</title>
+  <link rel="icon" href="/UI/icon.png" type="image/png" sizes="16x16" />
+  <link rel="apple-touch-icon" href="/UI/icon.png" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js" defer></script>
+  <link rel="stylesheet" href="/design/theme.css" />
+  <link rel="stylesheet" href="/design/gift-shop-user.css" />
+  <style>
+    :root {
+      --bg: radial-gradient(circle at top right, #402958, #2a1b3c 60%);
+      --card-bg: rgba(64, 41, 88, 0.85);
+      --panel-bg: rgba(64, 41, 88, 0.85);
+      --accent: #ffcc00;
+      --accent-soft: rgba(255, 204, 0, 0.12);
+      --text: #f2f4ff;
+      --muted: #d1c4e9;
+      --border: rgba(255, 255, 255, 0.15);
+      --radius-lg: 28px;
+      --shadow: 0 25px 45px rgba(15, 20, 40, 0.12);
+      --shadow-lg: 0 35px 60px rgba(0, 0, 0, 0.3);
+      font-family: "Cairo", system-ui, sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Cairo", sans-serif;
+      min-height: 100vh;
+      padding-top: 70px;
+      scrollbar-width: thin;
+      scrollbar-color: #ffcc00 rgba(255, 204, 0, 0.15);
+    }
+
+    body::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    body::-webkit-scrollbar-track {
+      background: rgba(255, 204, 0, 0.1);
+    }
+
+    body::-webkit-scrollbar-thumb {
+      background: #ffcc00;
+      border-radius: 12px;
+    }
+
+    body::-webkit-scrollbar-thumb:hover {
+      background: #ffd84d;
+    }
+
+    .main-nav {
+      background: rgba(64, 41, 88, 0.95);
+      backdrop-filter: blur(6px);
+      padding: 0 30px;
+      height: 70px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      box-shadow: var(--shadow);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-brand img {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: 2px solid var(--accent);
+      padding: 2px;
+      background: var(--accent-soft);
+    }
+
+    .brand-text h2 {
+      color: var(--accent);
+      font-size: 1.2rem;
+      font-weight: 800;
+    }
+
+    .brand-text p {
+      color: var(--muted);
+      font-size: 0.75rem;
+    }
+
+    .nav-center {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      height: 100%;
+    }
+
+    .points-badge {
+      background: linear-gradient(135deg,
+          rgba(255, 204, 0, 0.15),
+          rgba(255, 204, 0, 0.08));
+      border: 1px solid rgba(255, 204, 0, 0.3);
+      border-radius: 20px;
+      padding: 0 16px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.95rem;
+      box-shadow: 0 4px 12px rgba(255, 204, 0, 0.1);
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .points-badge:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(255, 204, 0, 0.2);
+    }
+
+    .nav-buttons {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 100%;
+    }
+
+    .nav-button {
+      padding: 6px 12px;
+      border-radius: 14px;
+      text-decoration: none;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+      font-size: 0.85rem;
+      height: 36px;
+      white-space: nowrap;
+      background: var(--accent-soft);
+      color: var(--accent);
+      border: 1px solid rgba(255, 204, 0, 0.3);
+    }
+
+    .nav-button:hover {
+      background: rgba(255, 204, 0, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .suggestion-container {
+      position: relative;
+      height: 100%;
+      display: flex;
+      align-items: center;
+    }
+
+    .suggestion-button {
+      padding: 6px 12px;
+      border-radius: 14px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      border: 1px solid rgba(255, 204, 0, 0.3);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+      font-size: 0.85rem;
+      cursor: pointer;
+      font-family: "Cairo", sans-serif;
+      height: 36px;
+    }
+
+    .suggestion-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255, 204, 0, 0.2);
+    }
+
+    .suggestion-dropdown {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: rgba(64, 41, 88, 0.98);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      padding: 10px;
+      min-width: 200px;
+      z-index: 1001;
+      margin-top: 5px;
+    }
+
+    .suggestion-dropdown.active {
+      display: block;
+    }
+
+    .suggestion-dropdown a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text);
+      text-decoration: none;
+      padding: 10px 12px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+
+    .suggestion-dropdown a:hover {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .arrow-icon {
+      transition: transform 0.3s ease;
+    }
+
+    .arrow-icon.rotated {
+      transform: rotate(-180deg);
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: var(--accent-soft);
+      border: 1px solid var(--border);
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+      z-index: 1002;
+    }
+
+    .mobile-menu-btn span {
+      position: absolute;
+      width: 20px;
+      height: 2px;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      left: 50%;
+    }
+
+    .mobile-menu-btn span:nth-child(1) {
+      transform: translate(-50%, -6px);
+    }
+
+    .mobile-menu-btn span:nth-child(2) {
+      transform: translate(-50%, 0);
+    }
+
+    .mobile-menu-btn span:nth-child(3) {
+      transform: translate(-50%, 6px);
+    }
+
+    .mobile-menu-btn.open span:nth-child(1) {
+      transform: translate(-50%, 0) rotate(45deg);
+    }
+
+    .mobile-menu-btn.open span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .mobile-menu-btn.open span:nth-child(3) {
+      transform: translate(-50%, 0) rotate(-45deg);
+    }
+
+    .mobile-dropdown {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: rgba(64, 41, 88, 0.98);
+      backdrop-filter: blur(6px);
+      padding: 15px;
+      border-bottom: 1px solid var(--border);
+      border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      border-bottom-left-radius: 20px;
+      border-bottom-right-radius: 20px;
+      box-shadow: var(--shadow);
+      z-index: 1001;
+    }
+
+    .mobile-dropdown.active {
+      display: block;
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from {
+        transform: translateY(-20px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .mobile-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .logout-btn {
+      background: linear-gradient(135deg,
+          rgba(231, 76, 60, 0.15),
+          rgba(231, 76, 60, 0.08));
+      color: #e74c3c;
+      border: 1px solid rgba(231, 76, 60, 0.3);
+      padding: 6px 12px;
+      border-radius: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.85rem;
+      height: 36px;
+      white-space: nowrap;
+    }
+
+    .logout-btn:hover {
+      background: linear-gradient(135deg,
+          rgba(231, 76, 60, 0.25),
+          rgba(231, 76, 60, 0.15));
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(231, 76, 60, 0.2);
+    }
+
+    .logout-btn-mobile-dropdown {
+      background: rgba(231, 76, 60, 0.15) !important;
+      color: #e74c3c !important;
+      border: 1px solid rgba(231, 76, 60, 0.3) !important;
+      width: 100%;
+      margin-top: 5px;
+    }
+
+    .mobile-header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .mobile-suggestion-menu {
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      padding-right: 20px;
+    }
+
+    .mobile-suggestion-menu.active {
+      display: flex;
+    }
+
+    .mobile-suggestion-menu a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text);
+      text-decoration: none;
+      padding: 8px 10px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+
+    .mobile-suggestion-menu a:hover {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .gift-shop-container {
+      padding: 30px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .nav-points-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      background: rgba(255, 204, 0, 0.15);
+      border: 1px solid rgba(255, 204, 0, 0.35);
+      border-radius: 999px;
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .nav-points-badge i {
+      font-size: 1rem;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+    }
+
+    .section-header h2 {
+      color: var(--accent);
+      font-size: 1.6rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-header i {
+      font-size: 1.3rem;
+    }
+
+    .gift-shop-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+
+    .gift-item {
+      background: rgba(64, 41, 88, 0.7);
+      border-radius: 20px;
+      padding: 0;
+      border: 1px solid var(--border);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .gift-item:hover {
+      border-color: rgba(255, 204, 0, 0.45);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+    }
+
+    .gift-item-image {
+      width: 100%;
+      aspect-ratio: 4/3;
+      border-radius: 20px 20px 0 0;
+      overflow: hidden;
+      background: rgba(255, 204, 0, 0.06);
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .gift-item-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+
+    .gift-item-image .no-image {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+      border-radius: 0;
+      background: transparent;
+      color: var(--accent);
+      font-size: 3rem;
+      opacity: 0.8;
+    }
+
+    .gift-item-image .no-image i {
+      display: block;
+      line-height: 1;
+    }
+
+    .gift-item-image .no-image:not(.show) {
+      display: none;
+    }
+
+    .gift-item-image .no-image.show {
+      display: flex;
+    }
+
+    .gift-item-content {
+      padding: 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .no-image {
+      height: 180px;
+      background: rgba(255, 204, 0, 0.06);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      color: var(--accent);
+      font-size: 2.5rem;
+    }
+
+    .gift-item h3 {
+      color: var(--text);
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      line-height: 1.35;
+    }
+
+    .gift-item p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-bottom: 16px;
+      flex: 1;
+    }
+
+    .gift-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .cost {
+      color: var(--accent);
+      font-size: 1.4rem;
+      font-weight: 800;
+    }
+
+    .stock {
+      color: var(--muted);
+      font-size: 0.9rem;
+      padding: 6px 12px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .stock.active {
+      background: rgba(0, 255, 136, 0.1);
+      color: #00ff88;
+    }
+
+    .stock.inactive {
+      background: rgba(255, 100, 100, 0.1);
+      color: #ff6666;
+    }
+
+    .purchase-limit {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .purchase-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg,
+          rgba(255, 204, 0, 0.2),
+          rgba(255, 204, 0, 0.1));
+      border: 1px solid rgba(255, 204, 0, 0.3);
+      border-radius: 16px;
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .purchase-btn:hover:not(.disabled) {
+      background: linear-gradient(135deg,
+          rgba(255, 204, 0, 0.3),
+          rgba(255, 204, 0, 0.2));
+      box-shadow: 0 4px 16px rgba(255, 204, 0, 0.2);
+    }
+
+    .purchase-btn.disabled {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--muted);
+      border-color: var(--border);
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 16px;
+      border-radius: 16px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+      width: 100%;
+    }
+
+    .status-pending {
+      background: rgba(255, 204, 0, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(255, 204, 0, 0.3);
+    }
+
+    .status-accepted {
+      background: rgba(0, 255, 136, 0.15);
+      color: #00ff88;
+      border: 1px solid rgba(0, 255, 136, 0.3);
+    }
+
+    .status-declined {
+      background: rgba(255, 100, 100, 0.15);
+      color: #ff6666;
+      border: 1px solid rgba(255, 100, 100, 0.3);
+    }
+
+    .status-received {
+      background: rgba(52, 152, 219, 0.15);
+      color: #3498db;
+      border: 1px solid rgba(52, 152, 219, 0.3);
+    }
+
+    .purchase-meta {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .decline-reason {
+      color: #ff8888;
+      font-size: 0.85rem;
+      padding: 10px;
+      background: rgba(255, 100, 100, 0.1);
+      border-radius: 12px;
+      margin-top: 10px;
+      border: 1px solid rgba(255, 100, 100, 0.2);
+    }
+
+    .user-info {
+      color: var(--muted);
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+
+    .admin-section {
+      display: none;
+      margin-top: 40px;
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+    }
+
+    .admin-section h2 {
+      color: var(--accent);
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .admin-item {
+      background: rgba(64, 41, 88, 0.7);
+    }
+
+    .admin-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .admin-actions button {
+      flex: 1;
+      padding: 12px;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .activate-btn {
+      background: rgba(0, 255, 136, 0.1);
+      color: #00ff88;
+      border: 1px solid rgba(0, 255, 136, 0.2);
+    }
+
+    .activate-btn:hover {
+      background: rgba(0, 255, 136, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .deactivate-btn {
+      background: rgba(255, 204, 0, 0.1);
+      color: var(--accent);
+      border: 1px solid rgba(255, 204, 0, 0.2);
+    }
+
+    .deactivate-btn:hover {
+      background: rgba(255, 204, 0, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .delete-btn {
+      background: rgba(255, 100, 100, 0.1);
+      color: #ff6666;
+      border: 1px solid rgba(255, 100, 100, 0.2);
+    }
+
+    .delete-btn:hover {
+      background: rgba(255, 100, 100, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px 20px;
+      background: rgba(64, 41, 88, 0.4);
+      border-radius: 24px;
+      border: 2px dashed var(--border);
+    }
+
+    .empty-state i {
+      font-size: 4rem;
+      color: var(--muted);
+      margin-bottom: 25px;
+      opacity: 0.5;
+    }
+
+    .empty-state h3 {
+      color: var(--text);
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+
+    .empty-state p {
+      color: var(--muted);
+      font-size: 1.1rem;
+      max-width: 400px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .loading-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px 20px;
+      background: rgba(64, 41, 88, 0.4);
+      border-radius: 24px;
+      border: 2px dashed var(--border);
+    }
+
+    .loading-state i {
+      font-size: 4rem;
+      color: var(--accent);
+      margin-bottom: 25px;
+      opacity: 0.7;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        opacity: 0.4;
+      }
+
+      50% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0.4;
+      }
+    }
+
+    .loading-state h3 {
+      color: var(--text);
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+
+    .loading-state p {
+      color: var(--muted);
+      font-size: 1.1rem;
+      max-width: 400px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 1200px) {
+      .gift-shop-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      }
+    }
+
+    @media (max-width: 992px) {
+      .main-nav {
+        padding: 0 20px;
+        height: 70px;
+      }
+
+      .nav-buttons {
+        display: none;
+      }
+
+      .nav-center {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .nav-points-always {
+        display: flex !important;
+      }
+
+      .suggestion-container {
+        display: none;
+      }
+
+      .mobile-menu-btn {
+        display: flex;
+      }
+
+      .mobile-header-right {
+        gap: 8px;
+      }
+
+      body {
+        padding-top: 70px;
+      }
+
+      .gift-shop-container {
+        padding: 20px;
+      }
+
+
+      .points-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+      }
+
+      .points-content i {
+        width: 60px;
+        height: 60px;
+        font-size: 2rem;
+      }
+
+      .points-value {
+        font-size: 2rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .gift-shop-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .main-nav {
+        height: 65px;
+      }
+
+      .mobile-menu-btn {
+        width: 34px;
+        height: 34px;
+      }
+
+      .mobile-menu-btn span {
+        width: 14px;
+      }
+
+      .mobile-header-right {
+        gap: 8px;
+      }
+
+      body {
+        padding-top: 65px;
+      }
+
+      .gift-item {
+        padding: 20px;
+      }
+
+      .section-header h2 {
+        font-size: 1.4rem;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .main-nav {
+        padding: 0 15px;
+        height: 65px;
+      }
+
+      .mobile-dropdown {
+        padding: 8px 12px;
+      }
+
+      .mobile-buttons {
+        gap: 6px;
+      }
+
+      .mobile-menu-btn {
+        width: 32px;
+        height: 32px;
+      }
+
+      .mobile-header-right {
+        gap: 6px;
+      }
+
+      .brand-text h2 {
+        font-size: 1rem;
+      }
+
+      .brand-text p {
+        font-size: 0.7rem;
+      }
+
+      .admin-actions {
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .main-nav {
+        padding: 0 12px;
+      }
+
+      .brand-text h2 {
+        font-size: 0.9rem;
+      }
+
+      .brand-text p {
+        font-size: 0.65rem;
+      }
+
+      .mobile-menu-btn {
+        width: 30px;
+        height: 30px;
+      }
+
+      .mobile-header-right {
+        gap: 4px;
+      }
+    }
+
+    .gift-item {
+      max-width: 320px;
+      background: rgba(64, 41, 88, 0.7);
+      border-radius: 20px;
+      padding: 0;
+      border: 1px solid var(--border);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .gift-item:hover {
+      border-color: rgba(255, 204, 0, 0.45);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+    }
+
+    .gift-item-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .gift-item .gift-item-content {
+      padding: 20px;
+    }
+
+    .gift-item h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--text);
+    }
+
+    .gift-item p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 15px;
+      line-height: 1.5;
+    }
+
+    .gift-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .cost {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .purchase-btn {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, var(--accent), #e6b800);
+      color: #1a0f2e;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: box-shadow 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .purchase-btn:hover:not(.disabled) {
+      box-shadow: 0 4px 16px rgba(255, 204, 0, 0.3);
+    }
+
+    .purchase-btn.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .gift-shop-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 25px;
+      margin-top: 20px;
+    }
+
+    .loading-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 50px 20px;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .loading-state i {
+      font-size: 48px;
+      color: var(--accent);
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 50px 20px;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .empty-state i {
+      font-size: 48px;
+      color: var(--accent);
+    }
+
+    .empty-state h3 {
+      font-size: 24px;
+      margin: 0;
+      color: var(--text);
+    }
+
+    .empty-state p {
+      font-size: 16px;
+      margin: 0;
+      color: var(--muted);
+    }
+
+    :root {
+      --surface-bg: #2a1b3c;
+      --surface-panel: rgba(64, 41, 88, 0.95);
+      --surface-panel-soft: rgba(64, 41, 88, 0.75);
+      --text-strong: #f2f4ff;
+      --text-muted: #d1c4e9;
+      --accent-main: #ffcc00;
+      --success-main: #27ae60;
+      --danger-main: #e74c3c;
+      --warning-main: #f39c12;
+      --info-main: #3498db;
+      --border-muted: rgba(255, 255, 255, 0.15);
+    }
+
+    .swal2-container {
+      z-index: 10000 !important;
+    }
+
+    .swal2-popup {
+      background: var(--surface-bg) !important;
+      color: var(--text-strong) !important;
+      border-radius: 16px !important;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5) !important;
+    }
+
+    .swal2-title {
+      color: var(--text-strong) !important;
+      font-family: "Cairo", system-ui, sans-serif !important;
+      font-weight: 700 !important;
+      font-size: 1.5rem !important;
+    }
+
+    .swal2-html-container {
+      color: var(--text-muted) !important;
+      font-family: "Cairo", system-ui, sans-serif !important;
+      font-size: 1rem !important;
+    }
+
+    .swal2-icon {
+      border-color: var(--accent-main) !important;
+    }
+
+    .swal2-icon.swal2-question {
+      color: var(--accent-main) !important;
+      border-color: var(--accent-main) !important;
+    }
+
+    .swal2-icon.swal2-question [class*="swal2-question-mark"] {
+      color: var(--accent-main) !important;
+    }
+
+    .swal2-icon.swal2-success {
+      color: var(--success-main) !important;
+      border-color: var(--success-main) !important;
+    }
+
+    .swal2-confirm,
+    .swal2-deny {
+      font-family: "Cairo", system-ui, sans-serif !important;
+      font-weight: 600 !important;
+      border-radius: 10px !important;
+      padding: 10px 24px !important;
+      min-width: 100px !important;
+      transition: all 0.3s ease !important;
+    }
+
+    .swal2-confirm {
+      background: var(--danger-main) !important;
+      color: white !important;
+      border: none !important;
+    }
+
+    .swal2-actions {
+      gap: 10px !important;
+    }
+
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f0f0f0;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #f4c400;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #e0b200;
+    }
+
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: #f4c400 #f0f0f0;
+    }
+
+    .gift-shop-sections-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .section-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
+
+    .section-tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: var(--radius);
+      font-weight: 700;
+      font-size: 1rem;
+      border: 1px solid transparent;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--muted);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+
+    .section-tab-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+    }
+
+    .section-tab-btn.active {
+      background: linear-gradient(135deg, rgba(255, 204, 0, 0.2), rgba(255, 204, 0, 0.1));
+      color: var(--accent);
+      border-color: rgba(255, 204, 0, 0.35);
+    }
+
+    .section-tab-btn[data-tab="purchases"].active {
+      background: rgba(52, 152, 219, 0.15);
+      color: #3498db;
+      border-color: rgba(52, 152, 219, 0.3);
+    }
+
+    .gift-shop-section {
+      background: rgba(64, 41, 88, 0.4);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: block;
+    }
+
+    .gift-shop-section.hidden {
+      display: none;
+    }
+
+    .section-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 20px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .section-badge-shop {
+      background: linear-gradient(135deg, rgba(255, 204, 0, 0.2), rgba(255, 204, 0, 0.1));
+      color: var(--accent);
+      border: 1px solid rgba(255, 204, 0, 0.35);
+    }
+
+    .section-badge-purchases {
+      background: rgba(52, 152, 219, 0.15);
+      color: #3498db;
+      border: 1px solid rgba(52, 152, 219, 0.3);
+    }
+
+    .site-footer {
+      margin-top: 2rem;
+      padding: 1rem 1.5rem;
+      background: #2a1b3c;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .footer-copy {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body class="gift-shop-page">
+  <nav class="main-nav">
+    <div class="nav-brand">
+      <div class="brand-text">
+        <h2>كاتدرائية السمائيين</h2>
+        <p>متجر الهدايا</p>
+      </div>
+    </div>
+
+    <div class="nav-center">
+      <span class="nav-points-badge nav-points-always" id="nav-points-badge" title="نقاطك الحالية">
+        <i class="fas fa-coins"></i>
+        <span id="pointsValue">0</span>
+      </span>
+      <div class="nav-buttons">
+        <a href="#" class="nav-button" id="gradePageLink" data-page="dashboard">
+          <i class="fas fa-home"></i>
+          صفحة الصف
+        </a>
+        <div class="suggestion-container" data-page="suggestion">
+          <button class="suggestion-button" id="suggestionBtn">
+            <i class="fas fa-lightbulb"></i>
+            اقتراحات
+            <i class="fas fa-chevron-down arrow-icon" id="desktopArrow"></i>
+          </button>
+          <div class="suggestion-dropdown" id="suggestionDropdown">
+            <a href="#" id="suggestionLink">
+              <i class="fas fa-hand-point-up"></i>
+              اقتراح الاجتماع
+            </a>
+          </div>
+        </div>
+
+        <button class="logout-btn" id="logoutBtn">
+          <i class="fas fa-sign-out-alt"></i>
+          تسجيل الخروج
+        </button>
+      </div>
+    </div>
+
+    <div class="mobile-header-right">
+      <div class="mobile-menu-btn" id="mobileMenuBtn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+    <div class="mobile-dropdown" id="mobileDropdown">
+      <div class="mobile-buttons">
+        <a href="#" class="nav-button" id="mobileGradeLink" data-page="dashboard">
+          <i class="fas fa-home"></i>
+          صفحة الصف
+        </a>
+
+        <button class="nav-button" id="mobileSuggestionBtn" data-page="suggestion">
+          <i class="fas fa-lightbulb"></i>
+          اقتراحات
+          <i class="fas fa-chevron-down arrow-icon" id="mobileArrow"></i>
+        </button>
+
+        <div class="mobile-suggestion-menu" id="mobileSuggestionMenu">
+          <a href="#" id="mobileSuggestionLink">
+            <i class="fas fa-hand-point-up"></i>
+            اقتراح الاجتماع
+          </a>
+        </div>
+        <button class="nav-button logout-btn-mobile-dropdown" id="logoutBtnMobile">
+          <i class="fas fa-sign-out-alt"></i>
+          تسجيل الخروج
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="gift-shop-container">
+    <div class="gift-shop-sections-wrapper">
+      <div class="section-tabs">
+        <button type="button" class="section-tab-btn active" data-tab="shop" aria-pressed="true">
+          <i class="fas fa-store"></i>
+          <span>المتجر</span>
+        </button>
+        <button type="button" class="section-tab-btn" data-tab="purchases" aria-pressed="false">
+          <i class="fas fa-history"></i>
+          <span>مشترياتي السابقة</span>
+        </button>
+      </div>
+      <section class="gift-shop-section shop-section" id="shop-section">
+        <div class="section-badge section-badge-shop">
+          <i class="fas fa-store"></i>
+          <span>المتجر</span>
+        </div>
+        <div id="items-list" class="gift-shop-grid">
+          <div class="loading-state">
+            <span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+            <p>جاري التحميل...</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="gift-shop-section purchases-section hidden" id="purchases-section">
+        <div class="section-badge section-badge-purchases">
+          <i class="fas fa-box-open"></i>
+          <span>مشترياتي السابقة</span>
+        </div>
+        <div id="my-purchases-list" class="gift-shop-grid">
+          <div class="empty-state" id="history-placeholder">
+            <i class="fas fa-history"></i>
+            <h3>مشترياتي السابقة</h3>
+            <p>انقر على تبويب "مشترياتي السابقة" لتحميل الطلبات</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    let currentUser = null;
+    let userPoints = 0;
+    let userPurchaseCounts = {};
+
+    var _historyLoaded = false;
+    (function initSectionTabs() {
+      const tabBtns = document.querySelectorAll(".section-tab-btn");
+      const shopSection = document.getElementById("shop-section");
+      const purchasesSection = document.getElementById("purchases-section");
+      if (!tabBtns.length || !shopSection || !purchasesSection) return;
+      tabBtns.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          const tab = this.getAttribute("data-tab");
+          tabBtns.forEach(function (b) {
+            b.classList.toggle("active", b.getAttribute("data-tab") === tab);
+            b.setAttribute("aria-pressed", b.getAttribute("data-tab") === tab ? "true" : "false");
+          });
+          shopSection.classList.toggle("hidden", tab !== "shop");
+          purchasesSection.classList.toggle("hidden", tab !== "purchases");
+          if (tab === "purchases" && !_historyLoaded) {
+            _historyLoaded = true;
+            loadMyPurchases();
+          }
+        });
+      });
+    })();
+
+    async function loadUserInfo() {
+      try {
+        const response = await fetch("/api/user-info");
+        const data = await response.json();
+        if (!data.isAuthenticated) {
+          window.location.href = "/login";
+          return;
+        }
+        currentUser = data;
+      } catch (error) {
+        console.error("Error fetching user info:", error);
+      }
+    }
+
+    async function loadPoints() {
+      try {
+        const response = await fetch("/api/gift-shop/my-points");
+        const data = await response.json();
+        userPoints = data.points || 0;
+        const navPoints = document.getElementById("pointsValue");
+        if (navPoints) navPoints.textContent = userPoints;
+      } catch (error) {
+        console.error("Error loading points:", error);
+      }
+    }
+
+    async function loadMyPurchases() {
+      const list = document.getElementById("my-purchases-list");
+      try {
+        list.innerHTML =
+          '<div class="loading-state"><span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span><p>جاري التحميل...</p></div>';
+
+        const response = await fetch("/api/gift-shop/my-purchases");
+        const data = await response.json();
+
+        userPurchaseCounts = {};
+
+        if (!data.purchases || data.purchases.length === 0) {
+          list.innerHTML =
+            '<div class="empty-state"><i class="fas fa-history"></i><h3>لا توجد طلبات</h3><p>لم تقم بشراء أي هدايا بعد</p></div>';
+          return;
+        }
+
+        list.innerHTML = data.purchases
+          .map((purchase) => {
+            const status = purchase.status || "pending";
+            const statusClass =
+              purchase.receivedConfirmed
+                ? "status-received"
+                : status === "accepted"
+                  ? "status-accepted"
+                  : status === "declined"
+                    ? "status-declined"
+                    : "status-pending";
+            const statusText =
+              purchase.receivedConfirmed
+                ? "✅ تم الاستلام"
+                : status === "accepted"
+                  ? "✅ تم القبول"
+                  : status === "declined"
+                    ? "❌ تم الرفض"
+                    : "⏳ قيد المراجعة";
+
+            const key = purchase.itemId?._id || purchase.itemId;
+            if (key) {
+              if (!userPurchaseCounts[key]) userPurchaseCounts[key] = 0;
+              if (status === "pending" || status === "accepted") {
+                userPurchaseCounts[key] += 1;
+              }
+            }
+
+            const purchasedAt = purchase.purchasedAt
+              ? new Date(purchase.purchasedAt).toLocaleString("ar-EG")
+              : "";
+
+            const purchaseImg = purchase.itemId?.image
+              ? `<div class="gift-item-image"><img src="${(purchase.itemId.image || "").replace(/"/g, "&quot;")}" alt="${(purchase.itemName || "").replace(/"/g, "&quot;")}" loading="lazy" onerror="this.style.display='none';var n=this.nextElementSibling;if(n)n.classList.add('show');"><div class="no-image"><i class="fas fa-gift"></i></div></div>`
+              : `<div class="gift-item-image"><div class="no-image show"><i class="fas fa-gift"></i></div></div>`;
+            return `
+                        <div class="gift-item">
+                            ${purchaseImg}
+                            <div class="gift-item-content">
+                            <h3>${(purchase.itemName || "").replace(/</g, "&lt;")}</h3>
+                            <p>${(purchase.itemId?.description || "").replace(/</g, "&lt;")}</p>
+                            <div class="cost">${purchase.cost} نقطة</div>
+                            <div class="status-badge ${statusClass}">${statusText}</div>
+                            ${purchasedAt
+                ? `<div class="purchase-meta">${purchasedAt}</div>`
+                : ""
+              }
+                            ${purchase.status === "declined" &&
+                purchase.declineReason
+                ? `<div class="decline-reason">السبب: ${purchase.declineReason.replace(/</g, "&lt;")}</div>`
+                : ""
+              }
+                            </div>
+                        </div>
+                    `;
+          })
+          .join("");
+      } catch (error) {
+        console.error("Error loading purchases:", error);
+        document.getElementById("my-purchases-list").innerHTML =
+          '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>حدث خطأ</h3><p>تعذر تحميل الطلبات</p></div>';
+      }
+    }
+
+    async function loadItems() {
+      const list = document.getElementById("items-list");
+      try {
+        list.innerHTML =
+          '<div class="loading-state"><span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span><p>جاري التحميل...</p></div>';
+
+        const response = await fetch("/api/gift-shop/items");
+        const items = await response.json();
+
+        if (!items || items.length === 0) {
+          list.innerHTML =
+            '<div class="empty-state"><i class="fas fa-gift"></i><h3>لا توجد هدايا</h3><p>لا توجد هدايا متاحة حالياً</p></div>';
+          return;
+        }
+
+        list.innerHTML = items
+          .filter((item) => item.active)
+          .map((item) => {
+            const purchaseLimit =
+              typeof item.purchaseLimit === "number"
+                ? item.purchaseLimit
+                : -1;
+            const key = item._id;
+            const alreadyPurchased = userPurchaseCounts[key] || 0;
+            const reachedLimit =
+              purchaseLimit !== -1 && alreadyPurchased >= purchaseLimit;
+
+            const disabled =
+              userPoints < item.cost ||
+              (item.stock !== -1 && item.stock <= 0) ||
+              reachedLimit;
+
+            let buttonLabel = "شراء الآن";
+            if (userPoints < item.cost) buttonLabel = "نقاط غير كافية";
+            else if (item.stock !== -1 && item.stock <= 0)
+              buttonLabel = "غير متوفر";
+            else if (reachedLimit) buttonLabel = "وصلت للحد الأقصى";
+
+            const imgHtml = item.image
+              ? `<div class="gift-item-image"><img src="${item.image.replace(/"/g, "&quot;")}" alt="${(item.name || "").replace(/"/g, "&quot;")}" loading="lazy" onerror="this.style.display='none';var n=this.nextElementSibling;if(n)n.classList.add('show');"><div class="no-image"><i class="fas fa-gift"></i></div></div>`
+              : `<div class="gift-item-image"><div class="no-image show"><i class="fas fa-gift"></i></div></div>`;
+            return `
+                        <div class="gift-item">
+                            ${imgHtml}
+                            <div class="gift-item-content">
+                            <h3>${(item.name || "").replace(/</g, "&lt;")}</h3>
+                            <p>${(item.description || "").replace(/</g, "&lt;")}</p>
+                            <div class="gift-meta">
+                                <div class="cost">${item.cost} نقطة</div>
+                                ${item.stock !== -1
+                ? `<span class="stock">المتبقي: ${item.stock}</span>`
+                : ""
+              }
+                            </div>
+                            ${purchaseLimit !== -1
+                ? `<div class="purchase-limit">الحد: ${purchaseLimit} (طلبت: ${alreadyPurchased})</div>`
+                : ""
+              }
+                            <button onclick="purchaseItem('${item._id}', ${item.cost
+              }, '${item.name.replace(/'/g, "\\'")}')" 
+                                    ${disabled ? "disabled" : ""
+              } class="purchase-btn ${disabled ? "disabled" : ""
+              }">
+                                <i class="fas fa-shopping-cart"></i>
+                                ${buttonLabel}
+                            </button>
+                            </div>
+                        </div>
+                    `;
+          })
+          .join("");
+      } catch (error) {
+        console.error("Error loading items:", error);
+        document.getElementById("items-list").innerHTML =
+          '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>حدث خطأ</h3><p>تعذر تحميل الهدايا</p></div>';
+      }
+    }
+
+    async function purchaseItem(itemId, cost, itemName) {
+      const result = await Swal.fire({
+        title: "تأكيد الشراء",
+        text: `هل أنت متأكد أنك تريد شراء "${itemName}" مقابل ${cost} نقطة؟`,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "نعم، شراء",
+        cancelButtonText: "إلغاء",
+        confirmButtonColor: "#ffcc00",
+        cancelButtonColor: "#666",
+      });
+
+      if (result.isConfirmed) {
+        try {
+          const response = await fetch("/api/gift-shop/purchase", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ itemId }),
+          });
+          const result = await response.json();
+
+          if (response.ok) {
+            Swal.fire({
+              title: "تم بنجاح!",
+              text: "تم تقديم طلب الشراء بنجاح! سنراجع هديتك وسنتواصل معك قريباً.",
+              icon: "success",
+              confirmButtonText: "حسنًا",
+              confirmButtonColor: "#ffcc00",
+            });
+            await loadPoints();
+            await loadItems();
+          } else {
+            throw new Error(result.message || "فشل الشراء");
+          }
+        } catch (error) {
+          Swal.fire({
+            title: "خطأ!",
+            text: error.message || "تعذر إتمام الشراء",
+            icon: "error",
+            confirmButtonText: "حسنًا",
+          });
+        }
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      await loadUserInfo();
+      await loadPoints();
+      await loadItems();
+
+      const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+      const mobileDropdown = document.getElementById("mobileDropdown");
+
+      mobileMenuBtn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        const isOpen = mobileDropdown.classList.toggle("active");
+        mobileMenuBtn.classList.toggle("open", isOpen);
+      });
+
+      document.addEventListener("click", function (event) {
+        if (
+          !mobileMenuBtn.contains(event.target) &&
+          !mobileDropdown.contains(event.target)
+        ) {
+          mobileDropdown.classList.remove("active");
+          mobileMenuBtn.classList.remove("open");
+        }
+      });
+
+      const suggestionBtn = document.getElementById("suggestionBtn");
+      const suggestionDropdown =
+        document.getElementById("suggestionDropdown");
+      const mobileSuggestionBtn = document.getElementById(
+        "mobileSuggestionBtn"
+      );
+      const mobileSuggestionMenu = document.getElementById(
+        "mobileSuggestionMenu"
+      );
+      const desktopArrow = document.getElementById("desktopArrow");
+      const mobileArrow = document.getElementById("mobileArrow");
+
+      if (suggestionBtn && suggestionDropdown) {
+        suggestionBtn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          suggestionDropdown.classList.toggle("active");
+          if (desktopArrow) {
+            desktopArrow.classList.toggle("rotated");
+          }
+        });
+      }
+
+      if (mobileSuggestionBtn && mobileSuggestionMenu) {
+        mobileSuggestionBtn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          mobileSuggestionMenu.classList.toggle("active");
+          if (mobileArrow) {
+            mobileArrow.classList.toggle("rotated");
+          }
+        });
+      }
+
+      document.addEventListener("click", function (event) {
+        if (
+          suggestionBtn &&
+          suggestionDropdown &&
+          !suggestionBtn.contains(event.target) &&
+          !suggestionDropdown.contains(event.target)
+        ) {
+          suggestionDropdown.classList.remove("active");
+          if (desktopArrow) {
+            desktopArrow.classList.remove("rotated");
+          }
+        }
+      });
+
+      function applySuggestionLinks(grade) {
+        const suggestionLink = document.getElementById("suggestionLink");
+        const mobileSuggestionLink = document.getElementById(
+          "mobileSuggestionLink"
+        );
+        if (suggestionLink) {
+          suggestionLink.href = `/grades/${grade}/suggestion/ektm3at`;
+        }
+        if (mobileSuggestionLink) {
+          mobileSuggestionLink.href = `/grades/${grade}/suggestion/ektm3at`;
+        }
+      }
+
+      function resolveGradeCandidate(source) {
+        if (!source) {
+          return null;
+        }
+        if (typeof source.grade === "string" && source.grade.trim()) {
+          return source.grade.trim();
+        }
+        if (
+          Array.isArray(source.gradeAccess) &&
+          source.gradeAccess.length > 0
+        ) {
+          const candidate = source.gradeAccess.find(
+            (value) => typeof value === "string" && value.trim()
+          );
+          if (candidate) {
+            return candidate.trim();
+          }
+        }
+        if (typeof source.landing === "string") {
+          const landingMatch = source.landing.match(/\/grades\/([^/]+)/);
+          if (landingMatch) {
+            return landingMatch[1];
+          }
+        }
+        return null;
+      }
+
+      function applyGradeLinks(grade) {
+        const gradePageLink = document.getElementById("gradePageLink");
+        const mobileGradeLink = document.getElementById("mobileGradeLink");
+        if (gradePageLink) {
+          gradePageLink.href = `/grades/${grade}`;
+        }
+        if (mobileGradeLink) {
+          mobileGradeLink.href = `/grades/${grade}`;
+        }
+      }
+
+      async function updateNavigationLinks(initialGrade) {
+        let grade = initialGrade;
+
+        if (!grade) {
+          grade = resolveGradeCandidate(currentUser);
+        }
+
+        if (!grade) {
+          try {
+            const response = await fetch("/api/user-info");
+            if (response.ok) {
+              const data = await response.json();
+              grade = resolveGradeCandidate(data);
+            }
+          } catch (error) {
+            console.error("Error determining grade:", error);
+          }
+        }
+
+        if (!grade) {
+          const gradeMatch =
+            window.location.pathname.match(/\/grades\/([^/]+)/);
+          grade = gradeMatch ? gradeMatch[1] : null;
+        }
+
+        if (!grade) {
+          return;
+        }
+
+        applyGradeLinks(grade);
+        applySuggestionLinks(grade);
+      }
+
+      function hideCurrentPageFromNav(currentPage) {
+        const navButtonsToHide = document.querySelectorAll("[data-page]");
+        navButtonsToHide.forEach((element) => {
+          if (element.getAttribute("data-page") === currentPage) {
+            element.style.display = "none";
+          }
+        });
+      }
+
+      await updateNavigationLinks(currentUser?.grade);
+      hideCurrentPageFromNav("gift-shop");
+
+      async function performLogout() {
+        const result = await Swal.fire({
+          title: "تسجيل الخروج",
+          text: "هل تريد فعلاً تسجيل الخروج من النظام؟",
+          icon: "question",
+          iconColor: "#ffcc00",
+          showCancelButton: true,
+          confirmButtonText: "نعم، تسجيل خروج",
+          cancelButtonText: "إلغاء",
+          confirmButtonColor: "#e74c3c",
+          cancelButtonColor: "#666",
+          background: "#2a1b3c",
+          color: "#fff",
+          backdrop: "rgba(0,0,0,0.8)",
+          allowOutsideClick: false,
+        });
+
+        if (result.isConfirmed) {
+          try {
+            const response = await fetch("/logout", { method: "POST" });
+            if (response.ok) {
+              await Swal.fire({
+                title: "تم تسجيل الخروج",
+                text: "وداعاً! تم تسجيل خروجك بنجاح",
+                icon: "success",
+                iconColor: "#27ae60",
+                background: "#2a1b3c",
+                color: "#fff",
+                backdrop: "rgba(0,0,0,0.8)",
+                showConfirmButton: false,
+                timer: 1500,
+              });
+              setTimeout(() => {
+                window.location.href = "/";
+              }, 500);
+            }
+          } catch (error) {
+            console.error("Logout error:", error);
+            window.location.href = "/";
+          }
+        }
+      }
+
+      const logoutBtn = document.getElementById("logoutBtn");
+      const logoutBtnMobile = document.getElementById("logoutBtnMobile");
+
+      if (logoutBtn) {
+        logoutBtn.addEventListener("click", performLogout);
+      }
+      if (logoutBtnMobile) {
+        logoutBtnMobile.addEventListener("click", performLogout);
+      }
+    });
+
+  </script>
+
+  <script src="/scripts/notifications.js" defer></script>
+
+  <footer class="site-footer">
+    <p class="footer-copy">&copy; 2026 كاتدرائية السمائيين. جميع الحقوق محفوظة.</p>
+  </footer>
+</body>
+
+</html>

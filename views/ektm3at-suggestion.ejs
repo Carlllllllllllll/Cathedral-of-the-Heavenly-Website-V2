@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="كاتدرائية السمائيين – «اِفْرَحُوا فِي الرَّبِّ كُلَّ حِينٍ» (فيلبي ٤: ٤)" />
+  <meta name="keywords" content="كاتدرائية السمائيين – «اِفْرَحُوا فِي الرَّبِّ كُلَّ حِينٍ» (فيلبي ٤: ٤)" />
+  <meta name="author" content="كاتدرائية السمائيين" />
+  <meta name="theme-color" content="#402958" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta property="og:title" content="اقتراحات الاجتماع | <%= gradeLabel.short || 'الصف' %>" />
+  <meta property="og:description" content="كاتدرائية السمائيين – «اِفْرَحُوا فِي الرَّبِّ كُلَّ حِينٍ» (فيلبي ٤: ٤)" />
+  <meta property="og:image" content="/UI/icon.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="ar_AR" />
+  <title>اقتراحات الاجتماع | <%= gradeLabel.short || 'الصف' %>
+  </title>
+  <link rel="icon" href="/UI/icon.png" type="image/png" sizes="16x16" />
+  <link rel="apple-touch-icon" href="/UI/icon.png" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
+  <style>
+    :root {
+      --bg: radial-gradient(circle at top right, #402958, #2a1b3c 60%);
+      --panel: rgba(64, 41, 88, 0.9);
+      --text: #f2f4ff;
+      --muted: #d1c4e9;
+      --accent: #ffcc00;
+      --accent-soft: rgba(255, 204, 0, 0.12);
+      --border: rgba(255, 255, 255, 0.15);
+      --shadow: 0 25px 45px rgba(15, 20, 40, 0.12);
+      --radius: 24px;
+      --success: #27ae60;
+      --warning: #f39c12;
+      --error: #e74c3c;
+      --info: #3498db;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Cairo", sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding-top: 70px;
+    }
+
+    .notification-container {
+      position: fixed;
+      top: 90px;
+      right: 20px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 380px;
+      width: 100%;
+    }
+
+    .notification {
+      padding: 16px 18px;
+      border-radius: 16px;
+      backdrop-filter: blur(25px);
+      border: 1px solid;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      animation: slideInRight 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform: translateX(0);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .notification::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg,
+          rgba(255, 255, 255, 0.08),
+          rgba(255, 255, 255, 0.02));
+      z-index: -1;
+    }
+
+    .notification.hiding {
+      animation: slideOutRight 0.4s ease forwards;
+    }
+
+    .notification.success {
+      background: rgba(39, 174, 96, 0.18);
+      border-color: rgba(39, 174, 96, 0.35);
+      color: #2ecc71;
+    }
+
+    .notification.warning {
+      background: rgba(243, 156, 18, 0.18);
+      border-color: rgba(243, 156, 18, 0.35);
+      color: #f1c40f;
+    }
+
+    .notification.error {
+      background: rgba(231, 76, 60, 0.18);
+      border-color: rgba(231, 76, 60, 0.35);
+      color: #ff7b7b;
+    }
+
+    .notification.info {
+      background: rgba(52, 152, 219, 0.18);
+      border-color: rgba(52, 152, 219, 0.35);
+      color: #5dade2;
+    }
+
+    .notification-icon {
+      font-size: 22px;
+      flex-shrink: 0;
+      margin-top: 2px;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    }
+
+    .notification-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .notification-title {
+      font-weight: 800;
+      margin-bottom: 6px;
+      font-size: 1rem;
+      letter-spacing: 0.3px;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .notification-message {
+      font-size: 0.9rem;
+      opacity: 0.95;
+      line-height: 1.5;
+      word-wrap: break-word;
+    }
+
+    .notification-close {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: inherit;
+      font-size: 12px;
+      cursor: pointer;
+      opacity: 0.8;
+      transition: all 0.2s;
+      padding: 0;
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .notification-close:hover {
+      opacity: 1;
+      background: rgba(255, 255, 255, 0.2);
+      transform: rotate(90deg);
+    }
+
+    .notification-progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 0 0 16px 16px;
+      width: 100%;
+      transform-origin: left;
+      animation: progressShrink linear forwards;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideOutRight {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+
+      to {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+    }
+
+    @keyframes progressShrink {
+      from {
+        width: 100%;
+      }
+
+      to {
+        width: 0%;
+      }
+    }
+
+    .shell {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+
+    header.page {
+      background: var(--panel);
+      padding: 24px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      justify-content: space-between;
+    }
+
+    .pill {
+      background: var(--accent-soft);
+      color: var(--accent);
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 204, 0, 0.25);
+      font-weight: 700;
+      width: fit-content;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 180px;
+      padding: 16px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(0, 0, 0, 0.2);
+      color: var(--text);
+      resize: vertical;
+      font-size: 1rem;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(255, 204, 0, 0.15);
+    }
+
+    .hint {
+      color: var(--muted);
+      margin: 10px 0 20px;
+    }
+
+    .cta {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent), #ffb300);
+      color: #2a1b3c;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 30px rgba(255, 204, 0, 0.3);
+    }
+
+    .cta[disabled] {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .notice {
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      border: 1px solid rgba(255, 204, 0, 0.25);
+    }
+
+    .main-nav {
+      background: rgba(64, 41, 88, 0.95);
+      backdrop-filter: blur(20px);
+      padding: 0 30px;
+      height: 70px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      box-shadow: var(--shadow);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-brand img {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      border: 2px solid var(--accent);
+      padding: 2px;
+      background: var(--accent-soft);
+    }
+
+    .brand-text h2 {
+      color: var(--accent);
+      font-size: 1.1rem;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .brand-text p {
+      color: var(--muted);
+      font-size: 0.7rem;
+      line-height: 1.2;
+    }
+
+    .nav-center {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      height: 100%;
+    }
+
+    .points-badge {
+      background: linear-gradient(135deg,
+          rgba(255, 204, 0, 0.15),
+          rgba(255, 204, 0, 0.08));
+      border: 1px solid rgba(255, 204, 0, 0.3);
+      border-radius: 16px;
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.85rem;
+      box-shadow: 0 4px 12px rgba(255, 204, 0, 0.1);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .points-badge:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(255, 204, 0, 0.2);
+    }
+
+    .points-badge-static {
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .nav-buttons {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 100%;
+    }
+
+    .nav-button {
+      padding: 6px 12px;
+      border-radius: 14px;
+      text-decoration: none;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+      font-size: 0.85rem;
+      height: 36px;
+      white-space: nowrap;
+      background: var(--accent-soft);
+      color: var(--accent);
+      border: 1px solid rgba(255, 204, 0, 0.3);
+    }
+
+    .nav-button:hover {
+      background: rgba(255, 204, 0, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .suggestion-container {
+      position: relative;
+      height: 100%;
+      display: flex;
+      align-items: center;
+    }
+
+    .suggestion-button {
+      padding: 6px 12px;
+      border-radius: 14px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      border: 1px solid rgba(255, 204, 0, 0.3);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.85rem;
+      height: 36px;
+    }
+
+    .suggestion-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255, 204, 0, 0.2);
+    }
+
+    .suggestion-dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: rgba(64, 41, 88, 0.98);
+      backdrop-filter: blur(20px);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      min-width: 180px;
+      display: none;
+      z-index: 1001;
+      margin-top: 5px;
+    }
+
+    .suggestion-dropdown.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .suggestion-dropdown a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      color: var(--text);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.85rem;
+      transition: all 0.3s ease;
+    }
+
+    .suggestion-dropdown a:last-child {
+      border-bottom: none;
+    }
+
+    .suggestion-dropdown a:hover {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .logout-btn {
+      background: linear-gradient(135deg,
+          rgba(231, 76, 60, 0.15),
+          rgba(231, 76, 60, 0.08));
+      color: #e74c3c;
+      border: 1px solid rgba(231, 76, 60, 0.3);
+      padding: 6px 12px;
+      border-radius: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.85rem;
+      height: 36px;
+      white-space: nowrap;
+    }
+
+    .logout-btn:hover {
+      background: linear-gradient(135deg,
+          rgba(231, 76, 60, 0.25),
+          rgba(231, 76, 60, 0.15));
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(231, 76, 60, 0.2);
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: var(--accent-soft);
+      border: 1px solid var(--border);
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      position: relative;
+      z-index: 1002;
+    }
+
+    .mobile-menu-btn span {
+      width: 18px;
+      height: 2px;
+      background: var(--accent);
+      border-radius: 2px;
+      display: block;
+      transition: transform 0.3s ease, opacity 0.2s ease;
+      transform-origin: center;
+    }
+
+    .mobile-menu-btn.active span:nth-child(1) {
+      transform: translateY(6px) rotate(45deg);
+    }
+
+    .mobile-menu-btn.active span:nth-child(2) {
+      opacity: 0;
+      transform: translateX(-8px);
+    }
+
+    .mobile-menu-btn.active span:nth-child(3) {
+      transform: translateY(-6px) rotate(-45deg);
+    }
+
+    .mobile-dropdown {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      left: 0;
+      background: rgba(64, 41, 88, 0.98);
+      backdrop-filter: blur(20px);
+      padding: 10px 15px;
+      border-bottom: 1px solid var(--border);
+      border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      border-bottom-left-radius: 16px;
+      border-bottom-right-radius: 16px;
+      box-shadow: var(--shadow);
+      z-index: 1001;
+    }
+
+    .mobile-dropdown.active {
+      display: block;
+      animation: slideDown 0.3s ease;
+    }
+
+    .mobile-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .logout-btn-mobile-dropdown {
+      background: rgba(231, 76, 60, 0.15) !important;
+      color: #e74c3c !important;
+      border: 1px solid rgba(231, 76, 60, 0.3) !important;
+      width: 100%;
+      margin-top: 5px;
+    }
+
+    .mobile-header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .mobile-logout-btn {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+    }
+
+    .mobile-logout-btn:hover {
+      background: #c0392b;
+      transform: scale(1.1);
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideDown {
+      from {
+        transform: translateY(-20px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: 992px) {
+      .main-nav {
+        padding: 0 20px;
+        height: 65px;
+      }
+
+      .nav-buttons {
+        display: none;
+      }
+
+      .nav-center {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .nav-points-always {
+        display: flex !important;
+      }
+
+      .suggestion-container {
+        display: none;
+      }
+
+      .mobile-menu-btn {
+        display: flex;
+      }
+
+      .mobile-header-right {
+        gap: 8px;
+      }
+
+      body {
+        padding-top: 65px;
+      }
+
+      .notification-container {
+        top: 75px;
+        right: 15px;
+        max-width: calc(100% - 30px);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .main-nav {
+        height: 60px;
+      }
+
+      .mobile-menu-btn {
+        width: 34px;
+        height: 34px;
+      }
+
+      .mobile-menu-btn span {
+        width: 14px;
+      }
+
+      .mobile-header-right {
+        gap: 8px;
+      }
+
+      body {
+        padding-top: 60px;
+      }
+
+      .notification-container {
+        top: 70px;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .mobile-dropdown {
+        padding: 8px 12px;
+      }
+
+      .mobile-buttons {
+        gap: 6px;
+      }
+
+      .mobile-menu-btn {
+        width: 32px;
+        height: 32px;
+      }
+
+      .main-nav {
+        padding: 0 15px;
+        height: 60px;
+      }
+
+      .mobile-header-right {
+        gap: 6px;
+      }
+
+      .shell {
+        padding: 30px 15px 60px;
+      }
+
+      .notification {
+        padding: 14px 16px;
+        gap: 12px;
+      }
+
+      .notification-title {
+        font-size: 0.95rem;
+      }
+
+      .notification-message {
+        font-size: 0.85rem;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .main-nav {
+        padding: 0 12px;
+      }
+
+      .brand-text h2 {
+        font-size: 0.85rem;
+      }
+
+      .brand-text p {
+        font-size: 0.65rem;
+      }
+
+      .mobile-menu-btn {
+        width: 30px;
+        height: 30px;
+      }
+
+      .mobile-header-right {
+        gap: 4px;
+      }
+    }
+
+    footer {
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="notification-container" id="notificationContainer"></div>
+
+  <nav class="main-nav">
+    <div class="nav-brand">
+      <div class="brand-text">
+        <h2>كاتدرائية السمائيين</h2>
+        <p>
+          <%= gradeLabel.short || 'نظام الإدارة' %>
+        </p>
+      </div>
+    </div>
+
+    <div class="nav-center">
+      <span class="points-badge points-badge-static nav-points-always" title="نقاطك">
+        <i class="fas fa-coins"></i>
+        <span id="pointsValue">0</span>
+      </span>
+      <div class="nav-buttons">
+        <a href="/grades/<%= gradeSlug %>" class="nav-button" data-page="dashboard">
+          <i class="fas fa-home"></i>
+          صفحة الصف
+        </a>
+        <a href="/gift-shop" class="nav-button" data-page="gift-shop">
+          <i class="fas fa-gift"></i>
+          متجر الهدايا
+        </a>
+
+        <button class="logout-btn" id="logoutBtn">
+          <i class="fas fa-sign-out-alt"></i>
+          تسجيل الخروج
+        </button>
+      </div>
+    </div>
+
+    <div class="mobile-header-right">
+      <div class="mobile-menu-btn" id="mobileMenuBtn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+    <div class="mobile-dropdown" id="mobileDropdown">
+      <div class="mobile-buttons">
+        <a href="/grades/<%= gradeSlug %>" class="nav-button" data-page="dashboard">
+          <i class="fas fa-home"></i>
+          صفحة الصف
+        </a>
+
+        <a href="/gift-shop" class="nav-button">
+          <i class="fas fa-gift"></i>
+          متجر الهدايا
+        </a>
+
+        <button class="nav-button logout-btn-mobile-dropdown" id="logoutBtnMobile">
+          <i class="fas fa-sign-out-alt"></i>
+          تسجيل الخروج
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="shell">
+    <header class="page">
+      <div>
+        <p class="pill">اقتراح أسبوعي</p>
+        <h1>شارك اقتراحك للاجتماع القادم</h1>
+        <p class="hint">يمكنك إرسال اقتراح واحد كل أسبوع.</p>
+      </div>
+      <span class="pill">
+        <%= gradeLabel.short || gradeSlug %>
+      </span>
+    </header>
+
+    <section class="card">
+      <form id="suggestionForm">
+        <label for="suggestion">اكتب اقتراحك:</label>
+        <textarea id="suggestion" name="suggestion"
+          placeholder="شارك الفكرة أو الموضوع الذي تريد مناقشته في الاجتماع القادم..."></textarea>
+        <button type="submit" class="cta" id="submitSuggestion">
+          <i class="fas fa-paper-plane"></i>
+          إرسال الاقتراح
+        </button>
+      </form>
+    </section>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 كاتدرائية السمائيين. جميع الحقوق محفوظة.</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js" defer></script>
+  <script>
+    function showNotification(type, title, message, duration = 5000) {
+      const container = document.getElementById("notificationContainer");
+      const notification = document.createElement("div");
+      notification.className = `notification ${type}`;
+
+      const icons = {
+        success: "fas fa-check-circle",
+        warning: "fas fa-exclamation-triangle",
+        error: "fas fa-times-circle",
+        info: "fas fa-info-circle",
+      };
+
+      notification.innerHTML = `
+          <i class="notification-icon ${icons[type] || icons.info}"></i>
+          <div class="notification-content">
+            <div class="notification-title">${title}</div>
+            <div class="notification-message">${message}</div>
+          </div>
+          <button class="notification-close">
+            <i class="fas fa-times"></i>
+          </button>
+          <div class="notification-progress" style="animation-duration: ${duration}ms"></div>
+        `;
+
+      container.appendChild(notification);
+
+      const closeBtn = notification.querySelector(".notification-close");
+      closeBtn.onclick = () => {
+        notification.classList.add("hiding");
+        setTimeout(() => notification.remove(), 400);
+      };
+
+      const progressBar = notification.querySelector(
+        ".notification-progress"
+      );
+
+      let timeoutId;
+      if (duration > 0) {
+        timeoutId = setTimeout(() => {
+          notification.classList.add("hiding");
+          setTimeout(() => notification.remove(), 400);
+        }, duration);
+      }
+
+      notification.addEventListener("mouseenter", () => {
+        if (progressBar) progressBar.style.animationPlayState = "paused";
+        if (timeoutId) clearTimeout(timeoutId);
+      });
+
+      notification.addEventListener("mouseleave", () => {
+        if (progressBar) progressBar.style.animationPlayState = "running";
+        if (duration > 0) {
+          timeoutId = setTimeout(() => {
+            notification.classList.add("hiding");
+            setTimeout(() => notification.remove(), 400);
+          }, duration - (progressBar ? parseFloat(getComputedStyle(progressBar).animationDuration) * 1000 - progressBar.getAnimations()[0]?.currentTime * 1000 : duration));
+        }
+      });
+
+      return notification;
+    }
+
+    const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+    const mobileDropdown = document.getElementById("mobileDropdown");
+    const suggestionBtn = document.getElementById("suggestionBtn");
+    const suggestionDropdown = document.getElementById("suggestionDropdown");
+    const mobileSuggestionBtn = document.getElementById(
+      "mobileSuggestionBtn"
+    );
+    const logoutBtn = document.getElementById("logoutBtn");
+    const logoutBtnMobile = document.getElementById("logoutBtnMobile");
+    const desktopArrow = document.getElementById("desktopArrow");
+    const mobileArrow = document.getElementById("mobileArrow");
+
+    mobileMenuBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      const isActive = mobileDropdown.classList.toggle("active");
+      mobileMenuBtn.classList.toggle("active", isActive);
+    });
+
+    if (suggestionBtn) {
+      suggestionBtn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        suggestionDropdown.classList.toggle("active");
+        desktopArrow.classList.toggle("rotated");
+      });
+    }
+
+    if (mobileSuggestionBtn) {
+      mobileSuggestionBtn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        showNotification(
+          "info",
+          "اقتراحات",
+          "اضغط على رابط اقتراح الاجتماع في القائمة"
+        );
+      });
+    }
+
+    function closeAllDropdowns() {
+      suggestionDropdown.classList.remove("active");
+      mobileDropdown.classList.remove("active");
+      desktopArrow.classList.remove("rotated");
+      mobileArrow.classList.remove("rotated");
+      mobileMenuBtn.classList.remove("active");
+    }
+
+    document.addEventListener("click", function (event) {
+      if (
+        !suggestionBtn.contains(event.target) &&
+        !suggestionDropdown.contains(event.target)
+      ) {
+        suggestionDropdown.classList.remove("active");
+        desktopArrow.classList.remove("rotated");
+      }
+
+      if (
+        !mobileMenuBtn.contains(event.target) &&
+        !mobileDropdown.contains(event.target)
+      ) {
+        closeAllDropdowns();
+      }
+    });
+
+    async function performLogout() {
+      const result = await Swal.fire({
+        title: "تسجيل الخروج",
+        text: "هل تريد فعلاً تسجيل الخروج من النظام؟",
+        icon: "question",
+        iconColor: "#ffcc00",
+        showCancelButton: true,
+        confirmButtonText: "نعم، تسجيل خروج",
+        cancelButtonText: "إلغاء",
+        confirmButtonColor: "#e74c3c",
+        cancelButtonColor: "#666",
+        background: "#2a1b3c",
+        color: "#fff",
+        backdrop: "rgba(0,0,0,0.85)",
+        reverseButtons: false,
+        allowOutsideClick: false,
+      });
+
+      if (result.isConfirmed) {
+        try {
+          const response = await fetch("/logout", { method: "POST" });
+          if (response.ok) {
+            showNotification(
+              "success",
+              "تم تسجيل الخروج",
+              "تم إنهاء الجلسة بأمان"
+            );
+            setTimeout(() => {
+              window.location.href = "/";
+            }, 1000);
+          }
+        } catch (error) {
+          console.error("Logout error:", error);
+          window.location.href = "/";
+        }
+      }
+    }
+
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", performLogout);
+    }
+
+    if (logoutBtnMobile) {
+      logoutBtnMobile.addEventListener("click", performLogout);
+    }
+
+    async function loadUserPoints() {
+      try {
+        const response = await fetch("/api/gift-shop/my-points");
+        if (response.ok) {
+          const data = await response.json();
+          const points = data.points || 0;
+          const pointsValueEl = document.getElementById("pointsValue");
+          if (pointsValueEl) {
+            pointsValueEl.textContent = points;
+          }
+        }
+      } catch (error) {
+        console.error("Error loading points:", error);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      loadUserPoints();
+    });
+
+    const form = document.getElementById("suggestionForm");
+    const submitBtn = document.getElementById("submitSuggestion");
+
+    form?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const text = document.getElementById("suggestion").value.trim();
+      if (text.length < 5) {
+        await Swal.fire({
+          title: "نص قصير",
+          text: "اكتب اقتراحاً أوضح قبل الإرسال.",
+          icon: "warning",
+          iconColor: "#f39c12",
+          confirmButtonText: "حسناً",
+          confirmButtonColor: "#ffcc00",
+          background: "#2a1b3c",
+          color: "#fff",
+          backdrop: "rgba(0,0,0,0.8)",
+        });
+        return;
+      }
+
+      submitBtn.disabled = true;
+      const original = submitBtn.innerHTML;
+      submitBtn.innerHTML =
+        '<span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span><span style="margin-right:8px">جاري الإرسال...</span>';
+
+      try {
+        const res = await fetch("/api/suggestions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text, category: "meeting" }),
+        });
+        const result = await res.json();
+        if (res.ok && result.success) {
+          await Swal.fire({
+            title: "تم الإرسال",
+            text: "شكرًا! تم استلام اقتراحك.",
+            icon: "success",
+            iconColor: "#27ae60",
+            confirmButtonText: "حسناً",
+            confirmButtonColor: "#ffcc00",
+            background: "#2a1b3c",
+            color: "#fff",
+            backdrop: "rgba(0,0,0,0.8)",
+          });
+          form.reset();
+          window.location.href = "/grades/<%= gradeSlug %>";
+        } else {
+          await Swal.fire({
+            title: "تنبيه",
+            text: result.message || "تعذر إرسال الاقتراح",
+            icon: "info",
+            iconColor: "#3498db",
+            confirmButtonText: "حسناً",
+            confirmButtonColor: "#ffcc00",
+            background: "#2a1b3c",
+            color: "#fff",
+            backdrop: "rgba(0,0,0,0.8)",
+          });
+        }
+      } catch (err) {
+        await Swal.fire({
+          title: "فشل الإرسال",
+          text: "حدث خطأ في الاتصال. حاول لاحقًا.",
+          icon: "error",
+          iconColor: "#e74c3c",
+          confirmButtonText: "حسناً",
+          confirmButtonColor: "#ffcc00",
+          background: "#2a1b3c",
+          color: "#fff",
+          backdrop: "rgba(0,0,0,0.8)",
+        });
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = original;
+      }
+    });
+
+    function hideCurrentPageFromNav() {
+      const currentPage = "suggestion";
+      const navButtonsToHide = document.querySelectorAll("[data-page]");
+      navButtonsToHide.forEach((element) => {
+        if (element.getAttribute("data-page") === currentPage) {
+          element.style.display = "none";
+        }
+      });
+    }
+    document.addEventListener("DOMContentLoaded", hideCurrentPageFromNav);
+  </script>
+</body>
+
+</html>

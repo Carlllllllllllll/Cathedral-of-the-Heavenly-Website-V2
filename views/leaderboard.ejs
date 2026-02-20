@@ -1,0 +1,2113 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="كاتدرائية السمائيين – «اِفْرَحُوا فِي الرَّبِّ كُلَّ حِينٍ» (فيلبي ٤: ٤)" />
+    <meta name="keywords" content="كاتدرائية السمائيين – «اِفْرَحُوا فِي الرَّبِّ كُلَّ حِينٍ» (فيلبي ٤: ٤)" />
+    <meta name="author" content="كاتدرائية السمائيين" />
+    <meta name="theme-color" content="#402958" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta property="og:title" content="لوحة الترتيب - dasd | كاتدرائية السمائيين" />
+    <meta property="og:description"
+        content="كاتدرائية السمائيين – «اِفْرَحُوا فِي الرَّبِّ كُلَّ حِينٍ» (فيلبي ٤: ٤)" />
+    <meta property="og:image" content="/UI/icon.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ar_AR" />
+    <title>لوحة الترتيب - dasd | كاتدرائية السمائيين</title>
+    <link rel="icon" href="/UI/icon.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="/UI/icon.png" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
+    <link rel="stylesheet" href="<%= vite('src/assets/styles/theme.css', '/design/theme.css') %>" />
+    <link rel="stylesheet" href="<%= vite('src/assets/styles/admin.css', '/design/admin.css') %>" />
+    <style>
+        :root {
+            --bg: radial-gradient(circle at top right, #402958, #2a1b3c 60%);
+            --panel-bg: rgba(64, 41, 88, 0.85);
+            --accent: #ffcc00;
+            --accent-soft: rgba(255, 204, 0, 0.12);
+            --text: #f2f4ff;
+            --muted: #d1c4e9;
+            --border: rgba(255, 255, 255, 0.15);
+            --primary: #402958;
+            --secondary: #2a1b3c;
+            --danger: #e74c3c;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --info: #3498db;
+            --light: #f2f4ff;
+            --dark: #2a1b3c;
+            --sidebar-width: 280px;
+            --transition-speed: 0.3s;
+            --radius-lg: 28px;
+            --shadow: 0 25px 45px rgba(15, 20, 40, 0.12);
+            --shadow-lg: 0 35px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Cairo", sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            direction: rtl;
+        }
+
+        .mobile-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .mobile-toggle span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background: var(--accent);
+            margin: 5px 0;
+            transition: var(--transition-speed);
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--panel-bg);
+            backdrop-filter: blur(20px);
+            padding: 20px;
+            box-shadow: 5px 0 30px rgba(0, 0, 0, 0.3);
+            transition: var(--transition-speed);
+            z-index: 1000;
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent) rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, var(--accent), #ffd700);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(to bottom, #ffd700, var(--accent));
+            box-shadow: 0 0 8px rgba(255, 204, 0, 0.3);
+        }
+
+        .sidebar-header {
+            margin-bottom: 30px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo-container img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent);
+        }
+
+        .logo-text h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 5px;
+        }
+
+        .logo-text p {
+            font-size: 12px;
+            color: #bdc3c7;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .nav-item {
+            margin-bottom: 5px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            color: var(--light);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all var(--transition-speed);
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            white-space: nowrap;
+        }
+
+        .nav-link i {
+            width: 20px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .toggle-icon {
+            margin-right: auto;
+            margin-left: 10px;
+            font-size: 14px;
+            transition: transform var(--transition-speed);
+        }
+
+        .nav-link:hover {
+            background: linear-gradient(90deg, rgba(255, 204, 0, 0.15), rgba(255, 204, 0, 0.05));
+            transform: translateX(-8px);
+            color: var(--accent);
+            border-right: 3px solid var(--accent);
+            border-radius: 12px;
+        }
+
+        .nav-link.active {
+            background: linear-gradient(90deg, var(--accent), #ffd700);
+            color: var(--dark);
+            box-shadow: 0 4px 20px rgba(255, 204, 0, 0.4);
+            border-radius: 12px;
+        }
+
+        .nav-unread-badge {
+            display: inline-flex;
+            margin-inline-start: auto;
+            margin-inline-end: 6px;
+            min-width: 20px;
+            height: 20px;
+            border-radius: 999px;
+            background: var(--danger);
+            color: #fff !important;
+            font-size: 0.75rem;
+            font-weight: 800;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            line-height: 1;
+            padding: 0 4px;
+            visibility: visible;
+        }
+
+        .nav-unread-badge.empty {
+            opacity: 0.5;
+            background: rgba(231, 76, 60, 0.6);
+        }
+
+        .grades-nav-item {
+            position: relative;
+        }
+
+        .grades-submenu-container {
+            overflow: hidden;
+            position: relative;
+        }
+
+        .grades-submenu {
+            max-height: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-right: 20px;
+            border-right: 2px solid var(--accent);
+            margin-top: 5px;
+            padding-right: 8px;
+        }
+
+        .grades-submenu::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .grades-submenu::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .grades-submenu::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
+        }
+
+        .grades-submenu::-webkit-scrollbar-thumb:hover {
+            background: #ffd700;
+        }
+
+        .grades-submenu-container::before,
+        .grades-submenu-container::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 12px;
+            height: 20px;
+            pointer-events: none;
+            z-index: 2;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .grades-submenu-container::before {
+            top: 0;
+            background: linear-gradient(to bottom, rgba(42, 27, 60, 0.95), transparent);
+        }
+
+        .grades-submenu-container::after {
+            bottom: 0;
+            background: linear-gradient(to top, rgba(42, 27, 60, 0.95), transparent);
+        }
+
+        .grades-toggle.active+.grades-submenu-container::before,
+        .grades-toggle.active+.grades-submenu-container::after {
+            opacity: 1;
+        }
+
+        .submenu-header {
+            margin-bottom: 5px;
+            position: relative;
+        }
+
+        .section-submenu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            margin-right: 20px;
+            margin-top: 5px;
+        }
+
+        .submenu-link {
+            padding: 12px 15px;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            margin-bottom: 3px;
+            display: block;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid transparent;
+        }
+
+        .submenu-link:hover {
+            background: rgba(255, 204, 0, 0.15);
+            transform: translateX(-5px);
+            border-color: var(--accent);
+            box-shadow: 0 4px 12px rgba(255, 204, 0, 0.2);
+        }
+
+        .submenu-link::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .submenu-link:hover::before {
+            left: 100%;
+        }
+
+        .submenu-link i {
+            font-size: 12px;
+            color: var(--accent);
+            transition: transform 0.3s ease;
+        }
+
+        .submenu-link:hover i {
+            transform: translateX(-3px);
+        }
+
+        .grades-toggle.active,
+        .section-toggle.active {
+            background: rgba(255, 204, 0, 0.1);
+            color: var(--accent);
+        }
+
+        .sidebar-footer {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            left: 20px;
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(90deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all var(--transition-speed);
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(231, 76, 60, 0.4);
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .top-nav {
+            background: var(--panel-bg);
+            backdrop-filter: blur(4px);
+            padding: 15px 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .top-nav .user-info {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .top-nav .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent);
+        }
+
+        .top-nav .user-details {
+            flex-grow: 0;
+        }
+
+        .top-nav .user-details h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 5px;
+        }
+
+        .top-nav .user-details span {
+            font-size: 13px;
+            color: var(--accent);
+            background: linear-gradient(135deg,
+                    rgba(255, 204, 0, 0.15),
+                    rgba(255, 204, 0, 0.08));
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 204, 0, 0.3);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(255, 204, 0, 0.1);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .top-nav .user-details span:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 204, 0, 0.2);
+            background: linear-gradient(135deg,
+                    rgba(255, 204, 0, 0.2),
+                    rgba(255, 204, 0, 0.12));
+        }
+
+        .logout-btn-mobile {
+            display: none;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+        }
+
+        .logout-btn-mobile:hover {
+            background: #c0392b;
+            transform: scale(1.1);
+        }
+
+        .leaderboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .leaderboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .leaderboard-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .export-menu {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .export-menu-btn {
+            padding: 10px 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            background: linear-gradient(135deg, rgba(255, 204, 0, 0.18), rgba(255, 204, 0, 0.06));
+            color: var(--text);
+            font-weight: 900;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all var(--transition-speed);
+            white-space: nowrap;
+            min-height: 44px;
+            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+        }
+
+        .export-menu-btn:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 204, 0, 0.28);
+            color: var(--accent);
+            box-shadow: 0 14px 26px rgba(0, 0, 0, 0.26);
+        }
+
+        .export-menu-panel {
+            position: absolute;
+            top: calc(100% + 10px);
+            inset-inline-end: 0;
+            min-width: 220px;
+            padding: 10px;
+            border-radius: 16px;
+            background: rgba(64, 41, 88, 0.98);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.38);
+            backdrop-filter: blur(10px);
+            display: none;
+            z-index: 1002;
+        }
+
+        .export-menu-panel.active {
+            display: block;
+            animation: fadeInDown 0.18s ease-out;
+        }
+
+        .export-menu-item {
+            width: 100%;
+            padding: 12px 12px;
+            border-radius: 12px;
+            border: 1px solid transparent;
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text);
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all var(--transition-speed);
+            text-align: start;
+        }
+
+        .export-menu-item:hover {
+            background: rgba(255, 204, 0, 0.14);
+            border-color: rgba(255, 204, 0, 0.26);
+            color: var(--accent);
+            transform: translateY(-1px);
+        }
+
+        .export-menu-sep {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 10px 4px;
+            border-radius: 999px;
+        }
+
+        .export-btn {
+            padding: 10px 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text);
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all var(--transition-speed);
+            white-space: nowrap;
+            min-height: 44px;
+        }
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.28);
+            border-color: rgba(255, 204, 0, 0.22);
+            color: var(--accent);
+        }
+
+        .leaderboard-title {
+            color: var(--accent);
+            font-size: 2rem;
+            text-shadow: 0 2px 10px rgba(255, 204, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--panel-bg);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card.primary {
+            border-color: rgba(255, 204, 0, 0.3);
+        }
+
+        .stat-card.success {
+            border-color: rgba(39, 174, 96, 0.3);
+        }
+
+        .stat-card.info {
+            border-color: rgba(52, 152, 219, 0.3);
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+        }
+
+        .stat-value {
+            color: var(--text);
+            font-size: 2rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .stat-meta {
+            color: var(--muted);
+            font-size: 0.85rem;
+            margin-top: 8px;
+        }
+
+        .stat-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--accent);
+            margin-top: 12px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 20px;
+            margin: 30px 0;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-group label {
+            color: var(--light);
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .filter-select {
+            padding: 10px 15px;
+            background: rgba(64, 41, 88, 0.95) !important;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: var(--light) !important;
+            font-size: 14px;
+            min-width: 200px;
+            cursor: pointer;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(255, 204, 0, 0.2);
+        }
+
+        .refresh-btn {
+            padding: 12px 22px;
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            margin-top: 35px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all var(--transition-speed);
+            white-space: nowrap;
+            min-height: 44px;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.28);
+            border-color: rgba(255, 204, 0, 0.22);
+        }
+
+        .leaderboard-table-wrapper {
+            background: var(--panel-bg);
+            backdrop-filter: blur(4px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-lg);
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            min-width: 800px;
+        }
+
+        .leaderboard-table thead {
+            background: linear-gradient(135deg, rgba(255, 204, 0, 0.2), rgba(255, 204, 0, 0.1));
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .leaderboard-table th {
+            padding: 18px 20px;
+            text-align: right;
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid rgba(255, 204, 0, 0.3);
+        }
+
+        .leaderboard-table th:first-child {
+            text-align: center;
+            width: 80px;
+        }
+
+        .leaderboard-table tbody tr {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .leaderboard-table tbody tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+
+        .leaderboard-table tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .leaderboard-table td {
+            padding: 18px 20px;
+            text-align: right;
+            color: var(--text);
+            font-size: 15px;
+            vertical-align: middle;
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .leaderboard-table th {
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+
+        .leaderboard-table td:nth-child(5),
+        .leaderboard-table th:nth-child(5) {
+            border-right: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .leaderboard-table td:first-child {
+            text-align: center;
+        }
+
+        .rank-cell {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--accent);
+            text-shadow: 0 2px 8px rgba(255, 204, 0, 0.3);
+        }
+
+        .rank-cell.rank-1 {
+            color: #ffd700;
+            font-size: 28px;
+        }
+
+        .rank-cell.rank-2 {
+            color: #c0c0c0;
+            font-size: 26px;
+        }
+
+        .rank-cell.rank-3 {
+            color: #cd7f32;
+            font-size: 26px;
+        }
+
+        .user-name-cell {
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--light);
+        }
+
+        .username-cell {
+            font-size: 13px;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        .grade-cell {
+            display: inline-block;
+            padding: 6px 14px;
+            background: rgba(52, 152, 219, 0.2);
+            color: #3498db;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .score-cell {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .time-cell {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .podium-row {
+            background: linear-gradient(135deg, rgba(255, 204, 0, 0.15), rgba(255, 204, 0, 0.05)) !important;
+        }
+
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 2px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            color: var(--accent);
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 24px;
+            color: var(--light);
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: var(--muted);
+            font-size: 16px;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .loading-state i {
+            font-size: 48px;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+
+        .loading-state p {
+            color: var(--light);
+            font-size: 18px;
+        }
+
+        @media (max-width: 992px) {
+            .mobile-toggle {
+                display: block;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+                overflow-y: auto;
+                overflow-x: hidden;
+                padding: 15px;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 80px 15px 20px;
+            }
+
+            .logout-btn {
+                display: none;
+            }
+
+            .logout-btn-mobile {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .leaderboard-table-wrapper {
+                padding: 15px;
+                overflow-x: auto;
+            }
+
+            .leaderboard-table {
+                min-width: 600px;
+            }
+
+            .leaderboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-select {
+                min-width: auto;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .leaderboard-title {
+                font-size: 1.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+
+            .leaderboard-table th,
+            .leaderboard-table td {
+                padding: 12px 8px;
+                font-size: 13px;
+            }
+
+            .rank-cell {
+                font-size: 20px;
+            }
+
+            .user-name-cell {
+                font-size: 14px;
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, var(--accent), #ffd700);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(to bottom, #ffd700, var(--accent));
+            box-shadow: 0 0 8px rgba(255, 204, 0, 0.3);
+        }
+
+        ::-webkit-scrollbar-corner {
+            background: transparent;
+        }
+
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent) rgba(255, 255, 255, 0.03);
+        }
+
+        .suggestions-nav-item {
+            position: relative;
+        }
+
+        .suggestions-submenu-container {
+            overflow: hidden;
+            position: relative;
+        }
+
+        .suggestions-submenu {
+            max-height: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-right: 20px;
+            border-right: 2px solid var(--accent);
+            margin-top: 5px;
+            padding-right: 8px;
+        }
+
+        .suggestions-submenu::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .suggestions-submenu::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            margin: 5px 0;
+        }
+
+        .suggestions-submenu::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, var(--accent), #ffd700);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .suggestions-submenu::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(to bottom, #ffd700, var(--accent));
+            box-shadow: 0 0 8px rgba(255, 204, 0, 0.3);
+        }
+
+        .suggestions-submenu-container::before,
+        .suggestions-submenu-container::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 12px;
+            height: 20px;
+            pointer-events: none;
+            z-index: 2;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .suggestions-submenu-container::before {
+            top: 0;
+            background: linear-gradient(to bottom, rgba(42, 27, 60, 0.95), transparent);
+        }
+
+        .suggestions-submenu-container::after {
+            bottom: 0;
+            background: linear-gradient(to top, rgba(42, 27, 60, 0.95), transparent);
+        }
+
+        .suggestions-toggle.active+.suggestions-submenu-container::before,
+        .suggestions-toggle.active+.suggestions-submenu-container::after {
+            opacity: 1;
+        }
+
+        .suggestions-submenu .submenu-link {
+            padding: 12px 15px;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            margin-bottom: 3px;
+            display: block;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid transparent;
+        }
+
+        .suggestions-submenu .submenu-link:hover {
+            background: rgba(255, 204, 0, 0.15);
+            transform: translateX(-5px);
+            border-color: var(--accent);
+            box-shadow: 0 4px 12px rgba(255, 204, 0, 0.2);
+        }
+
+        .suggestions-submenu .submenu-link::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .suggestions-submenu .submenu-link:hover::before {
+            left: 100%;
+        }
+
+        .suggestions-submenu .submenu-link i {
+            font-size: 12px;
+            color: var(--accent);
+            transition: transform 0.3s ease;
+        }
+
+        .suggestions-submenu .submenu-link:hover i {
+            transform: translateX(-3px);
+        }
+
+        .sidebar {
+            height: 100vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: thin;
+            scrollbar-color: transparent transparent;
+            transition: scrollbar-color 0.3s ease;
+        }
+
+        .sidebar:hover {
+            scrollbar-color: var(--accent) rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar-content {
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            position: static;
+            padding-top: 20px;
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                overflow-y: auto;
+                overflow-x: hidden;
+            }
+
+            .sidebar.active {
+                overflow-y: auto;
+            }
+        }
+
+        .suggestions-toggle.active+.suggestions-submenu-container .suggestions-submenu {
+            max-height: 200px;
+            animation: fadeInDown 0.3s ease-out;
+        }
+
+        .grades-toggle.active+.grades-submenu-container .grades-submenu {
+            max-height: 250px;
+            animation: fadeInDown 0.3s ease-out;
+        }
+
+        .section-toggle.active+.section-submenu {
+            max-height: 150px;
+            animation: slideIn 0.3s ease-out;
+        }
+    </style>
+</head>
+
+<body class="admin-page-form-panel">
+
+
+    <div class="mobile-toggle" id="mobileToggle">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-container">
+                <img src="/UI/logo.png" alt="اللوغو" />
+                <div class="logo-text">
+                    <h1>كاتدرائية السمائيين</h1>
+                    <p>لوحة الترتيب</p>
+                </div>
+            </div>
+        </div>
+
+        <nav class="nav-menu">
+            <div class="nav-item">
+                <a href="https://kenisa-el-sama2eyeen.ooguy.com" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    الصفحة الرئيسية
+                </a>
+            </div>
+            <div class="nav-item" data-nav-access="hasFormEditorRole">
+                <a href="/admin/form-panel" class="nav-link">
+                    <i class="fas fa-tachometer-alt"></i>
+                    النماذج
+                </a>
+            </div>
+
+            <div class="nav-item grades-nav-item">
+                <div class="nav-link grades-toggle" id="gradesToggle">
+                    <i class="fas fa-graduation-cap"></i>
+                    الصفوف الدراسية
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+                <div class="grades-submenu-container">
+                    <div class="grades-submenu" id="gradesSubmenu">
+                        <div class="submenu-header">
+                            <div class="nav-link section-toggle" data-section="prep">
+                                <i class="fas fa-school"></i>
+                                الإعدادية
+                                <i class="fas fa-chevron-down toggle-icon"></i>
+                            </div>
+                            <div class="section-submenu" data-section="prep">
+                                <a href="/grades/prep1" class="nav-link submenu-link">
+                                    <i class="fas fa-arrow-left"></i>
+                                    أولي إعدادي
+                                </a>
+                                <a href="/grades/prep2" class="nav-link submenu-link">
+                                    <i class="fas fa-arrow-left"></i>
+                                    ثانية إعدادي
+                                </a>
+                                <a href="/grades/prep3" class="nav-link submenu-link">
+                                    <i class="fas fa-arrow-left"></i>
+                                    ثالثة إعدادي
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="submenu-header">
+                            <div class="nav-link section-toggle" data-section="sec">
+                                <i class="fas fa-university"></i>
+                                الثانوية
+                                <i class="fas fa-chevron-down toggle-icon"></i>
+                            </div>
+                            <div class="section-submenu" data-section="sec">
+                                <a href="/grades/sec1" class="nav-link submenu-link">
+                                    <i class="fas fa-arrow-left"></i>
+                                    أولي ثانوي
+                                </a>
+                                <a href="/grades/sec2" class="nav-link submenu-link">
+                                    <i class="fas fa-arrow-left"></i>
+                                    ثانية ثانوي
+                                </a>
+                                <a href="/grades/sec3" class="nav-link submenu-link">
+                                    <i class="fas fa-arrow-left"></i>
+                                    ثالثة ثانوي
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nav-item" data-nav-access="hasUserApproverRole">
+                <a href="/admin/user-approvals" class="nav-link">
+                    <i class="fas fa-user-check"></i>
+                    <span>طلبات التسجيل</span>
+                    <span class="nav-unread-badge" id="nav-badge-login" aria-hidden="true"></span>
+                </a>
+            </div>
+            <div class="nav-item" data-nav-access="hasUserApproverRole">
+                <a href="/admin/user-management" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    إدارة المستخدمين
+                </a>
+            </div>
+            <div class="nav-item" data-nav-access="hasFormEditorRole">
+                <a href="/admin/gift-shop/add" class="nav-link">
+                    <i class="fas fa-plus-circle"></i>
+                    إضافة هدية
+                </a>
+            </div>
+            <div class="nav-item" data-nav-access="hasGiftApproverRole">
+                <a href="/admin/gift-shop/approvals" class="nav-link">
+                    <i class="fas fa-check-circle"></i>
+                    <span>طلبات المراجعة</span>
+                    <span class="nav-unread-badge" id="nav-badge-gift" aria-hidden="true"></span>
+                </a>
+            </div>
+            <div class="nav-item suggestions-nav-item">
+                <div class="nav-link suggestions-toggle" id="suggestionsToggle">
+                    <i class="fas fa-lightbulb"></i>
+                    الاقتراحات
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+                <div class="suggestions-submenu-container">
+                    <div class="suggestions-submenu" id="suggestionsSubmenu">
+                        <a href="/admin/suggestion/ektma3at" class="nav-link submenu-link">
+                            <i class="fas fa-users"></i>
+                            اقتراحات الاجتماعات
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button class="logout-btn" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i>
+                تسجيل الخروج
+            </button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-nav">
+            <div class="user-info">
+                <img src="/UI/pfp.jpg" alt="المستخدم" class="user-avatar" />
+                <div class="user-details">
+                    <h3 id="username-display">جاري التحميل...</h3>
+                    <span id="user-role-pill">مشرف</span>
+                </div>
+                <button class="logout-btn-mobile" id="logoutBtnMobile">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </header>
+
+        <div class="leaderboard-container">
+            <div class="leaderboard-header">
+                <h1 class="leaderboard-title">
+                    <i class="fas fa-trophy"></i>
+                    لوحة الترتيب<% if (typeof form !=='undefined' && form && form.topic) { %> - <%= form.topic %>
+                            <% } %>
+                </h1>
+                <div class="leaderboard-actions">
+                    <div class="export-menu" id="exportMenu">
+                        <button type="button" class="export-menu-btn" id="exportMenuBtn" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-download"></i>
+                            <span data-i18n="export_menu">تنزيل</span>
+                            <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                        </button>
+                        <div class="export-menu-panel" id="exportMenuPanel" role="menu" aria-label="Export">
+                            <button type="button" class="export-menu-item" id="exportExcelBtn" role="menuitem">
+                                <i class="fas fa-file-excel"></i>
+                                <span data-i18n="export_excel">تنزيل Excel</span>
+                            </button>
+                            <button type="button" class="export-menu-item" id="exportPdfBtn" role="menuitem">
+                                <i class="fas fa-file-pdf"></i>
+                                <span data-i18n="export_pdf">تنزيل PDF</span>
+                            </button>
+                            <div class="export-menu-sep" aria-hidden="true"></div>
+                            <button type="button" class="export-menu-item" id="exportPngBtn" role="menuitem">
+                                <i class="fas fa-image"></i>
+                                <span data-i18n="export_png">تنزيل صورة</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <% const sortedByScore=leaderboard && leaderboard.length> 0
+                    ? [...leaderboard].sort((a, b) => {
+                    if (b.score !== a.score) return b.score - a.score;
+                    const timeA = new Date(a.submissionTime || 0);
+                    const timeB = new Date(b.submissionTime || 0);
+                    return timeA - timeB;
+                    })
+                    : [];
+                    const topScore = sortedByScore && sortedByScore.length > 0 ? sortedByScore[0] : null;
+                    const totalQuestions = form && form.questions ? form.questions.length : 1;
+                    const topScoreValue = topScore ? topScore.score : 0;
+                    const topScorePercentage = totalQuestions > 0 ? Math.round((topScoreValue / totalQuestions) * 100) :
+                    0;
+                    const topScoreName = topScore ? topScore.name : 'لا يوجد';
+
+                    const averageScore = leaderboard && leaderboard.length > 0
+                    ? leaderboard.reduce((sum, entry) => sum + entry.score, 0) / leaderboard.length
+                    : 0;
+                    const averagePercentage = totalQuestions > 0 ? Math.round((averageScore / totalQuestions) * 100) :
+                    0;
+                    const participantCount = leaderboard ? leaderboard.length : 0;
+
+                    const lastUpdate = leaderboard && leaderboard.length > 0
+                    ? leaderboard[0].submissionTime
+                    : new Date().toLocaleString("ar-EG", { timeZone: "Africa/Cairo" });
+
+                    const gradeNames = {
+                    prep1: "أولي إعدادي",
+                    prep2: "ثانية إعدادي",
+                    prep3: "ثالثة إعدادي",
+                    sec1: "أولي ثانوي",
+                    sec2: "ثانية ثانوي",
+                    sec3: "ثالثة ثانوي",
+                    teachers: "الخدام",
+                    admins: "الإدارة"
+                    };
+                    %>
+                    <div class="stat-card primary">
+                        <div class="stat-label">أعلى نتيجة</div>
+                        <div class="stat-value">
+                            <%= topScoreValue %> / <%= totalQuestions %>
+                        </div>
+                        <div class="stat-meta">
+                            <%= topScorePercentage %>% من إجمالي الأسئلة
+                        </div>
+                    </div>
+                    <div class="stat-card success">
+                        <div class="stat-label">متوسط الدرجات</div>
+                        <div class="stat-value">
+                            <%= averageScore.toFixed(1) %> / <%= totalQuestions %>
+                        </div>
+                        <div class="stat-meta">
+                            <%= averagePercentage %>% متوسط النجاح
+                        </div>
+                        <div class="stat-chip">
+                            <i class="fas fa-chart-line"></i>
+                            <%= participantCount %> مشارك
+                        </div>
+                    </div>
+                    <div class="stat-card info">
+                        <div class="stat-label">عدد المشاركات</div>
+                        <div class="stat-value">
+                            <%= participantCount %>
+                        </div>
+                        <div class="stat-meta">
+                            آخر تحديث: <%= lastUpdate %>
+                        </div>
+                    </div>
+            </div>
+
+            <div class="filters">
+                <div class="filter-group">
+                    <label for="filter-grade">تصفية حسب الصف:</label>
+                    <select id="filter-grade" class="filter-select">
+                        <option value="all">جميع الصفوف</option>
+                        <option value="prep1">أولي إعدادي</option>
+                        <option value="prep2">ثانية إعدادي</option>
+                        <option value="prep3">ثالثة إعدادي</option>
+                        <option value="sec1">أولي ثانوي</option>
+                        <option value="sec2">ثانية ثانوي</option>
+                        <option value="sec3">ثالثة ثانوي</option>
+                    </select>
+                </div>
+                <button id="refreshBtn" class="refresh-btn">
+                    <i class="fas fa-sync-alt"></i>
+                    تحديث
+                </button>
+            </div>
+
+            <div class="leaderboard-table-wrapper">
+
+                <table class="leaderboard-table" id="leaderboardTable">
+                    <thead>
+                        <tr>
+                            <th>الترتيب</th>
+                            <th>الاسم</th>
+                            <th>اسم المستخدم</th>
+                            <th>الصف</th>
+                            <th>النقاط</th>
+                            <th>وقت الإرسال</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardList">
+                        <% if (typeof leaderboard !=='undefined' && leaderboard && leaderboard.length> 0) { %>
+                            <% leaderboard.forEach((entry, index)=> { %>
+                                <% const rankClass=entry.rank===1 ? 'rank-1' : entry.rank===2 ? 'rank-2' :
+                                    entry.rank===3 ? 'rank-3' : '' ; const isPodium=entry.rank <=3; %>
+                                    <tr class="leaderboard-row <%= isPodium ? 'podium-row' : '' %>"
+                                        data-grade="<%= entry.grade %>" data-date="<%= entry.submissionDate %>"
+                                        data-rank="<%= entry.rank %>" data-username="<%= entry.username %>"
+                                        data-name="<%= entry.name %>" data-score="<%= entry.score %>"
+                                        data-time="<%= entry.submissionTime %>">
+                                        <td>
+                                            <span class="rank-cell <%= rankClass %>">
+                                                <%= entry.rank %>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="user-name-cell">
+                                                <%= entry.name %>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="username-cell">
+                                                <%= entry.username %>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="grade-cell">
+                                                <%= gradeNames[entry.grade] || entry.grade %>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="score-cell">
+                                                <%= entry.score %>/<%= entry.totalQuestions %>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="time-cell">
+                                                <%= entry.submissionTime %>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <% }); %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="6" style="text-align: center; padding: 40px;">
+                                                    <div class="empty-state">
+                                                        <i class="fas fa-trophy"></i>
+                                                        <h3>لا توجد نتائج</h3>
+                                                        <p>لا توجد مشاركات في لوحة الترتيب بعد</p>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <% } %>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js" defer></script>
+    <script src="<%= vite('src/assets/scripts/notifications.js', '/scripts/notifications.js') %>" defer></script>
+    <script>
+        const mobileToggle = document.getElementById("mobileToggle");
+        const sidebar = document.getElementById("sidebar");
+        const mainContent = document.getElementById("mainContent");
+        const logoutBtnMobile = document.getElementById("logoutBtnMobile");
+        const gradesToggle = document.getElementById("gradesToggle");
+        const gradesSubmenu = document.getElementById("gradesSubmenu");
+        const sectionToggles = document.querySelectorAll(".section-toggle");
+        const filterGrade = document.getElementById("filter-grade");
+        const refreshBtn = document.getElementById("refreshBtn");
+        const leaderboardList = document.getElementById("leaderboardList");
+        const leaderboardTable = document.getElementById("leaderboardTable");
+        const exportExcelBtn = document.getElementById("exportExcelBtn");
+        const exportPdfBtn = document.getElementById("exportPdfBtn");
+        const exportPngBtn = document.getElementById("exportPngBtn");
+
+        const I18N = {
+            ar: {
+                export_menu: "تنزيل",
+                export_excel: "تنزيل Excel",
+                export_pdf: "تنزيل PDF",
+                export_png: "تنزيل صورة",
+                export_title: "لوحة الترتيب",
+                export_error: "تعذر إنشاء ملف التحميل",
+            },
+            en: {
+                export_menu: "Download",
+                export_excel: "Download Excel",
+                export_pdf: "Download PDF",
+                export_png: "Download Image",
+                export_title: "Leaderboard",
+                export_error: "Failed to create download",
+            },
+        };
+
+        function getLang() {
+            const raw = (localStorage.getItem("lang") || "ar").toLowerCase();
+            return raw === "en" ? "en" : "ar";
+        }
+
+        function t(key) {
+            const lang = getLang();
+            return (I18N[lang] && I18N[lang][key]) || (I18N.ar && I18N.ar[key]) || key;
+        }
+
+        function applyI18n() {
+            const lang = getLang();
+            document.documentElement.setAttribute("lang", lang);
+            document.documentElement.setAttribute("dir", lang === "ar" ? "rtl" : "ltr");
+            document.querySelectorAll("[data-i18n]").forEach((el) => {
+                const key = el.getAttribute("data-i18n");
+                if (!key) return;
+                el.textContent = t(key);
+            });
+        }
+
+        function buildExportFileBaseName() {
+            const topic = "<%= (typeof form !== 'undefined' && form && form.topic) ? String(form.topic).replace(/\s+/g, ' ').trim() : '' %>";
+            const safeTopic = (topic || "").replace(/[^\w\u0600-\u06FF\s-]/g, "").trim();
+            const base = safeTopic ? `${t("export_title")} - ${safeTopic}` : t("export_title");
+            return base.replace(/\s+/g, " ").trim();
+        }
+
+        function downloadBlob(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+        }
+
+        function getVisibleTableForExport() {
+            const table = document.getElementById("leaderboardTable");
+            if (!table) return null;
+            const clone = table.cloneNode(true);
+            Array.from(clone.querySelectorAll("tbody tr")).forEach((tr) => {
+                const orig = table.querySelector(`tbody tr[data-username="${tr.getAttribute("data-username")}"]`);
+                if (orig && orig.style && orig.style.display === "none") {
+                    tr.remove();
+                }
+            });
+            return clone;
+        }
+
+        async function exportExcel() {
+            const table = getVisibleTableForExport();
+            if (!table || typeof XLSX === "undefined") return;
+            const wb = XLSX.utils.table_to_book(table, { sheet: "Leaderboard" });
+            const fileBase = buildExportFileBaseName();
+            XLSX.writeFile(wb, `${fileBase}.xlsx`);
+        }
+
+        async function exportPdf() {
+            const table = getVisibleTableForExport();
+            if (!table) return;
+            const jspdf = window.jspdf;
+            if (!jspdf || !jspdf.jsPDF) return;
+            const doc = new jspdf.jsPDF({ orientation: "landscape", unit: "pt", format: "a4" });
+
+            const head = [];
+            const body = [];
+
+            const ths = Array.from(table.querySelectorAll("thead th")).map((th) => (th.textContent || "").trim());
+            head.push(ths);
+            Array.from(table.querySelectorAll("tbody tr")).forEach((tr) => {
+                const tds = Array.from(tr.querySelectorAll("td")).map((td) => (td.textContent || "").replace(/\s+/g, " ").trim());
+                if (tds.length) body.push(tds);
+            });
+
+            doc.setFontSize(16);
+            doc.text(buildExportFileBaseName(), 40, 30, { align: "left" });
+
+            doc.autoTable({
+                head,
+                body,
+                startY: 50,
+                styles: { fontSize: 10, cellPadding: 6 },
+                headStyles: { fillColor: [64, 41, 88], textColor: [255, 255, 255] },
+            });
+
+            const fileBase = buildExportFileBaseName();
+            doc.save(`${fileBase}.pdf`);
+        }
+
+        async function exportPng() {
+            const wrapper = document.querySelector(".leaderboard-table-wrapper");
+            if (!wrapper || typeof html2canvas === "undefined") return;
+            const canvas = await html2canvas(wrapper, { backgroundColor: "#2a1b3c", scale: 2 });
+            const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
+            if (!blob) return;
+            const fileBase = buildExportFileBaseName();
+            downloadBlob(blob, `${fileBase}.png`);
+        }
+
+        function bindExportButtons() {
+            if (exportExcelBtn) exportExcelBtn.addEventListener("click", () => exportExcel().catch(() => { }));
+            if (exportPdfBtn) exportPdfBtn.addEventListener("click", () => exportPdf().catch(() => { }));
+            if (exportPngBtn) exportPngBtn.addEventListener("click", () => exportPng().catch(() => { }));
+        }
+
+        const exportMenuBtn = document.getElementById("exportMenuBtn");
+        const exportMenuPanel = document.getElementById("exportMenuPanel");
+
+        function closeExportMenu() {
+            if (!exportMenuPanel || !exportMenuBtn) return;
+            exportMenuPanel.classList.remove("active");
+            exportMenuBtn.setAttribute("aria-expanded", "false");
+        }
+
+        function toggleExportMenu() {
+            if (!exportMenuPanel || !exportMenuBtn) return;
+            const willOpen = !exportMenuPanel.classList.contains("active");
+            exportMenuPanel.classList.toggle("active", willOpen);
+            exportMenuBtn.setAttribute("aria-expanded", willOpen ? "true" : "false");
+        }
+
+        if (exportMenuBtn) {
+            exportMenuBtn.addEventListener("click", function (e) {
+                e.stopPropagation();
+                toggleExportMenu();
+            });
+        }
+
+        [exportExcelBtn, exportPdfBtn, exportPngBtn].forEach(function (btn) {
+            if (!btn) return;
+            btn.addEventListener("click", function () {
+                closeExportMenu();
+            });
+        });
+
+        document.addEventListener("click", function (e) {
+            if (exportMenuPanel && exportMenuBtn) {
+                if (!e.target.closest("#exportMenu")) closeExportMenu();
+            }
+        });
+
+        document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape") closeExportMenu();
+        });
+
+        (function () {
+            function updatePendingBadges() {
+                if (document.visibilityState !== "visible") return;
+                fetch("/api/admin/pending-counts")
+                    .then(function (r) { return r.json(); })
+                    .then(function (d) {
+                        var loginBadge = document.getElementById("nav-badge-login");
+                        var giftBadge = document.getElementById("nav-badge-gift");
+                        var loginCount = d.pendingRegistration || 0;
+                        var giftCount = d.pendingGift || 0;
+                        if (loginBadge) {
+                            loginBadge.textContent = loginCount;
+                            loginBadge.classList.toggle("empty", loginCount === 0);
+                            loginBadge.setAttribute("aria-hidden", loginCount === 0 ? "true" : "false");
+                        }
+                        if (giftBadge) {
+                            giftBadge.textContent = giftCount;
+                            giftBadge.classList.toggle("empty", giftCount === 0);
+                            giftBadge.setAttribute("aria-hidden", giftCount === 0 ? "true" : "false");
+                        }
+                    })
+                    .catch(function () { });
+            }
+            updatePendingBadges();
+            setInterval(updatePendingBadges, 10000);
+            document.addEventListener("visibilitychange", function () {
+                if (document.visibilityState === "visible") updatePendingBadges();
+            });
+        })();
+
+        function toggleSidebar() {
+            if (sidebar && mobileToggle) {
+                sidebar.classList.toggle("active");
+                const spans = mobileToggle.querySelectorAll("span");
+                if (sidebar.classList.contains("active")) {
+                    spans[0].style.transform = "rotate(45deg) translate(5px, 5px)";
+                    spans[1].style.opacity = "0";
+                    spans[2].style.transform = "rotate(-45deg) translate(7px, -6px)";
+                } else {
+                    spans[0].style.transform = "none";
+                    spans[1].style.opacity = "1";
+                    spans[2].style.transform = "none";
+                }
+            }
+        }
+
+        if (mobileToggle) {
+            mobileToggle.addEventListener("click", toggleSidebar);
+        }
+
+        if (gradesToggle) {
+            gradesToggle.addEventListener("click", function (e) {
+                e.stopPropagation();
+                this.classList.toggle("active");
+                const icon = this.querySelector(".toggle-icon");
+                if (this.classList.contains("active")) {
+                    icon.classList.remove("fa-chevron-down");
+                    icon.classList.add("fa-chevron-up");
+                    gradesSubmenu.style.maxHeight = Math.min(gradesSubmenu.scrollHeight, 400) + "px";
+                } else {
+                    icon.classList.remove("fa-chevron-up");
+                    icon.classList.add("fa-chevron-down");
+                    gradesSubmenu.style.maxHeight = "0";
+                    document.querySelectorAll(".section-toggle.active").forEach((toggle) => {
+                        toggle.classList.remove("active");
+                        const subIcon = toggle.querySelector(".toggle-icon");
+                        subIcon.classList.remove("fa-chevron-up");
+                        subIcon.classList.add("fa-chevron-down");
+                        const sectionSub = document.querySelector('.section-submenu[data-section="' + toggle.dataset.section + '"]');
+                        if (sectionSub) sectionSub.style.maxHeight = "0";
+                    });
+                }
+            });
+        }
+
+        sectionToggles.forEach((toggle) => {
+            toggle.addEventListener("click", function (e) {
+                e.stopPropagation();
+                this.classList.toggle("active");
+                const icon = this.querySelector(".toggle-icon");
+                const sectionSub = document.querySelector('.section-submenu[data-section="' + this.dataset.section + '"]');
+
+                if (this.classList.contains("active")) {
+                    icon.classList.remove("fa-chevron-down");
+                    icon.classList.add("fa-chevron-up");
+                    sectionSub.style.maxHeight = sectionSub.scrollHeight + "px";
+                } else {
+                    icon.classList.remove("fa-chevron-up");
+                    icon.classList.add("fa-chevron-down");
+                    sectionSub.style.maxHeight = "0";
+                }
+            });
+        });
+
+        async function performLogout() {
+            const result = await Swal.fire({
+                title: "تسجيل الخروج",
+                text: "هل تريد فعلاً تسجيل الخروج من النظام؟",
+                icon: "question",
+                iconColor: "#ffcc00",
+                showCancelButton: true,
+                confirmButtonText: "نعم، تسجيل خروج",
+                cancelButtonText: "إلغاء",
+                confirmButtonColor: "#e74c3c",
+                cancelButtonColor: "#666",
+                background: "#2a1b3c",
+                color: "#fff",
+                backdrop: "rgba(0,0,0,0.8)",
+                allowOutsideClick: false,
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    const response = await fetch("/logout", { method: "POST" });
+                    if (response.ok) {
+                        await Swal.fire({
+                            title: "تم تسجيل الخروج",
+                            text: "وداعاً! تم تسجيل خروجك بنجاح",
+                            icon: "success",
+                            iconColor: "#27ae60",
+                            background: "#2a1b3c",
+                            color: "#fff",
+                            backdrop: "rgba(0,0,0,0.8)",
+                            showConfirmButton: false,
+                            timer: 1500,
+                        });
+                        setTimeout(() => {
+                            window.location.href = "/login";
+                        }, 500);
+                    }
+                } catch (error) {
+                    console.error("Logout error:", error);
+                    window.location.href = "/login";
+                }
+            }
+        }
+
+        if (logoutBtn) {
+            logoutBtn.addEventListener("click", performLogout);
+        }
+        if (logoutBtnMobile) {
+            logoutBtnMobile.addEventListener("click", performLogout);
+        }
+
+        document.addEventListener("click", function (event) {
+            if (window.innerWidth <= 992 && sidebar && mobileToggle) {
+                if (!sidebar.contains(event.target) && !mobileToggle.contains(event.target)) {
+                    sidebar.classList.remove("active");
+                    const spans = mobileToggle.querySelectorAll("span");
+                    spans[0].style.transform = "none";
+                    spans[1].style.opacity = "1";
+                    spans[2].style.transform = "none";
+                }
+            }
+        });
+
+        const usernameDisplay = document.getElementById("username-display");
+        const userRolePill = document.getElementById("user-role-pill");
+
+        function recalculateRanks() {
+            const rows = Array.from(document.querySelectorAll(".leaderboard-row"));
+            if (!rows.length) return;
+            rows.sort((a, b) => {
+                const scoreA = Number(a.dataset.score || 0);
+                const scoreB = Number(b.dataset.score || 0);
+                if (scoreB !== scoreA) return scoreB - scoreA;
+
+                const timeA = new Date(a.dataset.time || 0);
+                const timeB = new Date(b.dataset.time || 0);
+                return timeA - timeB;
+            });
+
+            if (leaderboardList) {
+                rows.forEach(row => leaderboardList.appendChild(row));
+            }
+
+            let lastScore = null;
+            let currentRank = 0;
+
+            rows.forEach((row, index) => {
+                const score = Number(row.dataset.score || 0);
+                if (lastScore === null) {
+                    currentRank = 1;
+                } else if (score !== lastScore) {
+                    currentRank = index + 1;
+                }
+                lastScore = score;
+
+                row.dataset.rank = String(currentRank);
+
+                const rankCell = row.querySelector(".rank-cell");
+                if (rankCell) {
+                    rankCell.textContent = String(currentRank);
+                    rankCell.classList.remove("rank-1", "rank-2", "rank-3");
+                    if (currentRank === 1) rankCell.classList.add("rank-1");
+                    else if (currentRank === 2) rankCell.classList.add("rank-2");
+                    else if (currentRank === 3) rankCell.classList.add("rank-3");
+                }
+
+                if (currentRank <= 3) {
+                    row.classList.add("podium-row");
+                } else {
+                    row.classList.remove("podium-row");
+                }
+            });
+        }
+
+        async function hydrateUser() {
+            try {
+                const res = await fetch("/api/user-info", { credentials: "include" });
+                const data = await res.json();
+                if (!data.isAuthenticated) {
+                    window.location.href = "/login";
+                    return;
+                }
+                if (usernameDisplay) usernameDisplay.textContent = data.username;
+                if (userRolePill) {
+                    userRolePill.textContent = data.role === "leadadmin" ? "ليد أدمن" : data.role === "admin" ? "أدمن" : data.role;
+                }
+
+                document.querySelectorAll("[data-nav-access]").forEach(function (el) {
+                    var key = el.getAttribute("data-nav-access");
+                    el.style.display = data && key && data[key] ? "" : "none";
+                });
+            } catch (error) {
+                console.error("Failed to hydrate user info:", error);
+                if (typeof showNotification === "function") {
+                    showNotification("error", "تعذر تحميل البيانات", "يرجى إعادة تسجيل الدخول.");
+                }
+            }
+        }
+
+
+        function filterLeaderboard() {
+            if (!filterGrade) return;
+
+            const gradeFilter = filterGrade.value;
+            const rows = document.querySelectorAll(".leaderboard-row");
+
+            let visibleRows = Array.from(rows);
+
+            if (gradeFilter !== "all") {
+                visibleRows = visibleRows.filter(row => {
+                    const grade = row.dataset.grade;
+                    return grade === gradeFilter;
+                });
+            }
+
+            rows.forEach(row => row.style.display = "none");
+
+            if (visibleRows.length === 0) {
+                if (leaderboardTable) {
+                    leaderboardTable.style.display = "none";
+                }
+                const wrapper = document.querySelector(".leaderboard-table-wrapper");
+                if (wrapper) {
+                    const existingEmpty = wrapper.querySelector(".empty-state");
+                    if (!existingEmpty) {
+                        const emptyState = document.createElement("div");
+                        emptyState.className = "empty-state";
+                        emptyState.innerHTML = `
+                            <i class="fas fa-search"></i>
+                            <h3>لا توجد نتائج</h3>
+                            <p>لا توجد نتائج تطابق معايير التصفية المحددة</p>
+                        `;
+                        wrapper.appendChild(emptyState);
+                    }
+                }
+                return;
+            }
+
+            const wrapper = document.querySelector(".leaderboard-table-wrapper");
+            if (wrapper) {
+                const emptyState = wrapper.querySelector(".empty-state");
+                if (emptyState) {
+                    emptyState.remove();
+                }
+            }
+
+            if (leaderboardTable) {
+                leaderboardTable.style.display = "table";
+            }
+            visibleRows.forEach(row => row.style.display = "table-row");
+        }
+
+        if (filterGrade) filterGrade.addEventListener("change", filterLeaderboard);
+        if (refreshBtn) {
+            refreshBtn.addEventListener("click", function () {
+                this.disabled = true;
+                this.innerHTML = '<span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span><span style="margin-right:8px">جاري التحديث...</span>';
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            applyI18n();
+            hydrateUser();
+            recalculateRanks();
+            bindExportButtons();
+        });
+
+        const suggestionsToggle = document.getElementById("suggestionsToggle");
+        const suggestionsSubmenu = document.getElementById("suggestionsSubmenu");
+
+        if (suggestionsToggle) {
+            suggestionsToggle.addEventListener("click", function (e) {
+                e.stopPropagation();
+                this.classList.toggle("active");
+                const icon = this.querySelector(".toggle-icon");
+                if (this.classList.contains("active")) {
+                    icon.classList.remove("fa-chevron-down");
+                    icon.classList.add("fa-chevron-up");
+                    suggestionsSubmenu.style.maxHeight = suggestionsSubmenu.scrollHeight + "px";
+                } else {
+                    icon.classList.remove("fa-chevron-up");
+                    icon.classList.add("fa-chevron-down");
+                    suggestionsSubmenu.style.maxHeight = "0";
+                }
+            });
+        }
+
+        document.addEventListener("click", function (e) {
+            if (!e.target.closest(".suggestions-nav-item")) {
+                const suggestionsToggle = document.getElementById("suggestionsToggle");
+                const suggestionsSubmenu = document.getElementById("suggestionsSubmenu");
+
+                if (suggestionsToggle && suggestionsToggle.classList.contains("active")) {
+                    suggestionsToggle.classList.remove("active");
+                    const icon = suggestionsToggle.querySelector(".toggle-icon");
+                    icon.classList.remove("fa-chevron-up");
+                    icon.classList.add("fa-chevron-down");
+                    suggestionsSubmenu.style.maxHeight = "0";
+                }
+            }
+        });
+    </script>
+    <script>
+        function hideCurrentPageFromNav() {
+            const currentPage = "leaderboard";
+            const navButtonsToHide = document.querySelectorAll("[data-page]");
+            navButtonsToHide.forEach((element) => {
+                if (element.getAttribute("data-page") === currentPage) {
+                    element.style.display = "none";
+                }
+            });
+        }
+        document.addEventListener("DOMContentLoaded", hideCurrentPageFromNav);
+    </script>
+</body>
+
+</html>

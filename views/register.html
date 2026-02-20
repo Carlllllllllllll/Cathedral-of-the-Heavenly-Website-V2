@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="كاتدرائية السمائيين – «اِفْرَحُوا فِي الرَّبِّ كُلَّ حِينٍ» (فيلبي ٤: ٤)" />
+  <meta name="keywords" content="كاتدرائية السمائيين – «اِفْرَحُوا فِي الرَّبِّ كُلَّ حِينٍ» (فيلبي ٤: ٤)" />
+  <meta name="author" content="كاتدرائية السمائيين" />
+  <meta name="theme-color" content="#402958" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta property="og:title" content="إنشاء حساب | كاتدرائية السمائيين" />
+  <meta property="og:description" content="كاتدرائية السمائيين – «اِفْرَحُوا فِي الرَّبِّ كُلَّ حِينٍ» (فيلبي ٤: ٤)" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary" />
+  <title>إنشاء حساب | كاتدرائية السمائيين</title>
+  <link rel="icon" href="/UI/icon.png" type="image/png" sizes="16x16" />
+  <link rel="apple-touch-icon" href="/UI/icon.png" />
+  <link rel="stylesheet" href="/design/theme.css" />
+  <link rel="stylesheet" href="/design/app.css" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    .auth-shell {
+      max-width: 500px;
+    }
+
+    #register-form .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .password-hint {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      display: block;
+    }
+
+    .input-error {
+      font-size: 0.8rem;
+      color: #ff7a8a;
+      min-height: 18px;
+      text-align: right;
+    }
+
+    #error-message {
+      min-height: 18px;
+      color: #ff7a8a;
+      font-size: 0.8rem;
+      text-align: center;
+      margin: 0.5rem 0 0;
+    }
+
+    small {
+      margin-top: 1.5rem;
+    }
+
+    small a {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    #register-form button {
+      margin-top: 0.5rem;
+      width: 100%;
+    }
+
+    /* Fix for grade select dropdown visibility */
+    #grade {
+      color: white;
+      background-color: rgba(42, 27, 60, 0.8);
+    }
+
+    #grade option {
+      background-color: #402958;
+      color: white;
+      padding: 10px;
+    }
+
+    #grade option:hover,
+    #grade option:focus,
+    #grade option:checked {
+      background-color: #5a3a7a;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="nav-container">
+    <div class="nav-bar">
+      <div class="nav-left">
+        <div class="nav-logo-container">
+          <img src="/UI/logo.png" alt="كاتدرائية السمائيين" class="nav-logo" />
+        </div>
+      </div>
+      <div class="nav-right">
+        <a href="/" class="btn-primary" aria-label="العودة إلى الصفحة الرئيسية">
+          <i class="fas fa-home" aria-hidden="true"></i>
+          <span>العودة للرئيسية</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="auth-shell">
+    <section class="login-panel">
+      <h2>إنشاء حساب جديد</h2>
+      <p>املأ البيانات التالية وسيتم مراجعة طلبك من قبل الإدارة</p>
+      <form id="register-form">
+        <div class="form-group">
+          <label for="username">اسم المستخدم</label>
+          <input type="text" id="username" autocomplete="username" required placeholder="مثال: carl123" />
+          <div class="input-error" id="username-error"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="firstName">الاسم الأول</label>
+          <input type="text" id="firstName" required placeholder="مثال: Carl" />
+          <div class="input-error" id="firstName-error"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="secondName">الاسم الثاني</label>
+          <input type="text" id="secondName" required placeholder="مثال: Mounir" />
+          <div class="input-error" id="secondName-error"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">كلمة المرور</label>
+          <input type="password" id="password" autocomplete="new-password" required
+            placeholder="8+ أحرف، حرف كبير، رمز (!@#...)" />
+          <small class="password-hint">8 أحرف على الأقل، حرف كبير واحد، رمز واحد</small>
+          <div class="input-error" id="password-error"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="grade">الصف</label>
+          <select id="grade" required>
+            <option value="">اختر الصف</option>
+            <option value="prep1">أولي إعدادي</option>
+            <option value="prep2">ثانية إعدادي</option>
+            <option value="prep3">ثالثة إعدادي</option>
+            <option value="sec1">أولي ثانوي</option>
+            <option value="sec2">ثانية ثانوي</option>
+            <option value="sec3">ثالثة ثانوي</option>
+          </select>
+          <div class="input-error" id="grade-error"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">البريد الإلكتروني</label>
+          <input type="email" id="email" autocomplete="email" required placeholder="example@email.com" />
+          <div class="input-error" id="email-error"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">رقم الهاتف</label>
+          <input type="tel" id="phone" required placeholder="01012345678" inputmode="numeric" dir="ltr" />
+          <div class="input-error" id="phone-error"></div>
+        </div>
+
+        <button type="submit">إرسال طلب التسجيل</button>
+        <div id="error-message" aria-live="polite"></div>
+      </form>
+      <small>لديك حساب بالفعل؟ <a href="/login">تسجيل الدخول</a></small>
+    </section>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 كاتدرائية السمائيين. جميع الحقوق محفوظة.</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js" defer></script>
+  <script src="/scripts/utils.js"></script>
+  <script>
+    const validPhonePrefixes = ["010", "011", "012", "015"];
+
+    const translateAuthError = (rawMessage) => {
+      const fallback = "حدث خطأ. يرجى المحاولة مرة أخرى.";
+      if (!rawMessage || typeof rawMessage !== "string") return fallback;
+
+      const msg = rawMessage.trim();
+      if (!msg) return fallback;
+
+      const lower = msg.toLowerCase();
+
+      if (lower.includes("too many") || lower.includes("rate") || lower.includes("limit")) {
+        return "تم تنفيذ محاولات كثيرة. يرجى المحاولة لاحقاً.";
+      }
+
+      if (lower.includes("username") && lower.includes("taken")) {
+        return "اسم المستخدم مستخدم بالفعل";
+      }
+
+      if (lower.includes("email") && (lower.includes("used") || lower.includes("exists") || lower.includes("taken"))) {
+        return "البريد الإلكتروني مستخدم بالفعل";
+      }
+
+      if (lower.includes("phone") && (lower.includes("used") || lower.includes("exists") || lower.includes("taken"))) {
+        return "رقم الهاتف مستخدم بالفعل";
+      }
+
+      if (lower.includes("invalid") && lower.includes("data")) {
+        return "البيانات المدخلة غير صحيحة";
+      }
+
+      if (lower.includes("network") || lower.includes("failed to fetch")) {
+        return "تعذر الاتصال بالخادم. تحقق من الإنترنت وحاول مرة أخرى.";
+      }
+
+      return msg;
+    };
+
+    function validateUsername(username) {
+      const usernameRegex = /^[a-zA-Z]+[a-zA-Z0-9]*$/;
+      const errorElement = document.getElementById("username-error");
+
+      if (username.length < 3) {
+        errorElement.textContent =
+          "اسم المستخدم يجب أن يكون 3 أحرف على الأقل";
+        return false;
+      }
+
+      if (!usernameRegex.test(username)) {
+        errorElement.textContent =
+          "يجب أن يبدأ بحرف إنجليزي ولا يحتوي على رموز خاصة";
+        return false;
+      }
+
+      errorElement.textContent = "";
+      return true;
+    }
+
+    function validatePassword(password) {
+      const errorElement = document.getElementById("password-error");
+
+      if (password.length < 8) {
+        errorElement.textContent = "كلمة المرور يجب أن تكون 8 أحرف على الأقل";
+        return false;
+      }
+      if (!/[A-Z]/.test(password)) {
+        errorElement.textContent = "كلمة المرور يجب أن تحتوي على حرف كبير واحد";
+        return false;
+      }
+      if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+        errorElement.textContent = "كلمة المرور يجب أن تحتوي على رمز واحد (!@#$%...)";
+        return false;
+      }
+
+      errorElement.textContent = "";
+      return true;
+    }
+
+    function validateName(name, fieldName) {
+      const errorElement = document.getElementById(fieldName + "-error");
+
+      if (name.length < 2) {
+        errorElement.textContent = "الاسم يجب أن يكون حرفين على الأقل";
+        return false;
+      }
+
+      if (/[0-9]/.test(name)) {
+        errorElement.textContent = "الاسم لا يمكن أن يحتوي على أرقام";
+        return false;
+      }
+
+      errorElement.textContent = "";
+      return true;
+    }
+
+    function validateEmail(email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const errorElement = document.getElementById("email-error");
+
+      if (!emailRegex.test(email)) {
+        errorElement.textContent = "البريد الإلكتروني غير صالح";
+        return false;
+      }
+
+      errorElement.textContent = "";
+      return true;
+    }
+
+    function validatePhone(phone) {
+      const errorElement = document.getElementById("phone-error");
+      const cleanPhone = phone.replace(/\s/g, "").replace(/\D/g, "");
+
+      if (cleanPhone.length < 10 || cleanPhone.length > 12) {
+        errorElement.textContent = "يجب أن يكون 10 أو 11 رقم";
+        return false;
+      }
+
+      const prefix = cleanPhone.substring(0, 3);
+      if (!validPhonePrefixes.includes(prefix)) {
+        errorElement.textContent = "يجب أن يبدأ بـ 010 أو 011 أو 012 أو 015";
+        return false;
+      }
+
+      errorElement.textContent = "";
+      return true;
+    }
+
+    function validateGrade(grade) {
+      const errorElement = document.getElementById("grade-error");
+
+      if (!grade) {
+        errorElement.textContent = "يجب اختيار الصف";
+        return false;
+      }
+
+      errorElement.textContent = "";
+      return true;
+    }
+
+    function formatPhoneInput(input) {
+      let value = input.value.replace(/\D/g, "");
+
+      if (value.length > 0) {
+        if (value.length > 3) {
+          value = value.substring(0, 3) + " " + value.substring(3);
+        }
+        if (value.length > 7) {
+          value = value.substring(0, 7) + " " + value.substring(7);
+        }
+        if (value.length > 13) {
+          value = value.substring(0, 13);
+        }
+      }
+
+      input.value = value;
+      validatePhone(value);
+    }
+
+    function formatUsernameInput(input) {
+      let value = input.value.toLowerCase().replace(/[^a-z0-9]/g, "");
+
+      if (value.length > 0 && /^[0-9]/.test(value)) {
+        value = value.substring(1);
+      }
+
+      input.value = value;
+      validateUsername(value);
+    }
+
+    function clearAllErrors() {
+      const errorElements = document.querySelectorAll(
+        ".input-error, #error-message"
+      );
+      errorElements.forEach((el) => (el.textContent = ""));
+    }
+
+    document
+      .getElementById("username")
+      .addEventListener("input", function (e) {
+        formatUsernameInput(e.target);
+      });
+
+    document
+      .getElementById("password")
+      .addEventListener("input", function (e) {
+        validatePassword(e.target.value);
+      });
+
+    document
+      .getElementById("firstName")
+      .addEventListener("input", function (e) {
+        validateName(e.target.value, "firstName");
+      });
+
+    document
+      .getElementById("secondName")
+      .addEventListener("input", function (e) {
+        validateName(e.target.value, "secondName");
+      });
+
+    document.getElementById("email").addEventListener("input", function (e) {
+      validateEmail(e.target.value);
+    });
+
+    document.getElementById("phone").addEventListener("input", function (e) {
+      formatPhoneInput(e.target);
+    });
+
+    document.getElementById("grade").addEventListener("change", function (e) {
+      validateGrade(e.target.value);
+    });
+
+    document
+      .getElementById("phone")
+      .addEventListener("keydown", function (e) {
+        if (
+          !/[\d\s]/.test(e.key) &&
+          !["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab"].includes(
+            e.key
+          )
+        ) {
+          e.preventDefault();
+        }
+      });
+
+    document
+      .getElementById("register-form")
+      .addEventListener("submit", async (e) => {
+        e.preventDefault();
+        clearAllErrors();
+
+        const submitButton = e.target.querySelector('button[type="submit"]');
+        const errorMessage = document.getElementById("error-message");
+
+        const formData = {
+          username: document
+            .getElementById("username")
+            .value.trim()
+            .toLowerCase()
+            .replace(/[^a-z0-9]/g, ""),
+          password: document.getElementById("password").value,
+          firstName: document.getElementById("firstName").value.trim(),
+          secondName: document.getElementById("secondName").value.trim(),
+          email: document.getElementById("email").value.trim(),
+          phone: document.getElementById("phone").value.replace(/\s/g, ""),
+          grade: document.getElementById("grade").value,
+        };
+
+        if (/^[0-9]/.test(formData.username)) {
+          formData.username = formData.username.substring(1);
+        }
+
+        const validations = [
+          validateUsername(formData.username),
+          validatePassword(formData.password),
+          validateName(formData.firstName, "firstName"),
+          validateName(formData.secondName, "secondName"),
+          validateEmail(formData.email),
+          validatePhone(formData.phone),
+          validateGrade(formData.grade),
+        ];
+
+        if (validations.includes(false)) {
+          errorMessage.textContent = "يرجى تصحيح الأخطاء في النموذج";
+          return;
+        }
+
+        errorMessage.textContent = "";
+        if (typeof setButtonLoading === "function") {
+          setButtonLoading(submitButton, true, "جارٍ الإرسال...");
+        } else {
+          submitButton.disabled = true;
+          submitButton.innerHTML =
+            '<span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span>' +
+            '<span style="margin-right:8px">جارٍ الإرسال...</span>';
+        }
+
+        try {
+          const response = await fetch("/api/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formData),
+          });
+
+          const result = await response.json();
+
+          if (response.ok && result.success) {
+            await Swal.fire({
+              title: "تم بنجاح!",
+              text: result.message,
+              icon: "success",
+              confirmButtonText: "حسنًا",
+              background: "#2a1b3c",
+              color: "#f2f4ff",
+            });
+            window.location.href = "/login";
+          } else {
+            errorMessage.textContent =
+              translateAuthError(result.message) || "حدث خطأ أثناء التسجيل";
+            throw new Error(translateAuthError(result.message) || "حدث خطأ أثناء التسجيل");
+          }
+        } catch (error) {
+          console.error("Registration error:", error);
+          errorMessage.textContent = translateAuthError(error.message);
+        } finally {
+          if (typeof setButtonLoading === "function") {
+            setButtonLoading(submitButton, false);
+          } else {
+            submitButton.disabled = false;
+            submitButton.textContent = "إرسال طلب التسجيل";
+          }
+        }
+      });
+  </script>
+</body>
+
+</html>
