@@ -30,7 +30,7 @@
             --muted: var(--text-muted);
             --light: var(--text);
             --dark: var(--secondary);
-            --sidebar-width: 250px;
+            --sidebar-width: 280px;
             --transition-speed: 0.3s;
             --radius-lg: 28px;
             --shadow: 0 25px 45px rgba(15, 20, 40, 0.12);
@@ -49,6 +49,12 @@
             color: var(--text);
             min-height: 100vh;
             direction: rtl;
+        }
+
+        #user-role-pill.role-badge {
+            font-size: 0.68rem;
+            padding: 3px 8px;
+            line-height: 1.1;
         }
 
         .mobile-toggle {
@@ -1273,7 +1279,7 @@
         <div class="leaderboard-container">
             <div class="leaderboard-header">
                 <h1 class="leaderboard-title">
-                    <i class="fas fa-trophy"></i>
+                    <i class="fas fa-ranking-star"></i>
                     لوحة الترتيب<% if (typeof form !=='undefined' && form && form.topic) { %> - <%= form.topic %>
                             <% } %>
                 </h1>
@@ -1573,37 +1579,60 @@
                 try { await document.fonts.ready; } catch (e) { }
             }
 
-            const captureWidth = Math.max(wrapper.scrollWidth || 0, wrapper.offsetWidth || 0, 1);
-            const captureHeight = Math.max(wrapper.scrollHeight || 0, wrapper.offsetHeight || 0, 1);
+            const table = getVisibleTableForExport();
+            if (!table) return;
 
-            const canvas = await html2canvas(wrapper, {
-                backgroundColor: "#2a1b3c",
-                scale: 3,
-                useCORS: true,
-                foreignObjectRendering: true,
-                width: captureWidth,
-                height: captureHeight,
-                windowWidth: captureWidth,
-                windowHeight: captureHeight,
-                onclone: function (clonedDoc) {
-                    try {
-                        clonedDoc.documentElement.setAttribute("dir", "rtl");
-                        clonedDoc.documentElement.setAttribute("lang", "ar");
-                        const style = clonedDoc.createElement("style");
-                        style.textContent = `
-                            * { font-family: 'Cairo', system-ui, -apple-system, 'Segoe UI', sans-serif !important; }
-                            body { direction: rtl !important; }
-                            table { direction: rtl !important; }
-                        `;
-                        clonedDoc.head.appendChild(style);
-                    } catch (e) { }
-                },
-            });
+            const exportHost = document.createElement("div");
+            exportHost.dir = "rtl";
+            exportHost.lang = "ar";
+            exportHost.style.position = "fixed";
+            exportHost.style.left = "-100000px";
+            exportHost.style.top = "0";
+            exportHost.style.background = "#2a1b3c";
+            exportHost.style.padding = "16px";
+            exportHost.style.overflow = "visible";
+            exportHost.style.width = "max-content";
+            exportHost.style.fontFamily = "Cairo, system-ui, -apple-system, 'Segoe UI', sans-serif";
 
-            const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
-            if (!blob) return;
-            const fileBase = buildExportFileBaseName();
-            downloadBlob(blob, `${fileBase}.png`);
+            const tableClone = table.cloneNode(true);
+            exportHost.appendChild(tableClone);
+            document.body.appendChild(exportHost);
+
+            try {
+                const captureWidth = Math.max(exportHost.scrollWidth || 0, exportHost.offsetWidth || 0, 1);
+                const captureHeight = Math.max(exportHost.scrollHeight || 0, exportHost.offsetHeight || 0, 1);
+
+                const canvas = await html2canvas(exportHost, {
+                    backgroundColor: "#2a1b3c",
+                    scale: 2,
+                    useCORS: true,
+                    width: captureWidth,
+                    height: captureHeight,
+                    windowWidth: captureWidth,
+                    windowHeight: captureHeight,
+                    onclone: function (clonedDoc) {
+                        try {
+                            clonedDoc.documentElement.setAttribute("dir", "rtl");
+                            clonedDoc.documentElement.setAttribute("lang", "ar");
+                            const style = clonedDoc.createElement("style");
+                            style.textContent = `
+                                * { font-family: 'Cairo', system-ui, -apple-system, 'Segoe UI', sans-serif !important; }
+                                body { direction: rtl !important; }
+                                table { direction: rtl !important; }
+                                .leaderboard-table-wrapper { overflow: visible !important; }
+                            `;
+                            clonedDoc.head.appendChild(style);
+                        } catch (e) { }
+                    },
+                });
+
+                const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
+                if (!blob) return;
+                const fileBase = buildExportFileBaseName();
+                downloadBlob(blob, `${fileBase}.png`);
+            } finally {
+                exportHost.remove();
+            }
         }
 
         function bindExportButtons() {
