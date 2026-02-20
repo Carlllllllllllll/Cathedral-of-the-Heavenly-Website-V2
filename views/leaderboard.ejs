@@ -23,13 +23,25 @@
         rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
-    <link rel="stylesheet" href="<%= vite('src/assets/styles/theme.css', '/design/theme.css') %>" />
-    <link rel="stylesheet" href="<%= vite('src/assets/styles/admin.css', '/design/admin.css') %>" />
+    <link rel="stylesheet" href="/design/theme.css" />
+    <link rel="stylesheet" href="/design/admin.css" />
     <style>
         :root {
-            --muted: var(--text-muted);
-            --light: var(--text);
-            --dark: var(--secondary);
+            --bg: radial-gradient(circle at top right, #402958, #2a1b3c 60%);
+            --panel-bg: rgba(64, 41, 88, 0.85);
+            --accent: #ffcc00;
+            --accent-soft: rgba(255, 204, 0, 0.12);
+            --text: #f2f4ff;
+            --muted: #d1c4e9;
+            --border: rgba(255, 255, 255, 0.15);
+            --primary: #402958;
+            --secondary: #2a1b3c;
+            --danger: #e74c3c;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --info: #3498db;
+            --light: #f2f4ff;
+            --dark: #2a1b3c;
             --sidebar-width: 280px;
             --transition-speed: 0.3s;
             --radius-lg: 28px;
@@ -49,12 +61,6 @@
             color: var(--text);
             min-height: 100vh;
             direction: rtl;
-        }
-
-        #user-role-pill.role-badge {
-            font-size: 0.68rem;
-            padding: 3px 8px;
-            line-height: 1.1;
         }
 
         .mobile-toggle {
@@ -82,7 +88,7 @@
             top: 0;
             width: var(--sidebar-width);
             height: 100vh;
-            background: var(--panel-bg);
+            background: rgba(42, 27, 60, 0.95);
             backdrop-filter: blur(20px);
             padding: 20px;
             box-shadow: 5px 0 30px rgba(0, 0, 0, 0.3);
@@ -198,30 +204,6 @@
             color: var(--dark);
             box-shadow: 0 4px 20px rgba(255, 204, 0, 0.4);
             border-radius: 12px;
-        }
-
-        .nav-unread-badge {
-            display: inline-flex;
-            margin-inline-start: auto;
-            margin-inline-end: 6px;
-            min-width: 20px;
-            height: 20px;
-            border-radius: 999px;
-            background: var(--danger);
-            color: #fff !important;
-            font-size: 0.75rem;
-            font-weight: 800;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            line-height: 1;
-            padding: 0 4px;
-            visibility: visible;
-        }
-
-        .nav-unread-badge.empty {
-            opacity: 0.5;
-            background: rgba(231, 76, 60, 0.6);
         }
 
         .grades-nav-item {
@@ -390,54 +372,65 @@
         }
 
         .top-nav {
-            background: var(--card-bg);
-            padding: 14px 20px;
-            border-radius: var(--radius-lg);
+            background: var(--panel-bg);
+            backdrop-filter: blur(4px);
+            padding: 15px 30px;
+            border-radius: 15px;
             margin-bottom: 30px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .top-nav .user-info {
             display: flex;
-            flex-direction: row;
             align-items: center;
-            gap: 12px;
-            max-width: 100%;
-        }
-
-        .top-nav .user-info .logout-btn-mobile {
-            order: 1;
-            margin-right: auto;
+            justify-content: flex-end;
+            gap: 10px;
         }
 
         .top-nav .user-avatar {
             width: 40px;
             height: 40px;
-            min-width: 40px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid var(--accent);
-            order: 3;
         }
 
         .top-nav .user-details {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            order: 2;
-            margin-left: auto;
+            flex-grow: 0;
         }
 
         .top-nav .user-details h3 {
-            font-size: 0.95rem;
+            font-size: 18px;
             font-weight: 700;
-            color: var(--text);
-            margin: 0;
-            max-width: 180px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            color: var(--accent);
+            margin-bottom: 5px;
+        }
+
+        .top-nav .user-details span {
+            font-size: 13px;
+            color: var(--accent);
+            background: linear-gradient(135deg,
+                    rgba(255, 204, 0, 0.15),
+                    rgba(255, 204, 0, 0.08));
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 204, 0, 0.3);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(255, 204, 0, 0.1);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .top-nav .user-details span:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 204, 0, 0.2);
+            background: linear-gradient(135deg,
+                    rgba(255, 204, 0, 0.2),
+                    rgba(255, 204, 0, 0.12));
         }
 
         .logout-btn-mobile {
@@ -470,35 +463,6 @@
             margin-bottom: 30px;
             flex-wrap: wrap;
             gap: 20px;
-        }
-
-        .leaderboard-actions {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .export-btn {
-            padding: 10px 14px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            background: rgba(255, 255, 255, 0.06);
-            color: var(--text);
-            font-weight: 800;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            transition: all var(--transition-speed);
-            white-space: nowrap;
-            min-height: 44px;
-        }
-
-        .export-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.28);
-            border-color: rgba(255, 204, 0, 0.22);
-            color: var(--accent);
         }
 
         .leaderboard-title {
@@ -1123,7 +1087,7 @@
     </style>
 </head>
 
-<body class="admin-page-form-panel">
+<body>
 
 
     <div class="mobile-toggle" id="mobileToggle">
@@ -1144,12 +1108,12 @@
 
         <nav class="nav-menu">
             <div class="nav-item">
-                <a href="https://kenisa-el-sama2eyeen.ooguy.com" class="nav-link">
+                <a href="http://localhost:3000" class="nav-link">
                     <i class="fas fa-home"></i>
                     الصفحة الرئيسية
                 </a>
             </div>
-            <div class="nav-item" data-nav-access="hasFormEditorRole">
+            <div class="nav-item">
                 <a href="/admin/form-panel" class="nav-link">
                     <i class="fas fa-tachometer-alt"></i>
                     النماذج
@@ -1211,30 +1175,28 @@
                 </div>
             </div>
 
-            <div class="nav-item" data-nav-access="hasUserApproverRole">
+            <div class="nav-item">
                 <a href="/admin/user-approvals" class="nav-link">
                     <i class="fas fa-user-check"></i>
-                    <span>طلبات التسجيل</span>
-                    <span class="nav-unread-badge" id="nav-badge-login" aria-hidden="true"></span>
+                    طلبات التسجيل
                 </a>
             </div>
-            <div class="nav-item" data-nav-access="hasUserApproverRole">
+            <div class="nav-item">
                 <a href="/admin/user-management" class="nav-link">
                     <i class="fas fa-users"></i>
                     إدارة المستخدمين
                 </a>
             </div>
-            <div class="nav-item" data-nav-access="hasFormEditorRole">
+            <div class="nav-item">
                 <a href="/admin/gift-shop/add" class="nav-link">
                     <i class="fas fa-plus-circle"></i>
                     إضافة هدية
                 </a>
             </div>
-            <div class="nav-item" data-nav-access="hasGiftApproverRole">
+            <div class="nav-item">
                 <a href="/admin/gift-shop/approvals" class="nav-link">
                     <i class="fas fa-check-circle"></i>
-                    <span>طلبات المراجعة</span>
-                    <span class="nav-unread-badge" id="nav-badge-gift" aria-hidden="true"></span>
+                    طلبات المراجعة
                 </a>
             </div>
             <div class="nav-item suggestions-nav-item">
@@ -1268,7 +1230,7 @@
                 <img src="/UI/pfp.jpg" alt="المستخدم" class="user-avatar" />
                 <div class="user-details">
                     <h3 id="username-display">جاري التحميل...</h3>
-                    <span id="user-role-pill" class="role-badge">مشرف</span>
+                    <span id="user-role-pill">مشرف</span>
                 </div>
                 <button class="logout-btn-mobile" id="logoutBtnMobile">
                     <i class="fas fa-sign-out-alt"></i>
@@ -1279,20 +1241,10 @@
         <div class="leaderboard-container">
             <div class="leaderboard-header">
                 <h1 class="leaderboard-title">
-                    <i class="fas fa-ranking-star"></i>
+                    <i class="fas fa-trophy"></i>
                     لوحة الترتيب<% if (typeof form !=='undefined' && form && form.topic) { %> - <%= form.topic %>
                             <% } %>
                 </h1>
-                <div class="leaderboard-actions">
-                    <button type="button" class="export-btn" id="exportExcelBtn">
-                        <i class="fas fa-file-excel"></i>
-                        <span data-i18n="export_excel">تنزيل Excel</span>
-                    </button>
-                    <button type="button" class="export-btn" id="exportPngBtn">
-                        <i class="fas fa-image"></i>
-                        <span data-i18n="export_png">تنزيل صورة</span>
-                    </button>
-                </div>
             </div>
 
             <div class="stats-grid">
@@ -1459,13 +1411,11 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" defer></script>
-    <script src="<%= vite('src/assets/scripts/notifications.js', '/scripts/notifications.js') %>" defer></script>
+    <script src="/scripts/notifications.js" defer></script>
     <script>
         const mobileToggle = document.getElementById("mobileToggle");
         const sidebar = document.getElementById("sidebar");
-        const mainContent = document.getElementById("mainContent");
+        const logoutBtn = document.getElementById("logoutBtn");
         const logoutBtnMobile = document.getElementById("logoutBtnMobile");
         const gradesToggle = document.getElementById("gradesToggle");
         const gradesSubmenu = document.getElementById("gradesSubmenu");
@@ -1474,207 +1424,6 @@
         const refreshBtn = document.getElementById("refreshBtn");
         const leaderboardList = document.getElementById("leaderboardList");
         const leaderboardTable = document.getElementById("leaderboardTable");
-        const exportExcelBtn = document.getElementById("exportExcelBtn");
-        const exportPngBtn = document.getElementById("exportPngBtn");
-
-        const I18N = {
-            ar: {
-                export_excel: "تنزيل Excel",
-                export_png: "تنزيل صورة",
-                export_title: "لوحة الترتيب",
-                export_error: "تعذر إنشاء ملف التحميل",
-            },
-            en: {
-                export_excel: "Download Excel",
-                export_png: "Download Image",
-                export_title: "Leaderboard",
-                export_error: "Failed to create download",
-            },
-        };
-
-        function getLang() {
-            const raw = (localStorage.getItem("lang") || "ar").toLowerCase();
-            return raw === "en" ? "en" : "ar";
-        }
-
-        function t(key) {
-            const lang = getLang();
-            return (I18N[lang] && I18N[lang][key]) || (I18N.ar && I18N.ar[key]) || key;
-        }
-
-        function applyI18n() {
-            const lang = getLang();
-            document.documentElement.setAttribute("lang", lang);
-            document.documentElement.setAttribute("dir", lang === "ar" ? "rtl" : "ltr");
-            document.querySelectorAll("[data-i18n]").forEach((el) => {
-                const key = el.getAttribute("data-i18n");
-                if (!key) return;
-                el.textContent = t(key);
-            });
-        }
-
-        function buildExportFileBaseName() {
-            const topic = "<%= (typeof form !== 'undefined' && form && form.topic) ? String(form.topic).replace(/\s+/g, ' ').trim() : '' %>";
-            const safeTopic = (topic || "").replace(/[^\w\u0600-\u06FF\s-]/g, "").trim();
-            const base = safeTopic ? `${t("export_title")} - ${safeTopic}` : t("export_title");
-            return base.replace(/\s+/g, " ").trim();
-        }
-
-        function downloadBlob(blob, filename) {
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-            URL.revokeObjectURL(url);
-        }
-
-        function getVisibleTableForExport() {
-            const table = document.getElementById("leaderboardTable");
-            if (!table) return null;
-            const clone = table.cloneNode(true);
-            Array.from(clone.querySelectorAll("tbody tr")).forEach((tr) => {
-                const orig = table.querySelector(`tbody tr[data-username="${tr.getAttribute("data-username")}"]`);
-                if (orig && orig.style && orig.style.display === "none") {
-                    tr.remove();
-                }
-            });
-            return clone;
-        }
-
-        async function exportExcel() {
-            const table = getVisibleTableForExport();
-            if (!table || typeof XLSX === "undefined") return;
-            const wb = XLSX.utils.table_to_book(table, { sheet: "Leaderboard" });
-            const sheetName = wb.SheetNames && wb.SheetNames[0];
-            const ws = sheetName ? wb.Sheets[sheetName] : null;
-            if (ws && ws["!ref"]) {
-                const range = XLSX.utils.decode_range(ws["!ref"]);
-                const colWidths = [];
-                for (let C = range.s.c; C <= range.e.c; C++) {
-                    let maxLen = 10;
-                    for (let R = range.s.r; R <= range.e.r; R++) {
-                        const cellAddress = XLSX.utils.encode_cell({ r: R, c: C });
-                        const cell = ws[cellAddress];
-                        if (!cell) continue;
-                        const v = cell.w || cell.v;
-                        const text = (v === undefined || v === null) ? "" : String(v);
-                        maxLen = Math.max(maxLen, text.length + 2);
-                    }
-                    colWidths.push({ wch: Math.min(60, maxLen) });
-                }
-                ws["!cols"] = colWidths;
-            }
-            const fileBase = buildExportFileBaseName();
-            XLSX.writeFile(wb, `${fileBase}.xlsx`);
-        }
-
-        async function exportPng() {
-            const wrapper = document.querySelector(".leaderboard-table-wrapper");
-            if (!wrapper || typeof html2canvas === "undefined") return;
-
-            if (document.fonts && document.fonts.ready) {
-                try { await document.fonts.ready; } catch (e) { }
-            }
-
-            const table = getVisibleTableForExport();
-            if (!table) return;
-
-            const exportHost = document.createElement("div");
-            exportHost.dir = "rtl";
-            exportHost.lang = "ar";
-            exportHost.style.position = "fixed";
-            exportHost.style.left = "-100000px";
-            exportHost.style.top = "0";
-            exportHost.style.background = "#2a1b3c";
-            exportHost.style.padding = "16px";
-            exportHost.style.overflow = "visible";
-            exportHost.style.width = "max-content";
-            exportHost.style.fontFamily = "Cairo, system-ui, -apple-system, 'Segoe UI', sans-serif";
-
-            const tableClone = table.cloneNode(true);
-            exportHost.appendChild(tableClone);
-            document.body.appendChild(exportHost);
-
-            try {
-                const captureWidth = Math.max(exportHost.scrollWidth || 0, exportHost.offsetWidth || 0, 1);
-                const captureHeight = Math.max(exportHost.scrollHeight || 0, exportHost.offsetHeight || 0, 1);
-
-                const canvas = await html2canvas(exportHost, {
-                    backgroundColor: "#2a1b3c",
-                    scale: 2,
-                    useCORS: true,
-                    width: captureWidth,
-                    height: captureHeight,
-                    windowWidth: captureWidth,
-                    windowHeight: captureHeight,
-                    onclone: function (clonedDoc) {
-                        try {
-                            clonedDoc.documentElement.setAttribute("dir", "rtl");
-                            clonedDoc.documentElement.setAttribute("lang", "ar");
-                            const style = clonedDoc.createElement("style");
-                            style.textContent = `
-                                * { font-family: 'Cairo', system-ui, -apple-system, 'Segoe UI', sans-serif !important; }
-                                body { direction: rtl !important; }
-                                table { direction: rtl !important; }
-                                .leaderboard-table, .leaderboard-table * {
-                                    letter-spacing: normal !important;
-                                    font-kerning: normal !important;
-                                    text-rendering: geometricPrecision !important;
-                                    -webkit-font-smoothing: antialiased !important;
-                                }
-                                .leaderboard-table-wrapper { overflow: visible !important; }
-                            `;
-                            clonedDoc.head.appendChild(style);
-                        } catch (e) { }
-                    },
-                });
-
-                const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
-                if (!blob) return;
-                const fileBase = buildExportFileBaseName();
-                downloadBlob(blob, `${fileBase}.png`);
-            } finally {
-                exportHost.remove();
-            }
-        }
-
-        function bindExportButtons() {
-            if (exportExcelBtn) exportExcelBtn.addEventListener("click", () => exportExcel().catch(() => { }));
-            if (exportPngBtn) exportPngBtn.addEventListener("click", () => exportPng().catch(() => { }));
-        }
-
-        (function () {
-            function updatePendingBadges() {
-                if (document.visibilityState !== "visible") return;
-                fetch("/api/admin/pending-counts")
-                    .then(function (r) { return r.json(); })
-                    .then(function (d) {
-                        var loginBadge = document.getElementById("nav-badge-login");
-                        var giftBadge = document.getElementById("nav-badge-gift");
-                        var loginCount = d.pendingRegistration || 0;
-                        var giftCount = d.pendingGift || 0;
-                        if (loginBadge) {
-                            loginBadge.textContent = loginCount;
-                            loginBadge.classList.toggle("empty", loginCount === 0);
-                            loginBadge.setAttribute("aria-hidden", loginCount === 0 ? "true" : "false");
-                        }
-                        if (giftBadge) {
-                            giftBadge.textContent = giftCount;
-                            giftBadge.classList.toggle("empty", giftCount === 0);
-                            giftBadge.setAttribute("aria-hidden", giftCount === 0 ? "true" : "false");
-                        }
-                    })
-                    .catch(function () { });
-            }
-            updatePendingBadges();
-            setInterval(updatePendingBadges, 10000);
-            document.addEventListener("visibilitychange", function () {
-                if (document.visibilityState === "visible") updatePendingBadges();
-            });
-        })();
 
         function toggleSidebar() {
             if (sidebar && mobileToggle) {
@@ -1865,11 +1614,6 @@
                 if (userRolePill) {
                     userRolePill.textContent = data.role === "leadadmin" ? "ليد أدمن" : data.role === "admin" ? "أدمن" : data.role;
                 }
-
-                document.querySelectorAll("[data-nav-access]").forEach(function (el) {
-                    var key = el.getAttribute("data-nav-access");
-                    el.style.display = data && key && data[key] ? "" : "none";
-                });
             } catch (error) {
                 console.error("Failed to hydrate user info:", error);
                 if (typeof showNotification === "function") {
@@ -1943,10 +1687,8 @@
         }
 
         document.addEventListener("DOMContentLoaded", () => {
-            applyI18n();
             hydrateUser();
             recalculateRanks();
-            bindExportButtons();
         });
 
         const suggestionsToggle = document.getElementById("suggestionsToggle");
@@ -1986,7 +1728,7 @@
     </script>
     <script>
         function hideCurrentPageFromNav() {
-            const currentPage = "leaderboard";
+            const currentPage = "suggestion";
             const navButtonsToHide = document.querySelectorAll("[data-page]");
             navButtonsToHide.forEach((element) => {
                 if (element.getAttribute("data-page") === currentPage) {
