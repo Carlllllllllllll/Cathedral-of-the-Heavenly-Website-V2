@@ -27,22 +27,9 @@
     <link rel="stylesheet" href="<%= vite('src/assets/styles/admin.css', '/design/admin.css') %>" />
     <style>
         :root {
-            --bg: radial-gradient(circle at top right, #402958, #2a1b3c 60%);
-            --panel-bg: rgba(64, 41, 88, 0.85);
-            --accent: #ffcc00;
-            --accent-soft: rgba(255, 204, 0, 0.12);
-            --text: #f2f4ff;
-            --muted: #d1c4e9;
-            --border: rgba(255, 255, 255, 0.15);
-            --primary: #402958;
-            --secondary: #2a1b3c;
-            --danger: #e74c3c;
-            --success: #27ae60;
-            --warning: #f39c12;
-            --info: #3498db;
-            --light: #f2f4ff;
-            --dark: #2a1b3c;
-            --sidebar-width: 280px;
+            --muted: var(--text-muted);
+            --light: var(--text);
+            --dark: var(--secondary);
             --transition-speed: 0.3s;
             --radius-lg: 28px;
             --shadow: 0 25px 45px rgba(15, 20, 40, 0.12);
@@ -1666,37 +1653,82 @@
             const table = getVisibleTableForExport();
             if (!table || typeof XLSX === "undefined") return;
             const wb = XLSX.utils.table_to_book(table, { sheet: "Leaderboard" });
+            const sheetName = wb.SheetNames && wb.SheetNames[0];
+            const ws = sheetName ? wb.Sheets[sheetName] : null;
+            if (ws && ws["!ref"]) {
+                const range = XLSX.utils.decode_range(ws["!ref"]);
+                const colWidths = [];
+                for (let C = range.s.c; C <= range.e.c; C++) {
+                    let maxLen = 10;
+                    for (let R = range.s.r; R <= range.e.r; R++) {
+                        const cellAddress = XLSX.utils.encode_cell({ r: R, c: C });
+                        const cell = ws[cellAddress];
+                        if (!cell) continue;
+                        const v = cell.w || cell.v;
+                        const text = (v === undefined || v === null) ? "" : String(v);
+                        maxLen = Math.max(maxLen, text.length + 2);
+                    }
+                    colWidths.push({ wch: Math.min(60, maxLen) });
+                }
+                ws["!cols"] = colWidths;
+            }
             const fileBase = buildExportFileBaseName();
             XLSX.writeFile(wb, `${fileBase}.xlsx`);
         }
 
         async function exportPdf() {
-            const table = getVisibleTableForExport();
-            if (!table) return;
+            const wrapper = document.querySelector(".leaderboard-table-wrapper");
+            if (!wrapper || typeof html2canvas === "undefined") return;
             const jspdf = window.jspdf;
             if (!jspdf || !jspdf.jsPDF) return;
+
+            if (document.fonts && document.fonts.ready) {
+                try { await document.fonts.ready; } catch (e) { }
+            }
+
+            const canvas = await html2canvas(wrapper, {
+                backgroundColor: "#2a1b3c",
+                scale: 2,
+                useCORS: true,
+            });
+
+            const imgData = canvas.toDataURL("image/png");
             const doc = new jspdf.jsPDF({ orientation: "landscape", unit: "pt", format: "a4" });
 
-            const head = [];
-            const body = [];
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const pageHeight = doc.internal.pageSize.getHeight();
 
-            const ths = Array.from(table.querySelectorAll("thead th")).map((th) => (th.textContent || "").trim());
-            head.push(ths);
-            Array.from(table.querySelectorAll("tbody tr")).forEach((tr) => {
-                const tds = Array.from(tr.querySelectorAll("td")).map((td) => (td.textContent || "").replace(/\s+/g, " ").trim());
-                if (tds.length) body.push(tds);
-            });
+            const margin = 24;
+            const usableWidth = pageWidth - margin * 2;
+            const imgWidth = usableWidth;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-            doc.setFontSize(16);
-            doc.text(buildExportFileBaseName(), 40, 30, { align: "left" });
+            let y = margin;
+            let remaining = imgHeight;
+            let position = 0;
 
-            doc.autoTable({
-                head,
-                body,
-                startY: 50,
-                styles: { fontSize: 10, cellPadding: 6 },
-                headStyles: { fillColor: [64, 41, 88], textColor: [255, 255, 255] },
-            });
+            while (remaining > 0) {
+                const sliceHeight = Math.min(remaining, pageHeight - margin * 2);
+                const sourceY = (position * canvas.width) / imgWidth;
+                const sourceH = (sliceHeight * canvas.width) / imgWidth;
+
+                const pageCanvas = document.createElement("canvas");
+                pageCanvas.width = canvas.width;
+                pageCanvas.height = Math.max(1, Math.floor(sourceH));
+                const ctx = pageCanvas.getContext("2d");
+                if (!ctx) break;
+                ctx.drawImage(canvas, 0, sourceY, canvas.width, sourceH, 0, 0, canvas.width, sourceH);
+
+                const pageImg = pageCanvas.toDataURL("image/png");
+                doc.addImage(pageImg, "PNG", margin, y, imgWidth, sliceHeight);
+
+                remaining -= sliceHeight;
+                position += sliceHeight;
+                if (remaining > 0) {
+                    doc.addPage();
+                    y = margin;
+                }
+            }
 
             const fileBase = buildExportFileBaseName();
             doc.save(`${fileBase}.pdf`);
@@ -1705,7 +1737,10 @@
         async function exportPng() {
             const wrapper = document.querySelector(".leaderboard-table-wrapper");
             if (!wrapper || typeof html2canvas === "undefined") return;
-            const canvas = await html2canvas(wrapper, { backgroundColor: "#2a1b3c", scale: 2 });
+            if (document.fonts && document.fonts.ready) {
+                try { await document.fonts.ready; } catch (e) { }
+            }
+            const canvas = await html2canvas(wrapper, { backgroundColor: "#2a1b3c", scale: 2, useCORS: true });
             const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
             if (!blob) return;
             const fileBase = buildExportFileBaseName();
