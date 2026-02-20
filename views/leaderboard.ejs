@@ -30,6 +30,7 @@
             --muted: var(--text-muted);
             --light: var(--text);
             --dark: var(--secondary);
+            --sidebar-width: 250px;
             --transition-speed: 0.3s;
             --radius-lg: 28px;
             --shadow: 0 25px 45px rgba(15, 20, 40, 0.12);
@@ -383,65 +384,54 @@
         }
 
         .top-nav {
-            background: var(--panel-bg);
-            backdrop-filter: blur(4px);
-            padding: 15px 30px;
-            border-radius: 15px;
+            background: var(--card-bg);
+            padding: 14px 20px;
+            border-radius: var(--radius-lg);
             margin-bottom: 30px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
         }
 
         .top-nav .user-info {
             display: flex;
+            flex-direction: row;
             align-items: center;
-            justify-content: flex-end;
-            gap: 10px;
+            gap: 12px;
+            max-width: 100%;
+        }
+
+        .top-nav .user-info .logout-btn-mobile {
+            order: 1;
+            margin-right: auto;
         }
 
         .top-nav .user-avatar {
             width: 40px;
             height: 40px;
+            min-width: 40px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid var(--accent);
+            order: 3;
         }
 
         .top-nav .user-details {
-            flex-grow: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            order: 2;
+            margin-left: auto;
         }
 
         .top-nav .user-details h3 {
-            font-size: 18px;
+            font-size: 0.95rem;
             font-weight: 700;
-            color: var(--accent);
-            margin-bottom: 5px;
-        }
-
-        .top-nav .user-details span {
-            font-size: 13px;
-            color: var(--accent);
-            background: linear-gradient(135deg,
-                    rgba(255, 204, 0, 0.15),
-                    rgba(255, 204, 0, 0.08));
-            padding: 6px 14px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 204, 0, 0.3);
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            box-shadow: 0 2px 8px rgba(255, 204, 0, 0.1);
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.3s ease;
-        }
-
-        .top-nav .user-details span:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 204, 0, 0.2);
-            background: linear-gradient(135deg,
-                    rgba(255, 204, 0, 0.2),
-                    rgba(255, 204, 0, 0.12));
+            color: var(--text);
+            margin: 0;
+            max-width: 180px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .logout-btn-mobile {
@@ -480,86 +470,6 @@
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
-        }
-
-        .export-menu {
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-        }
-
-        .export-menu-btn {
-            padding: 10px 14px;
-            border-radius: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.14);
-            background: linear-gradient(135deg, rgba(255, 204, 0, 0.18), rgba(255, 204, 0, 0.06));
-            color: var(--text);
-            font-weight: 900;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            transition: all var(--transition-speed);
-            white-space: nowrap;
-            min-height: 44px;
-            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
-        }
-
-        .export-menu-btn:hover {
-            transform: translateY(-2px);
-            border-color: rgba(255, 204, 0, 0.28);
-            color: var(--accent);
-            box-shadow: 0 14px 26px rgba(0, 0, 0, 0.26);
-        }
-
-        .export-menu-panel {
-            position: absolute;
-            top: calc(100% + 10px);
-            inset-inline-end: 0;
-            min-width: 220px;
-            padding: 10px;
-            border-radius: 16px;
-            background: rgba(64, 41, 88, 0.98);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.38);
-            backdrop-filter: blur(10px);
-            display: none;
-            z-index: 1002;
-        }
-
-        .export-menu-panel.active {
-            display: block;
-            animation: fadeInDown 0.18s ease-out;
-        }
-
-        .export-menu-item {
-            width: 100%;
-            padding: 12px 12px;
-            border-radius: 12px;
-            border: 1px solid transparent;
-            background: rgba(255, 255, 255, 0.06);
-            color: var(--text);
-            font-weight: 800;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: all var(--transition-speed);
-            text-align: start;
-        }
-
-        .export-menu-item:hover {
-            background: rgba(255, 204, 0, 0.14);
-            border-color: rgba(255, 204, 0, 0.26);
-            color: var(--accent);
-            transform: translateY(-1px);
-        }
-
-        .export-menu-sep {
-            height: 1px;
-            background: rgba(255, 255, 255, 0.1);
-            margin: 10px 4px;
-            border-radius: 999px;
         }
 
         .export-btn {
@@ -1352,7 +1262,7 @@
                 <img src="/UI/pfp.jpg" alt="المستخدم" class="user-avatar" />
                 <div class="user-details">
                     <h3 id="username-display">جاري التحميل...</h3>
-                    <span id="user-role-pill">مشرف</span>
+                    <span id="user-role-pill" class="role-badge">مشرف</span>
                 </div>
                 <button class="logout-btn-mobile" id="logoutBtnMobile">
                     <i class="fas fa-sign-out-alt"></i>
@@ -1368,28 +1278,14 @@
                             <% } %>
                 </h1>
                 <div class="leaderboard-actions">
-                    <div class="export-menu" id="exportMenu">
-                        <button type="button" class="export-menu-btn" id="exportMenuBtn" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-download"></i>
-                            <span data-i18n="export_menu">تنزيل</span>
-                            <i class="fas fa-chevron-down" aria-hidden="true"></i>
-                        </button>
-                        <div class="export-menu-panel" id="exportMenuPanel" role="menu" aria-label="Export">
-                            <button type="button" class="export-menu-item" id="exportExcelBtn" role="menuitem">
-                                <i class="fas fa-file-excel"></i>
-                                <span data-i18n="export_excel">تنزيل Excel</span>
-                            </button>
-                            <button type="button" class="export-menu-item" id="exportPdfBtn" role="menuitem">
-                                <i class="fas fa-file-pdf"></i>
-                                <span data-i18n="export_pdf">تنزيل PDF</span>
-                            </button>
-                            <div class="export-menu-sep" aria-hidden="true"></div>
-                            <button type="button" class="export-menu-item" id="exportPngBtn" role="menuitem">
-                                <i class="fas fa-image"></i>
-                                <span data-i18n="export_png">تنزيل صورة</span>
-                            </button>
-                        </div>
-                    </div>
+                    <button type="button" class="export-btn" id="exportExcelBtn">
+                        <i class="fas fa-file-excel"></i>
+                        <span data-i18n="export_excel">تنزيل Excel</span>
+                    </button>
+                    <button type="button" class="export-btn" id="exportPngBtn">
+                        <i class="fas fa-image"></i>
+                        <span data-i18n="export_png">تنزيل صورة</span>
+                    </button>
                 </div>
             </div>
 
@@ -1559,8 +1455,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js" defer></script>
     <script src="<%= vite('src/assets/scripts/notifications.js', '/scripts/notifications.js') %>" defer></script>
     <script>
         const mobileToggle = document.getElementById("mobileToggle");
@@ -1575,22 +1469,17 @@
         const leaderboardList = document.getElementById("leaderboardList");
         const leaderboardTable = document.getElementById("leaderboardTable");
         const exportExcelBtn = document.getElementById("exportExcelBtn");
-        const exportPdfBtn = document.getElementById("exportPdfBtn");
         const exportPngBtn = document.getElementById("exportPngBtn");
 
         const I18N = {
             ar: {
-                export_menu: "تنزيل",
                 export_excel: "تنزيل Excel",
-                export_pdf: "تنزيل PDF",
                 export_png: "تنزيل صورة",
                 export_title: "لوحة الترتيب",
                 export_error: "تعذر إنشاء ملف التحميل",
             },
             en: {
-                export_menu: "Download",
                 export_excel: "Download Excel",
-                export_pdf: "Download PDF",
                 export_png: "Download Image",
                 export_title: "Leaderboard",
                 export_error: "Failed to create download",
@@ -1676,71 +1565,41 @@
             XLSX.writeFile(wb, `${fileBase}.xlsx`);
         }
 
-        async function exportPdf() {
-            const wrapper = document.querySelector(".leaderboard-table-wrapper");
-            if (!wrapper || typeof html2canvas === "undefined") return;
-            const jspdf = window.jspdf;
-            if (!jspdf || !jspdf.jsPDF) return;
-
-            if (document.fonts && document.fonts.ready) {
-                try { await document.fonts.ready; } catch (e) { }
-            }
-
-            const canvas = await html2canvas(wrapper, {
-                backgroundColor: "#2a1b3c",
-                scale: 2,
-                useCORS: true,
-            });
-
-            const imgData = canvas.toDataURL("image/png");
-            const doc = new jspdf.jsPDF({ orientation: "landscape", unit: "pt", format: "a4" });
-
-            const pageWidth = doc.internal.pageSize.getWidth();
-            const pageHeight = doc.internal.pageSize.getHeight();
-
-            const margin = 24;
-            const usableWidth = pageWidth - margin * 2;
-            const imgWidth = usableWidth;
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-            let y = margin;
-            let remaining = imgHeight;
-            let position = 0;
-
-            while (remaining > 0) {
-                const sliceHeight = Math.min(remaining, pageHeight - margin * 2);
-                const sourceY = (position * canvas.width) / imgWidth;
-                const sourceH = (sliceHeight * canvas.width) / imgWidth;
-
-                const pageCanvas = document.createElement("canvas");
-                pageCanvas.width = canvas.width;
-                pageCanvas.height = Math.max(1, Math.floor(sourceH));
-                const ctx = pageCanvas.getContext("2d");
-                if (!ctx) break;
-                ctx.drawImage(canvas, 0, sourceY, canvas.width, sourceH, 0, 0, canvas.width, sourceH);
-
-                const pageImg = pageCanvas.toDataURL("image/png");
-                doc.addImage(pageImg, "PNG", margin, y, imgWidth, sliceHeight);
-
-                remaining -= sliceHeight;
-                position += sliceHeight;
-                if (remaining > 0) {
-                    doc.addPage();
-                    y = margin;
-                }
-            }
-
-            const fileBase = buildExportFileBaseName();
-            doc.save(`${fileBase}.pdf`);
-        }
-
         async function exportPng() {
             const wrapper = document.querySelector(".leaderboard-table-wrapper");
             if (!wrapper || typeof html2canvas === "undefined") return;
+
             if (document.fonts && document.fonts.ready) {
                 try { await document.fonts.ready; } catch (e) { }
             }
-            const canvas = await html2canvas(wrapper, { backgroundColor: "#2a1b3c", scale: 2, useCORS: true });
+
+            const captureWidth = Math.max(wrapper.scrollWidth || 0, wrapper.offsetWidth || 0, 1);
+            const captureHeight = Math.max(wrapper.scrollHeight || 0, wrapper.offsetHeight || 0, 1);
+
+            const canvas = await html2canvas(wrapper, {
+                backgroundColor: "#2a1b3c",
+                scale: 3,
+                useCORS: true,
+                foreignObjectRendering: true,
+                width: captureWidth,
+                height: captureHeight,
+                windowWidth: captureWidth,
+                windowHeight: captureHeight,
+                onclone: function (clonedDoc) {
+                    try {
+                        clonedDoc.documentElement.setAttribute("dir", "rtl");
+                        clonedDoc.documentElement.setAttribute("lang", "ar");
+                        const style = clonedDoc.createElement("style");
+                        style.textContent = `
+                            * { font-family: 'Cairo', system-ui, -apple-system, 'Segoe UI', sans-serif !important; }
+                            body { direction: rtl !important; }
+                            table { direction: rtl !important; }
+                        `;
+                        clonedDoc.head.appendChild(style);
+                    } catch (e) { }
+                },
+            });
+
             const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
             if (!blob) return;
             const fileBase = buildExportFileBaseName();
@@ -1749,49 +1608,8 @@
 
         function bindExportButtons() {
             if (exportExcelBtn) exportExcelBtn.addEventListener("click", () => exportExcel().catch(() => { }));
-            if (exportPdfBtn) exportPdfBtn.addEventListener("click", () => exportPdf().catch(() => { }));
             if (exportPngBtn) exportPngBtn.addEventListener("click", () => exportPng().catch(() => { }));
         }
-
-        const exportMenuBtn = document.getElementById("exportMenuBtn");
-        const exportMenuPanel = document.getElementById("exportMenuPanel");
-
-        function closeExportMenu() {
-            if (!exportMenuPanel || !exportMenuBtn) return;
-            exportMenuPanel.classList.remove("active");
-            exportMenuBtn.setAttribute("aria-expanded", "false");
-        }
-
-        function toggleExportMenu() {
-            if (!exportMenuPanel || !exportMenuBtn) return;
-            const willOpen = !exportMenuPanel.classList.contains("active");
-            exportMenuPanel.classList.toggle("active", willOpen);
-            exportMenuBtn.setAttribute("aria-expanded", willOpen ? "true" : "false");
-        }
-
-        if (exportMenuBtn) {
-            exportMenuBtn.addEventListener("click", function (e) {
-                e.stopPropagation();
-                toggleExportMenu();
-            });
-        }
-
-        [exportExcelBtn, exportPdfBtn, exportPngBtn].forEach(function (btn) {
-            if (!btn) return;
-            btn.addEventListener("click", function () {
-                closeExportMenu();
-            });
-        });
-
-        document.addEventListener("click", function (e) {
-            if (exportMenuPanel && exportMenuBtn) {
-                if (!e.target.closest("#exportMenu")) closeExportMenu();
-            }
-        });
-
-        document.addEventListener("keydown", function (e) {
-            if (e.key === "Escape") closeExportMenu();
-        });
 
         (function () {
             function updatePendingBadges() {
