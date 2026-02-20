@@ -55,7 +55,7 @@
             font-size: 0.68rem;
             padding: 3px 8px;
             line-height: 1.1;
-            max-width: 80px;
+            max-width: 64px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -169,8 +169,8 @@
         }
 
         .toggle-icon {
-            margin-right: auto;
-            margin-left: 10px;
+            margin-right: 0;
+            margin-left: 8px;
             font-size: 14px;
             transition: transform var(--transition-speed);
         }
@@ -311,8 +311,11 @@
             display: flex;
             flex-direction: row;
             align-items: center;
-            gap: 12px;
-            max-width: 100%;
+            justify-content: flex-start;
+            gap: 10px;
+            flex-wrap: nowrap;
+            width: 100%;
+            direction: ltr;
         }
 
         .top-nav .user-info .logout-btn-mobile {
@@ -334,7 +337,11 @@
             display: flex;
             flex-direction: column;
             align-items: flex-end;
+            gap: 3px;
+            flex-wrap: nowrap;
+            min-width: 0;
             order: 2;
+            direction: rtl;
             margin-left: auto;
         }
 
@@ -343,10 +350,13 @@
             font-weight: 700;
             color: var(--text);
             margin: 0;
-            max-width: 180px;
+            max-width: 140px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            text-align: right;
+            display: block;
+            width: 100%;
         }
 
         .logout-btn-mobile {
@@ -1541,7 +1551,7 @@
                     },
                 });
 
-                const cropCssRight = 60;
+                const cropCssRight = 90;
                 const cropRightPx = Math.max(0, Math.min(canvas.width - 1, Math.round((canvas.width / captureWidth) * cropCssRight)));
 
                 let outputCanvas = canvas;
