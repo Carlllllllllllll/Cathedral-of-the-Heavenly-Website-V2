@@ -344,12 +344,10 @@ async function loadMoreUsers() {
   const sentinel = document.getElementById("users-list-sentinel");
   if (sentinel) {
     sentinel.classList.add("loading");
-    sentinel.innerHTML = `
-      <div class="loading-state" style="padding: 16px 0;">
-        <span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span>
-        <p style="margin: 0;">جاري التحميل...</p>
-      </div>
-    `;
+    sentinel.innerHTML = `<div style="padding:8px 0;text-align:center;opacity:.9;">
+      <span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+      <span style="margin-inline-start:8px;">جاري التحميل...</span>
+    </div>`;
   }
   try {
     const params = new URLSearchParams({ limit: LOAD_MORE_SIZE, skip: allUsers.length });

@@ -5801,6 +5801,10 @@ app.get(
       }
 
       allUsers.sort((a, b) => {
+        const isLocalA = a && a._isLocal ? 1 : 0;
+        const isLocalB = b && b._isLocal ? 1 : 0;
+        if (isLocalA !== isLocalB) return isLocalA - isLocalB;
+
         const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
         const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
         if (dateB !== dateA) return dateB - dateA;
