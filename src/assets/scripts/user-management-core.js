@@ -899,111 +899,73 @@ async function showPasswordResetLinks(userId, username) {
     const activeOnly = allLinks.filter((l) => l.active);
     const links = activeOnly.length > 0 ? activeOnly : allLinks;
     const formatDate = (d) => (d ? new Date(d).toLocaleString("ar-EG") : "—");
-    const isMobile = (window.innerWidth || 0) <= 520;
+    const single = links && links.length ? links[0] : null;
+    const emptyMessage = activeOnly.length === 0 && allLinks.length > 0
+      ? "لا توجد روابط نشطة. جميع الروابط منتهية."
+      : "لا توجد روابط مسجّلة";
 
-    const buildMobileCardsHtml = () => {
-      if (!links.length) {
-        return `<div class="reset-links-mobile-empty">${
-          activeOnly.length === 0 && allLinks.length > 0
-            ? "لا توجد روابط نشطة. جميع الروابط منتهية."
-            : "لا توجد روابط مسجّلة"
-        }</div>`;
+    const buildSingleHtml = () => {
+      if (!single) {
+        return `<div class="reset-links-single-empty">${emptyMessage}</div>`;
       }
 
-      return `<div class="reset-links-mobile-list">${links
-        .map((l, i) => {
-          const url = (l.url || "").toString();
-          const urlB64 = btoa(unescape(encodeURIComponent(url)));
-          const urlSafe = url.replace(/</g, "&lt;");
-          const code = (l.verificationCode || "").toString();
-          const codeSafe = code.replace(/</g, "&lt;");
-          const codeB64 = btoa(unescape(encodeURIComponent(code)));
-          const statusHtml = l.active
-            ? '<span class="rl-badge rl-badge-active">نشط</span>'
-            : '<span class="rl-badge rl-badge-expired">منتهي</span>';
-          const verifiedHtml = l.verifiedAt
-            ? '<span class="rl-badge rl-badge-verified">✅ تم</span>'
-            : '<span class="rl-badge rl-badge-pending">⏳ لم يتم</span>';
+      const url = (single.url || "").toString();
+      const urlSafeAttr = url.replace(/</g, "&lt;");
+      const urlB64 = btoa(unescape(encodeURIComponent(url)));
 
-          return `<div class="reset-links-mobile-card">
-            <div class="rl-row rl-row-top">
-              <div class="rl-index">#${i + 1}</div>
-              <div class="rl-badges">${statusHtml}${verifiedHtml}</div>
-            </div>
+      const code = (single.verificationCode || "").toString();
+      const codeSafe = code.replace(/</g, "&lt;");
+      const codeB64 = btoa(unescape(encodeURIComponent(code)));
 
-            <div class="rl-url-wrap">
-              <a class="reset-link-url rl-url" href="${urlSafe}" target="_blank" rel="noopener noreferrer">${urlSafe}</a>
-              <div class="rl-url-actions">
-                <button type="button" class="copy-btn links-copy-btn rl-copy-btn" data-url-b64="${urlB64}">
+      const statusText = single.active ? "نشط" : "منتهي";
+      const verifiedText = single.verifiedAt ? "✅ تم" : "⏳ لم يتم";
+
+      return `<div class="reset-links-single">
+        <div class="rl-single-top">
+          <div class="rl-single-badges">
+            <span class="rl-badge ${single.active ? "rl-badge-active" : "rl-badge-expired"}">${statusText}</span>
+            <span class="rl-badge ${single.verifiedAt ? "rl-badge-verified" : "rl-badge-pending"}">${verifiedText}</span>
+          </div>
+          <div class="rl-single-meta">
+            <div class="rl-single-meta-row"><span>ينتهي:</span><strong>${formatDate(single.expiresAt)}</strong></div>
+            <div class="rl-single-meta-row"><span>أنشئ:</span><strong>${formatDate(single.createdAt)}</strong></div>
+          </div>
+        </div>
+
+        ${codeSafe
+          ? `<div class="rl-single-code">
+              <div class="rl-single-code-label">الكود</div>
+              <div class="rl-single-code-box">
+                <code class="rl-single-code-value">${codeSafe}</code>
+                <button type="button" class="rl-icon-btn links-copy-code-btn" data-code-b64="${codeB64}" title="نسخ الكود">
                   <i class="fas fa-copy"></i>
-                  نسخ الرابط
                 </button>
-                <a class="rl-open-btn" href="${urlSafe}" target="_blank" rel="noopener noreferrer">
-                  فتح
-                </a>
               </div>
-            </div>
+            </div>`
+          : ""}
 
-            <div class="rl-meta">
-              <div class="rl-meta-row"><span class="rl-meta-label">ينتهي:</span><span class="rl-meta-value">${formatDate(l.expiresAt)}</span></div>
-              <div class="rl-meta-row"><span class="rl-meta-label">أنشئ:</span><span class="rl-meta-value">${formatDate(l.createdAt)}</span></div>
-            </div>
-
-            ${codeSafe
-              ? `<div class="rl-code">
-                  <div class="rl-code-label">الكود</div>
-                  <div class="rl-code-value">${codeSafe}
-                    <button type="button" class="copy-btn links-copy-code-btn" data-code-b64="${codeB64}" style="margin-inline-start:8px;">
-                      <i class="fas fa-copy"></i>
-                    </button>
-                  </div>
-                </div>`
-              : ""}
-          </div>`;
-        })
-        .join("")}</div>`;
+        <div class="rl-single-link">
+          <div class="rl-single-link-label">الرابط</div>
+          <div class="rl-single-link-box">
+            <a class="rl-link-arrow" href="${urlSafeAttr}" target="_blank" rel="noopener noreferrer" title="فتح الرابط">
+              <i class="fas fa-arrow-up-right-from-square"></i>
+            </a>
+            <textarea class="rl-link-text" readonly>${urlSafeAttr}</textarea>
+            <button type="button" class="rl-icon-btn rl-link-copy links-copy-btn" data-url-b64="${urlB64}" title="نسخ الرابط">
+              <i class="fas fa-copy"></i>
+            </button>
+          </div>
+        </div>
+      </div>`;
     };
-
-    const rows = links.length
-      ? links
-        .map(
-          (l, i) => {
-            const urlB64 = btoa(unescape(encodeURIComponent(l.url || "")));
-            const urlSafe = (l.url || "").replace(/</g, "&lt;");
-            const code = (l.verificationCode || "").toString().replace(/</g, "&lt;");
-            const verified = l.verifiedAt ? '<span style="color:#27ae60;font-weight:700;">✅ تم</span>' : '<span style="color:#ffcc00;font-weight:700;">⏳ لم يتم</span>';
-            const codeB64 = btoa(unescape(encodeURIComponent(String(l.verificationCode || ""))));
-            return `<tr>
-              <td>${i + 1}</td>
-              <td>
-                <div class="reset-links-url-cell">
-                  <a class="reset-link-url" href="${urlSafe}" target="_blank" rel="noopener noreferrer">${urlSafe}</a>
-                  <button type="button" class="copy-btn links-copy-btn" data-url-b64="${urlB64}" title="نسخ">
-                    <i class="fas fa-copy"></i>
-                  </button>
-                </div>
-              </td>
-              <td>${l.active ? '<span style="color:#27ae60;">نشط</span>' : '<span style="color:#888;">منتهي</span>'}</td>
-              <td>${code ? `<span class="reset-link-code">${code}</span> <button type="button" class="copy-btn links-copy-code-btn" data-code-b64="${codeB64}" title="نسخ الكود" style="margin-inline-start:6px;"><i class="fas fa-copy"></i></button>` : "—"}</td>
-              <td>${verified}</td>
-              <td>${formatDate(l.expiresAt)}</td>
-              <td>${formatDate(l.createdAt)}</td>
-              <td>${(l.createdBy || "—").replace(/</g, "&lt;")}</td>
-            </tr>`;
-          }
-        )
-        .join("")
-      : "<tr><td colspan=\"8\" style=\"padding:20px;text-align:center;color:#d1c4e9;\">" + (activeOnly.length === 0 && allLinks.length > 0 ? "لا توجد روابط نشطة. جميع الروابط منتهية." : "لا توجد روابط مسجّلة") + "</td></tr>";
     Swal.fire({
       title: `روابط تغيير كلمة المرور — ${username}`,
-      html: isMobile
-        ? buildMobileCardsHtml()
-        : `<div class="reset-links-wrapper"><table class="reset-links-table"><thead><tr><th class="col-index">#</th><th class="col-url">الرابط</th><th class="col-status">الحالة</th><th class="col-code">الكود</th><th class="col-verified">تم التحقق</th><th class="col-expires">ينتهي</th><th class="col-created">أنشئ</th><th class="col-by">بواسطة</th></tr></thead><tbody>${rows}</tbody></table></div>`,
+      html: buildSingleHtml(),
       icon: "info",
       customClass: { popup: "reset-links-swal" },
       confirmButtonText: "إغلاق",
       confirmButtonColor: "#ffcc00",
-      width: isMobile ? "min(520px, 94vw)" : "min(980px, 98vw)",
+      width: "min(700px, 96vw)",
       heightAuto: false,
       scrollbarPadding: false,
       background: "#2a1b3c",
@@ -1021,6 +983,20 @@ async function showPasswordResetLinks(userId, username) {
             const b64 = btn.getAttribute("data-code-b64");
             const code = b64 ? decodeURIComponent(escape(atob(b64))) : "";
             copyText(code);
+          });
+        });
+        document.querySelectorAll(".rl-link-text").forEach((ta) => {
+          ta.addEventListener("focus", () => {
+            try {
+              ta.select();
+              ta.setSelectionRange(0, ta.value.length);
+            } catch (_) { }
+          });
+          ta.addEventListener("click", () => {
+            try {
+              ta.select();
+              ta.setSelectionRange(0, ta.value.length);
+            } catch (_) { }
           });
         });
       },
