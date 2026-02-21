@@ -55,18 +55,18 @@
             font-size: 0.75rem;
             padding: 4px 10px;
             line-height: 1;
-            max-width: 92px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            max-width: 92px !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            white-space: nowrap !important;
         }
 
         #username-display {
-            max-width: 120px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            display: block;
+            max-width: 120px !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            white-space: nowrap !important;
+            display: block !important;
         }
 
         .top-nav .user-info,
@@ -313,6 +313,8 @@
             margin-bottom: 30px;
             box-shadow: var(--shadow);
             border: 1px solid var(--border);
+            max-width: calc(100vw - var(--sidebar-width) - 40px);
+            overflow: hidden;
         }
 
         .top-nav .user-info {
@@ -1562,7 +1564,8 @@
                                     vertical-align: middle !important;
                                     margin: 0 auto !important;
                                 }
-                                .leaderboard-table td:nth-child(4) { text-align: center !important; }
+                                .leaderboard-table td:nth-child(4),
+                                .leaderboard-table th:nth-child(4) { text-align: center !important; }
                                 .leaderboard-table-wrapper { overflow: visible !important; }
                             `;
                             clonedDoc.head.appendChild(style);
