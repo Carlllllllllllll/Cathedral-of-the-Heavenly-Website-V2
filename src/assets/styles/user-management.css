@@ -177,6 +177,7 @@
       .users-list-sentinel {
         height: 1px;
         width: 100%;
+        grid-column: 1 / -1;
       }
 
       .users-list-sentinel.loading {
