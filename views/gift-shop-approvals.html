@@ -35,8 +35,8 @@
 
     .gift-shop-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 25px;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 18px;
       margin-top: 20px;
     }
 
@@ -44,8 +44,8 @@
       max-width: 100%;
       background: rgba(255, 255, 255, 0.05);
       backdrop-filter: blur(4px);
-      border-radius: 16px;
-      padding: 20px;
+      border-radius: 14px;
+      padding: 16px;
       border: 1px solid rgba(255, 255, 255, 0.1);
       transition: all 0.3s ease;
     }
@@ -58,11 +58,13 @@
 
     .gift-item img {
       width: 100%;
-      height: 180px;
+      height: auto;
       object-fit: contain;
       background: rgba(0, 0, 0, 0.18);
       border-radius: 12px;
       margin-bottom: 15px;
+      display: block;
+      max-height: 260px;
     }
 
     .purchase-user {
@@ -70,10 +72,11 @@
       flex-direction: column;
       gap: 6px;
       margin: 10px 0 12px;
-      padding: 10px 12px;
+      padding: 8px 10px;
       border-radius: 12px;
       border: 1px solid rgba(255, 255, 255, 0.1);
       background: rgba(0, 0, 0, 0.16);
+      direction: ltr;
     }
 
     .purchase-user .user-line {
@@ -90,12 +93,11 @@
       flex: 0 0 auto;
     }
 
-    .purchase-user .user-fullname {
-      font-weight: 800;
-      color: var(--text);
+    .purchase-user .user-label {
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.7);
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      flex: 0 0 auto;
     }
 
     .purchase-user .user-handle {
@@ -111,9 +113,16 @@
     .purchase-user .user-grade {
       font-weight: 700;
       color: #d1c4e9;
+      direction: rtl;
+      unicode-bidi: plaintext;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    .purchases-sentinel {
+      width: 100%;
+      height: 1px;
     }
 
     .gift-item .no-image {
@@ -726,7 +735,7 @@
       </div>
       <div class="nav-item" data-nav-access="hasGiftApproverRole">
         <a href="/admin/gift-shop/approvals" class="nav-link active">
-          <i class="fas fa-check-circle"></i>
+          <i class="fas fa-gift"></i>
           <span>طلبات الهدايا</span>
           <span class="nav-unread-badge" id="nav-badge-gift" aria-hidden="true"></span>
         </a>
@@ -771,7 +780,7 @@
     </header>
 
     <div class="admin-container">
-      <h1><i class="fas fa-gift"></i> تقدم طلبات الهدايا</h1>
+      <h1><i class="fas fa-gift"></i> طلبات الهدايا</h1>
 
       <div id="dashboard-stats" class="dashboard-stats"></div>
 
@@ -933,9 +942,19 @@
       event.currentTarget.classList.add('active');
 
       if (tabId === 'processed-tab') {
-        loadProcessedPurchases();
+        loadProcessedPurchases(false);
       }
     }
+
+    const INITIAL_PURCHASES_LIMIT = 4;
+    const LOAD_MORE_PURCHASES_LIMIT = 2;
+
+    let pendingTotal = null;
+    let pendingSkip = 0;
+    let pendingLoading = false;
+    let processedTotal = null;
+    let processedSkip = 0;
+    let processedLoading = false;
 
     async function loadUserInfo() {
       try {
@@ -963,124 +982,179 @@
       }
     }
 
-    async function loadProcessedPurchases() {
-      const list = document.getElementById("processed-purchases-list");
-      if (!list) return;
+    function toArabicGrade(rawGrade) {
+      const g = (rawGrade || "").toString().trim();
+      const key = g.toLowerCase();
+      const map = {
+        prep1: "أولى إعدادي",
+        prep2: "ثانية إعدادي",
+        prep3: "ثالثة إعدادي",
+        sec1: "أولى ثانوي",
+        sec2: "ثانية ثانوي",
+        sec3: "ثالثة ثانوي",
+      };
+      if (map[key]) return map[key];
+      return g || "غير متوفر";
+    }
 
-      list.innerHTML = `
-          <div class="loading-state">
-            <span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span>
-            <p>جاري تحميل الطلبات...</p>
+    function getPurchaseCardHtml(purchase, mode) {
+      const purchasedAt = purchase.purchasedAt
+        ? new Date(purchase.purchasedAt).toLocaleString("ar-EG")
+        : "";
+
+      const statusClass =
+        purchase.status === "accepted" ? "status-approved" :
+          purchase.status === "declined" ? "status-rejected" :
+            purchase.status === "received" ? "status-received" : "status-pending";
+
+      const statusText =
+        purchase.status === "accepted" ? "مقبول" :
+          purchase.status === "declined" ? "مرفوض" :
+            purchase.status === "received" ? "تم الاستلام" : "قيد المراجعة";
+
+      const safeUsername = (purchase.username || "").toString().trim().replace(/^@+/, "");
+      const safeHandle = safeUsername ? `@${safeUsername}` : "غير متوفر";
+      const safeGrade = toArabicGrade(purchase.grade);
+
+      return `
+        <div class="gift-item ${mode === 'pending' ? 'pending-item' : ''}">
+          ${purchase.itemId?.image
+            ? `<img src="${purchase.itemId.image}" alt="${purchase.itemName}" loading="lazy">`
+            : '<div class="no-image"><i class="fas fa-gift"></i></div>'
+          }
+          <h3>${purchase.itemName || ''}</h3>
+
+          <div class="purchase-user">
+            <div class="user-line">
+              <i class="fas fa-user"></i>
+              <span class="user-label">اسم المستخدم:</span>
+              <span class="user-handle">${safeHandle}</span>
+            </div>
+            <div class="user-line">
+              <i class="fas fa-graduation-cap"></i>
+              <span class="user-label">الصف:</span>
+              <span class="user-grade">${safeGrade}</span>
+            </div>
           </div>
-        `;
+
+          <div class="cost">${purchase.cost} نقطة</div>
+
+          ${mode === 'pending'
+            ? (purchasedAt ? `<div class="purchase-meta"><i class="fas fa-clock"></i> ${purchasedAt}</div>` : '')
+            : `
+              <div class="purchase-meta">
+                ${purchasedAt ? `<div><i class="fas fa-clock"></i> ${purchasedAt}</div>` : ''}
+                <div><span class="status-badge ${statusClass}">${statusText}</span></div>
+              </div>
+            `
+          }
+
+          ${mode === 'processed' && purchase.status === 'accepted' && !purchase.receivedConfirmed ? `
+            <button onclick="markAsReceived('${purchase._id}')" class="action-btn received-btn">
+              <i class="fas fa-gift"></i> تأكيد الاستلام
+            </button>
+          ` : ''}
+
+          ${mode === 'processed' && purchase.receivedConfirmed ? `
+            <button class="action-btn received-btn" disabled>
+              <i class="fas fa-check-double"></i> تم الاستلام بنجاح
+            </button>
+          ` : ''}
+
+          ${mode === 'pending' ? `
+            <div class="approval-actions">
+              <button onclick="approvePurchase('${purchase._id}')" class="approve-btn"><i class="fas fa-gift"></i> قبول</button>
+              <button onclick="declinePurchase('${purchase._id}')" class="decline-btn"><i class="fas fa-times"></i> رفض</button>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    function ensureSentinel(listEl, id) {
+      if (!listEl) return null;
+      let sentinel = document.getElementById(id);
+      if (!sentinel) {
+        sentinel = document.createElement('div');
+        sentinel.id = id;
+        sentinel.className = 'purchases-sentinel';
+        listEl.appendChild(sentinel);
+      }
+      return sentinel;
+    }
+
+    async function fetchPurchasesPage(status, limit, skip) {
+      const params = new URLSearchParams({ status: String(status), limit: String(limit), skip: String(skip) });
+      const res = await fetch('/api/admin/gift-shop/purchases?' + params.toString(), { credentials: 'include' });
+      if (res.status === 401) {
+        window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname + window.location.search);
+        return null;
+      }
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.message || 'فشل تحميل الطلبات');
+      const purchases = Array.isArray(data.purchases) ? data.purchases : [];
+      const total = typeof data.total === 'number' ? data.total : null;
+      return { purchases, total };
+    }
+
+    async function loadProcessedPurchases(reset) {
+      const list = document.getElementById('processed-purchases-list');
+      if (!list || processedLoading) return;
+
+      if (reset !== false) {
+        processedSkip = 0;
+        processedTotal = null;
+        list.innerHTML = '<div class="loading-state"><span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span><p>جاري تحميل الطلبات...</p></div>';
+      }
+
+      processedLoading = true;
+      const requestLimit = processedSkip === 0 ? INITIAL_PURCHASES_LIMIT : LOAD_MORE_PURCHASES_LIMIT;
 
       try {
-        const response = await fetch("/api/admin/gift-shop/purchases");
-        const data = await response.json();
+        const page = await fetchPurchasesPage('processed', requestLimit, processedSkip);
+        if (!page) return;
 
-        if (!data.purchases || data.purchases.length === 0) {
-          list.innerHTML = `
-              <div class="empty-state">
-                <i class="fas fa-check-circle"></i>
-                <h3>لا توجد طلبات</h3>
-                <p>لا توجد طلبات معالجة حالياً</p>
-              </div>
-            `;
-          return;
+        const purchases = page.purchases || [];
+        if (processedTotal == null && page.total != null) processedTotal = page.total;
+
+        if (processedSkip === 0) {
+          if (purchases.length === 0) {
+            list.innerHTML = '<div class="empty-state"><i class="fas fa-gift"></i><h3>لا توجد طلبات</h3><p>لا توجد طلبات معالجة حالياً</p></div>';
+            return;
+          }
+          list.innerHTML = purchases.map((p) => getPurchaseCardHtml(p, 'processed')).join('');
+        } else {
+          const sentinel = document.getElementById('processed-purchases-sentinel');
+          if (sentinel) sentinel.remove();
+          list.insertAdjacentHTML('beforeend', purchases.map((p) => getPurchaseCardHtml(p, 'processed')).join(''));
         }
 
-        const allPurchases = data.purchases.filter(
-          (purchase) => purchase.status !== "pending"
-        );
+        processedSkip += purchases.length;
 
-        if (allPurchases.length === 0) {
-          list.innerHTML = `
-              <div class="empty-state">
-                <i class="fas fa-check-circle"></i>
-                <h3>لا توجد طلبات</h3>
-                <p>لا توجد طلبات معالجة حالياً</p>
-              </div>
-            `;
-          return;
+        const shouldLoadMore = purchases.length > 0 && (processedTotal == null || processedSkip < processedTotal);
+        if (shouldLoadMore) {
+          const sentinel = ensureSentinel(list, 'processed-purchases-sentinel');
+          if (sentinel && !sentinel._observerBound) {
+            const observer = new IntersectionObserver(
+              (entries) => {
+                if (entries[0].isIntersecting) loadProcessedPurchases(false);
+              },
+              { root: null, rootMargin: '240px', threshold: 0 }
+            );
+            observer.observe(sentinel);
+            sentinel._observerBound = true;
+          }
+        } else {
+          const sentinel = document.getElementById('processed-purchases-sentinel');
+          if (sentinel) sentinel.remove();
         }
-
-        list.innerHTML = allPurchases
-          .map((purchase) => {
-            const purchasedAt = purchase.purchasedAt
-              ? new Date(purchase.purchasedAt).toLocaleString("ar-EG")
-              : "";
-            const processedAt = purchase.processedAt
-              ? new Date(purchase.processedAt).toLocaleString("ar-EG")
-              : "";
-
-            const statusClass =
-              purchase.status === 'accepted' ? 'status-approved' :
-                purchase.status === 'declined' ? 'status-rejected' :
-                  purchase.status === 'received' ? 'status-received' : 'status-pending';
-
-            const statusText =
-              purchase.status === 'accepted' ? 'مقبول' :
-                purchase.status === 'declined' ? 'مرفوض' :
-                  purchase.status === 'received' ? 'تم الاستلام' : 'قيد المراجعة';
-
-            const safeUsername = (purchase.username || "").toString().trim().replace(/^@+/, "");
-            const safeHandle = safeUsername ? `@${safeUsername}` : "غير متوفر";
-            const safeFullName = ((purchase.fullName || purchase.name || "").toString().trim()) || safeUsername || "غير متوفر";
-            const safeGrade = (purchase.grade || "").toString().trim() || "غير متوفر";
-
-            return `
-                <div class="gift-item">
-                  ${purchase.itemId?.image
-                ? `<img src="${purchase.itemId.image}" alt="${purchase.itemName}" loading="lazy">`
-                : '<div class="no-image"><i class="fas fa-gift"></i></div>'
-              }
-                  <h3>${purchase.itemName}</h3>
-                  <div class="purchase-user">
-                    <div class="user-line">
-                      <i class="fas fa-id-card"></i>
-                      <span class="user-fullname">${safeFullName}</span>
-                    </div>
-                    <div class="user-line">
-                      <i class="fas fa-user"></i>
-                      <span class="user-handle">${safeHandle}</span>
-                    </div>
-                    <div class="user-line">
-                      <i class="fas fa-graduation-cap"></i>
-                      <span class="user-grade">${safeGrade}</span>
-                    </div>
-                  </div>
-                  <div class="cost">${purchase.cost} نقطة</div>
-                  
-                  <div class="purchase-meta">
-                    <div><i class="fas fa-clock"></i> ${purchasedAt}</div>
-                    ${processedAt ? `<div><i class="fas fa-check-circle"></i> ${processedAt}</div>` : ''}
-                    <div><span class="status-badge ${statusClass}">${statusText}</span></div>
-                  </div>
-                  
-                  ${purchase.status === 'accepted' && !purchase.receivedConfirmed ? `
-                    <button onclick="markAsReceived('${purchase._id}')" class="action-btn received-btn">
-                      <i class="fas fa-check-circle"></i> تأكيد الاستلام
-                    </button>
-                  ` : ''}
-                  
-                  ${purchase.receivedConfirmed ? `
-                    <button class="action-btn received-btn" disabled>
-                      <i class="fas fa-check-double"></i> تم الاستلام بنجاح
-                    </button>
-                  ` : ''}
-                </div>
-              `;
-          })
-          .join("");
       } catch (error) {
-        console.error("Error loading processed purchases:", error);
-        list.innerHTML = `
-            <div class="empty-state">
-              <i class="fas fa-exclamation-circle"></i>
-              <h3>حدث خطأ</h3>
-              <p>تعذر تحميل الطلبات المعالجة. يرجى المحاولة مرة أخرى.</p>
-            </div>
-          `;
+        console.error('Error loading processed purchases:', error);
+        if (processedSkip === 0) {
+          list.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>حدث خطأ</h3><p>تعذر تحميل الطلبات المعالجة. يرجى المحاولة مرة أخرى.</p></div>';
+        }
+      } finally {
+        processedLoading = false;
       }
     }
 
@@ -1140,62 +1214,68 @@
         list.innerHTML = '<div class="empty-state"><i class="fas fa-search"></i><h3>لا توجد نتائج</h3><p>' + (_pendingPurchases.length === 0 ? 'لا توجد طلبات قيد المراجعة حالياً' : 'لا توجد طلبات تطابق البحث أو الصف') + '</p></div>';
         return;
       }
-      list.innerHTML = items
-        .map(function (purchase) {
-          const purchasedAt = purchase.purchasedAt
-            ? new Date(purchase.purchasedAt).toLocaleString("ar-EG")
-            : "";
-          var safeUsername = (purchase.username || "").toString().trim().replace(/^@+/, "");
-          var safeHandle = safeUsername ? "@" + safeUsername : "غير متوفر";
-          var safeFullName = ((purchase.fullName || purchase.name || "").toString().trim()) || safeUsername || "غير متوفر";
-          var safeGrade = (purchase.grade || "").toString().trim() || "غير متوفر";
-
-          return (
-            '<div class="gift-item pending-item">' +
-            (purchase.itemId && purchase.itemId.image
-              ? '<img src="' + purchase.itemId.image.replace(/"/g, "&quot;") + '" alt="' + (purchase.itemId.name || "").replace(/"/g, "&quot;") + '" loading="lazy">'
-              : '<div class="no-image"><i class="fas fa-gift"></i></div>') +
-            "<h3>" + (purchase.itemName || "").replace(/</g, "&lt;") + "</h3>" +
-            '<div class="purchase-user">' +
-            '<div class="user-line"><i class="fas fa-id-card"></i><span class="user-fullname">' + safeFullName.replace(/</g, "&lt;") + '</span></div>' +
-            '<div class="user-line"><i class="fas fa-user"></i><span class="user-handle">' + safeHandle.replace(/</g, "&lt;") + '</span></div>' +
-            '<div class="user-line"><i class="fas fa-graduation-cap"></i><span class="user-grade">' + safeGrade.replace(/</g, "&lt;") + '</span></div>' +
-            '</div>' +
-            "<div class=\"cost\">" + purchase.cost + " نقطة</div>" +
-            (purchasedAt ? '<div class="purchase-meta"><i class="fas fa-clock"></i> ' + purchasedAt + "</div>" : "") +
-            '<div class="approval-actions">' +
-            '<button onclick="approvePurchase(\'' + purchase._id + '\')" class="approve-btn"><i class="fas fa-check"></i> قبول</button>' +
-            '<button onclick="declinePurchase(\'' + purchase._id + '\')" class="decline-btn"><i class="fas fa-times"></i> رفض</button>' +
-            "</div></div>"
-          );
-        })
-        .join("");
+      list.innerHTML = items.map(function (purchase) { return getPurchaseCardHtml(purchase, 'pending'); }).join('');
     }
 
-    async function loadPendingPurchases() {
+    async function loadPendingPurchases(reset) {
       const list = document.getElementById("pending-purchases-list");
-      if (!list) return;
+      if (!list || pendingLoading) return;
 
-      list.innerHTML = '<div class="loading-state"><span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span><p>جاري التحميل...</p></div>';
+      if (reset !== false) {
+        pendingSkip = 0;
+        pendingTotal = null;
+        _pendingPurchases = [];
+        list.innerHTML = '<div class="loading-state"><span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span><p>جاري التحميل...</p></div>';
+      }
+
+      pendingLoading = true;
+      const requestLimit = pendingSkip === 0 ? INITIAL_PURCHASES_LIMIT : LOAD_MORE_PURCHASES_LIMIT;
 
       try {
-        const response = await fetch("/api/admin/gift-shop/purchases?status=pending");
-        const data = await response.json();
+        const page = await fetchPurchasesPage('pending', requestLimit, pendingSkip);
+        if (!page) return;
+        const data = page;
 
         const statsEl = document.getElementById("dashboard-stats");
         if (statsEl) {
-          const pending = data.purchases?.filter(function (p) { return p.status === "pending"; })?.length || 0;
-          const total = data.purchases?.length || 0;
+          const pending = typeof data.total === 'number' ? data.total : (data.purchases?.length || 0);
+          const total = typeof data.total === 'number' ? data.total : (data.purchases?.length || 0);
           statsEl.innerHTML =
             '<div class="stat-card stat-warning"><div class="stat-icon"><i class="fas fa-clock"></i></div><div class="stat-value">' + pending + '</div><div class="stat-label">قيد المراجعة</div></div>' +
-            '<div class="stat-card stat-info"><div class="stat-icon"><i class="fas fa-shopping-cart"></i></div><div class="stat-value">' + total + '</div><div class="stat-label">طلبات اليوم</div></div>';
+            '<div class="stat-card stat-info"><div class="stat-icon"><i class="fas fa-gift"></i></div><div class="stat-value">' + total + '</div><div class="stat-label">إجمالي الطلبات</div></div>';
         }
 
-        _pendingPurchases = data.purchases || [];
+        if (pendingTotal == null && data.total != null) pendingTotal = data.total;
+
+        const purchases = data.purchases || [];
+        _pendingPurchases = _pendingPurchases.concat(purchases);
+        pendingSkip += purchases.length;
         renderPendingList();
+
+        const shouldLoadMore = purchases.length > 0 && (pendingTotal == null || pendingSkip < pendingTotal);
+        if (shouldLoadMore) {
+          const sentinel = ensureSentinel(list, 'pending-purchases-sentinel');
+          if (sentinel && !sentinel._observerBound) {
+            const observer = new IntersectionObserver(
+              (entries) => {
+                if (entries[0].isIntersecting) loadPendingPurchases(false);
+              },
+              { root: null, rootMargin: '240px', threshold: 0 }
+            );
+            observer.observe(sentinel);
+            sentinel._observerBound = true;
+          }
+        } else {
+          const sentinel = document.getElementById('pending-purchases-sentinel');
+          if (sentinel) sentinel.remove();
+        }
       } catch (error) {
         console.error("Error loading pending purchases:", error);
-        list.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>حدث خطأ</h3><p>تعذر تحميل طلبات المراجعة. يرجى المحاولة مرة أخرى.</p></div>';
+        if (pendingSkip === 0) {
+          list.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>حدث خطأ</h3><p>تعذر تحميل طلبات المراجعة. يرجى المحاولة مرة أخرى.</p></div>';
+        }
+      } finally {
+        pendingLoading = false;
       }
     }
 
@@ -1303,15 +1383,15 @@
 
     document.addEventListener("DOMContentLoaded", async function () {
       await loadUserInfo();
-      await loadPendingPurchases();
+      await loadPendingPurchases(true);
       var searchEl = document.getElementById("pending-search");
       var gradeEl = document.getElementById("pending-sort-grade");
       var refreshBtn = document.getElementById("pending-refresh-btn");
       if (searchEl) { searchEl.addEventListener("input", renderPendingList); searchEl.addEventListener("keyup", renderPendingList); }
       if (gradeEl) { gradeEl.addEventListener("change", renderPendingList); }
-      if (refreshBtn) { refreshBtn.addEventListener("click", function () { loadPendingPurchases(); }); }
+      if (refreshBtn) { refreshBtn.addEventListener("click", function () { loadPendingPurchases(true); }); }
 
-      setInterval(loadPendingPurchases, 30000);
+      setInterval(function () { loadPendingPurchases(true); }, 30000);
 
       const mobileToggle = document.getElementById("mobileToggle");
       const sidebar = document.getElementById("sidebar");

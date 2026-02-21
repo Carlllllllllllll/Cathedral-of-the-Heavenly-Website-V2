@@ -43,6 +43,7 @@ let allBannedUsers = [];
 let currentCategory = "all";
 let currentSearch = "";
 let currentAdminUsername = null;
+let serverCounts = null;
 let userCounts = {
   all: 0,
   sec1: 0,
@@ -210,17 +211,31 @@ async function loadUserInfo() {
 }
 
 function updateCategoryCounts() {
-  userCounts = {
-    all: allUsers.length,
-    sec1: allUsers.filter((user) => user.grade === "sec1").length,
-    sec2: allUsers.filter((user) => user.grade === "sec2").length,
-    sec3: allUsers.filter((user) => user.grade === "sec3").length,
-    prep1: allUsers.filter((user) => user.grade === "prep1").length,
-    prep2: allUsers.filter((user) => user.grade === "prep2").length,
-    prep3: allUsers.filter((user) => user.grade === "prep3").length,
-    teachers: allUsers.filter((user) => user.grade === "teachers").length,
-    admins: allUsers.filter((user) => user.grade === "admins").length,
-  };
+  if (serverCounts && typeof serverCounts === "object") {
+    userCounts = {
+      all: Number(serverCounts.all) || 0,
+      sec1: Number(serverCounts.sec1) || 0,
+      sec2: Number(serverCounts.sec2) || 0,
+      sec3: Number(serverCounts.sec3) || 0,
+      prep1: Number(serverCounts.prep1) || 0,
+      prep2: Number(serverCounts.prep2) || 0,
+      prep3: Number(serverCounts.prep3) || 0,
+      teachers: Number(serverCounts.teachers) || 0,
+      admins: Number(serverCounts.admins) || 0,
+    };
+  } else {
+    userCounts = {
+      all: allUsers.length,
+      sec1: allUsers.filter((user) => user.grade === "sec1").length,
+      sec2: allUsers.filter((user) => user.grade === "sec2").length,
+      sec3: allUsers.filter((user) => user.grade === "sec3").length,
+      prep1: allUsers.filter((user) => user.grade === "prep1").length,
+      prep2: allUsers.filter((user) => user.grade === "prep2").length,
+      prep3: allUsers.filter((user) => user.grade === "prep3").length,
+      teachers: allUsers.filter((user) => user.grade === "teachers").length,
+      admins: allUsers.filter((user) => user.grade === "admins").length,
+    };
+  }
 
   for (const category in userCounts) {
     const countElement = document.getElementById(`count-${category}`);
@@ -257,6 +272,7 @@ async function loadUsers(reset) {
     const data = await response.json().catch(() => ({}));
     const activeUsers = data.users && Array.isArray(data.users) ? data.users : [];
     totalActiveUsers = data.total != null ? data.total : activeUsers.length;
+    serverCounts = data.counts && typeof data.counts === "object" ? data.counts : null;
     allUsers = activeUsers;
 
     const bannedResponse = await fetch("/api/banned-users", { credentials: "include" });
@@ -343,6 +359,8 @@ async function loadMoreUsers() {
     if (!response.ok) throw new Error("HTTP " + response.status);
     const data = await response.json().catch(() => ({}));
     const nextUsers = data.users && Array.isArray(data.users) ? data.users : [];
+    if (data.total != null) totalActiveUsers = data.total;
+    if (data.counts && typeof data.counts === "object") serverCounts = data.counts;
     if (nextUsers.length === 0) {
       loadingMore = false;
       if (sentinel) {
@@ -351,10 +369,22 @@ async function loadMoreUsers() {
       }
       return;
     }
-    allUsers = allUsers.concat(nextUsers);
+    const existingIds = new Set(allUsers.map((u) => (u && u._id ? String(u._id) : "")));
+    const uniqueNext = nextUsers.filter((u) => {
+      const id = u && u._id ? String(u._id) : "";
+      if (!id) return true;
+      if (existingIds.has(id)) return false;
+      existingIds.add(id);
+      return true;
+    });
+    allUsers = allUsers.concat(uniqueNext);
     const newCardsHtml = getUsersCardsHtml(nextUsers);
     if (sentinel) sentinel.insertAdjacentHTML("beforebegin", newCardsHtml);
     updateCategoryCounts();
+
+    if (sentinel && allUsers.length >= totalActiveUsers) {
+      sentinel.remove();
+    }
   } catch (e) {
     console.error("Load more error:", e);
   } finally {
@@ -687,6 +717,10 @@ async function logoutAllDevices(userId, username) {
 }
 
 async function generatePasswordResetLink(userId, username) {
+  if (typeof window.ensureSessionValid === "function") {
+    const ok = await window.ensureSessionValid();
+    if (!ok) return;
+  }
   const result = await Swal.fire({
     title: "رابط تغيير كلمة المرور",
     text: `إنشاء رابط جديد لتغيير كلمة مرور "${username}"؟ الرابط صالح 7 أيام وسيلغي أي رابط سابق.`,
@@ -776,6 +810,10 @@ async function generatePasswordResetLink(userId, username) {
 }
 
 async function showPasswordResetLinks(userId, username) {
+  if (typeof window.ensureSessionValid === "function") {
+    const ok = await window.ensureSessionValid();
+    if (!ok) return;
+  }
   Swal.fire({
     title: "جاري التحميل...",
     text: "عرض روابط تغيير كلمة المرور",
@@ -832,6 +870,8 @@ async function showPasswordResetLinks(userId, username) {
       confirmButtonText: "إغلاق",
       confirmButtonColor: "#ffcc00",
       width: "min(980px, 98vw)",
+      heightAuto: false,
+      scrollbarPadding: false,
       background: "#2a1b3c",
       color: "#f2f4ff",
       didOpen: () => {

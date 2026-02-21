@@ -606,11 +606,16 @@ whenReady(() => {
     });
   }
 
-  function openModal() {
-    if (!formModal) return;
+  async function openModal() {
+    if (!formModal) return false;
+    if (typeof window.ensureSessionValid === "function") {
+      const ok = await window.ensureSessionValid();
+      if (!ok) return false;
+    }
     formModal.style.display = "block";
     formModal.classList.add("active");
     document.body.style.overflow = "hidden";
+    return true;
   }
 
   async function openEditForm(formLink) {
@@ -630,7 +635,8 @@ whenReady(() => {
 
       editingFormLink = link;
       setModalMode(true);
-      openModal();
+      const opened = await openModal();
+      if (!opened) return;
 
       if (document.getElementById("topic")) {
         document.getElementById("topic").value = data.topic || "";
@@ -937,18 +943,15 @@ whenReady(() => {
   }
 
   if (createFormButton) {
-    createFormButton.addEventListener("click", () => {
+    createFormButton.addEventListener("click", async () => {
       editingFormLink = null;
       setModalMode(false);
-      openModal();
+      const opened = await openModal();
+      if (!opened) return;
       clearFormData();
       resetCreateModalFields();
       if (document.getElementById("topic")) {
-        setTimeout(() => {
-          try {
-            document.getElementById("topic").focus();
-          } catch (e) {}
-        }, 60);
+        document.getElementById("topic").focus();
       }
     });
   }

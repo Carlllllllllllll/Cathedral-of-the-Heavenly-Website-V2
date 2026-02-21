@@ -394,9 +394,20 @@
       .swal2-popup .reset-links-wrapper {
         max-height: min(60vh, 520px);
         overflow: auto;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-x pan-y;
         border: 1px solid rgba(255, 255, 255, 0.12);
         border-radius: 12px;
         background: rgba(255, 255, 255, 0.03);
+      }
+
+      .swal2-popup .reset-links-wrapper {
+        max-width: 100%;
+      }
+
+      .swal2-popup .reset-links-table {
+        width: 100%;
       }
 
       @media (max-width: 520px) {
@@ -410,16 +421,20 @@
 
         .swal2-html-container {
           max-height: 68vh !important;
-          overflow-y: auto !important;
+          overflow: auto !important;
           -webkit-overflow-scrolling: touch;
           flex: 1 1 auto !important;
           min-height: 0 !important;
+          overscroll-behavior: contain;
+          touch-action: pan-x pan-y;
         }
 
         .swal2-popup .reset-links-wrapper {
           max-height: 56vh;
           overflow: auto;
           -webkit-overflow-scrolling: touch;
+          overscroll-behavior: contain;
+          touch-action: pan-x pan-y;
         }
       }
 

@@ -4931,17 +4931,31 @@ app.post("/api/gift-shop/purchase", requireAuth, async (req, res) => {
 app.get("/api/admin/gift-shop/purchases", requireAuth, requireSpecialRole("gift-approver"), async (req, res) => {
   try {
     const { status } = req.query;
-    const filter = {};
-    if (status) filter.status = status;
+    const limitRaw = req.query.limit;
+    const skipRaw = req.query.skip;
+    const limit = Math.max(0, Math.min(50, Number.parseInt(String(limitRaw ?? ""), 10) || 0));
+    const skip = Math.max(0, Number.parseInt(String(skipRaw ?? ""), 10) || 0);
 
-    const purchases = await GiftPurchase.find(filter)
-      .populate("itemId")
-      .sort({ purchasedAt: -1 })
-      .lean();
-    res.json({ purchases });
+    const filter = {};
+    if (status) {
+      if (status === "processed") filter.status = { $ne: "pending" };
+      else filter.status = status;
+    }
+
+    const [purchases, total] = await Promise.all([
+      GiftPurchase.find(filter)
+        .populate("itemId")
+        .sort({ purchasedAt: -1 })
+        .skip(skip)
+        .limit(limit || 0)
+        .lean(),
+      GiftPurchase.countDocuments(filter),
+    ]);
+
+    res.json({ purchases, total });
   } catch (err) {
     console.error("[GET /api/admin/gift-shop/purchases] Error:", err);
-    res.status(500).json({ purchases: [] });
+    res.status(500).json({ purchases: [], total: 0 });
   }
 });
 
@@ -5733,7 +5747,7 @@ app.get(
 
 
     try {
-      const { grade, limit: limitParam, skip: skipParam } = req.query;
+      const { grade, search, limit: limitParam, skip: skipParam } = req.query;
       const limit = Math.min(50, Math.max(1, parseInt(limitParam, 10) || 4));
       const skip = Math.max(0, parseInt(skipParam, 10) || 0);
 
@@ -5764,15 +5778,48 @@ app.get(
       const bannedUsernames = new Set(
         (bannedList || []).map((b) => (b.username || "").toLowerCase())
       );
-      const allUsers = allFromDb.filter(
+      let allUsers = allFromDb.filter(
         (u) => !bannedUsernames.has((u.username || "").toLowerCase())
       );
+
+      const q = (search || "").toString().trim().toLowerCase();
+      if (q) {
+        allUsers = allUsers.filter((u) => {
+          const username = (u.username || "").toString().toLowerCase();
+          const first = (u.firstName || "").toString().toLowerCase();
+          const second = (u.secondName || "").toString().toLowerCase();
+          const email = (u.email || "").toString().toLowerCase();
+          const phone = (u.phone || "").toString().toLowerCase();
+          return (
+            username.includes(q) ||
+            first.includes(q) ||
+            second.includes(q) ||
+            email.includes(q) ||
+            phone.includes(q)
+          );
+        });
+      }
 
       allUsers.sort((a, b) => {
         const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
         const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-        return dateB - dateA;
+        if (dateB !== dateA) return dateB - dateA;
+        const idA = (a._id || "").toString();
+        const idB = (b._id || "").toString();
+        return idB.localeCompare(idA);
       });
+
+      const counts = {
+        all: allUsers.length,
+        sec1: allUsers.filter((u) => u.grade === "sec1").length,
+        sec2: allUsers.filter((u) => u.grade === "sec2").length,
+        sec3: allUsers.filter((u) => u.grade === "sec3").length,
+        prep1: allUsers.filter((u) => u.grade === "prep1").length,
+        prep2: allUsers.filter((u) => u.grade === "prep2").length,
+        prep3: allUsers.filter((u) => u.grade === "prep3").length,
+        teachers: allUsers.filter((u) => u.grade === "teachers").length,
+        admins: allUsers.filter((u) => u.grade === "admins").length,
+      };
 
       const total = allUsers.length;
       const slice = allUsers.slice(skip, skip + limit);
@@ -5841,7 +5888,7 @@ app.get(
         ],
       });
 
-      res.json({ users: usersWithPoints, total });
+      res.json({ users: usersWithPoints, total, counts });
     } catch (error) {
       await sendWebhook("ERROR", {
         embeds: [
@@ -7675,7 +7722,10 @@ app.get("/api/user-info", async (req, res) => {
     ],
   });
 
-  if (req.session.isAuthenticated) {
+  if (req.session && req.session.isAuthenticated) {
+    const sessionValid = await validateActiveSessionOwnership(req, res);
+    if (!sessionValid) return;
+
     const user = getSessionUser(req);
     const allowedPages = user
       ? user.allowedPages
