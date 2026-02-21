@@ -1055,6 +1055,28 @@
             });
         }
 
+        document.addEventListener('click', function (event) {
+            if (
+                suggestionBtn &&
+                suggestionDropdown &&
+                !suggestionBtn.contains(event.target) &&
+                !suggestionDropdown.contains(event.target)
+            ) {
+                suggestionDropdown.classList.remove('active');
+                if (desktopArrow) desktopArrow.classList.remove('rotated');
+            }
+
+            if (
+                mobileSuggestionBtn &&
+                mobileSuggestionMenu &&
+                !mobileSuggestionBtn.contains(event.target) &&
+                !mobileSuggestionMenu.contains(event.target)
+            ) {
+                mobileSuggestionMenu.classList.remove('active');
+                if (mobileArrow) mobileArrow.classList.remove('rotated');
+            }
+        });
+
         function hideCurrentPageFromNav() {
             const currentPage = 'dashboard';
             const navButtonsToHide = document.querySelectorAll('[data-page]');

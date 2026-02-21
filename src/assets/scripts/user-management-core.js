@@ -699,9 +699,9 @@ function getUsersCardsHtml(users) {
                             رابط كلمة المرور
                         </button>
                         <button class="action-btn reset-links-view-btn" onclick="showPasswordResetLinks('${user._id
-        }', '${(user.username || "").replace(/'/g, "\\'")}')" title="عرض الروابط الحالية والسابقة">
+        }', '${(user.username || "").replace(/'/g, "\\'")}')" title="عرض الرابط الحالية والسابقة">
                             <i class="fas fa-link"></i>
-                            عرض الروابط
+                            عرض الرابط
                         </button>
                         <button class="action-btn ban-btn" onclick="openBanModal('${user._id
         }', '${user.username}')">

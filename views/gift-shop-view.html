@@ -1010,7 +1010,7 @@
     }
 
     .gift-item {
-      max-width: 320px;
+      max-width: none;
       background: rgba(64, 41, 88, 0.7);
       border-radius: 20px;
       padding: 0;
@@ -1090,9 +1090,33 @@
 
     .gift-shop-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       gap: 25px;
       margin-top: 20px;
+    }
+
+    .gift-list-sentinel {
+      width: 100%;
+      height: 1px;
+      grid-column: 1 / -1;
+    }
+
+    .gift-list-sentinel.loading {
+      height: auto;
+      padding: 14px 0;
+    }
+
+    .gift-list-sentinel .gift-loading-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      box-sizing: border-box;
+      text-align: center;
+      opacity: 0.92;
+      color: var(--muted);
+      font-weight: 700;
     }
 
     .loading-state {
@@ -1254,6 +1278,14 @@
       display: flex;
       flex-direction: column;
       gap: 0;
+    }
+
+    .gift-shop-container {
+      max-width: 1700px;
+    }
+
+    .gift-shop-section {
+      padding: 2rem;
     }
 
     .section-tabs {
@@ -1434,6 +1466,7 @@
           <span>مشترياتي السابقة</span>
         </button>
       </div>
+
       <section class="gift-shop-section shop-section" id="shop-section">
         <div class="section-badge section-badge-shop">
           <i class="fas fa-store"></i>
@@ -1452,6 +1485,13 @@
           <i class="fas fa-box-open"></i>
           <span>مشترياتي السابقة</span>
         </div>
+        <div class="history-controls" style="display:flex;align-items:center;justify-content:flex-start;gap:12px;margin-bottom:14px;flex-wrap:wrap;">
+          <label for="historySort" style="color:var(--muted);font-weight:800;">ترتيب حسب التاريخ:</label>
+          <select id="historySort" style="background:rgba(255,255,255,0.06);border:1px solid var(--border);color:var(--text);padding:10px 12px;border-radius:12px;font-weight:800;">
+            <option value="desc">الأحدث أولاً</option>
+            <option value="asc">الأقدم أولاً</option>
+          </select>
+        </div>
         <div id="my-purchases-list" class="gift-shop-grid">
           <div class="empty-state" id="history-placeholder">
             <i class="fas fa-history"></i>
@@ -1466,35 +1506,305 @@
   <script>
     let currentUser = null;
     let userPoints = 0;
-    let userPurchaseCounts = {};
 
-    var _historyLoaded = false;
-    (function initSectionTabs() {
-      const tabBtns = document.querySelectorAll(".section-tab-btn");
-      const shopSection = document.getElementById("shop-section");
-      const purchasesSection = document.getElementById("purchases-section");
-      if (!tabBtns.length || !shopSection || !purchasesSection) return;
-      tabBtns.forEach(function (btn) {
-        btn.addEventListener("click", function () {
-          const tab = this.getAttribute("data-tab");
-          tabBtns.forEach(function (b) {
-            b.classList.toggle("active", b.getAttribute("data-tab") === tab);
-            b.setAttribute("aria-pressed", b.getAttribute("data-tab") === tab ? "true" : "false");
-          });
-          shopSection.classList.toggle("hidden", tab !== "shop");
-          purchasesSection.classList.toggle("hidden", tab !== "purchases");
-          if (tab === "purchases" && !_historyLoaded) {
-            _historyLoaded = true;
-            loadMyPurchases();
-          }
-        });
+    const INITIAL_ITEMS_LIMIT = 4;
+    const LOAD_MORE_ITEMS_LIMIT = 2;
+    const INITIAL_PURCHASES_LIMIT = 4;
+    const LOAD_MORE_PURCHASES_LIMIT = 2;
+
+    let itemsTotal = null;
+    let itemsSkip = 0;
+    let itemsLoading = false;
+    let allItems = [];
+    let itemsObserver = null;
+
+    let purchasesTotal = null;
+    let purchasesSkip = 0;
+    let purchasesLoading = false;
+    let allPurchases = [];
+    let purchasesObserver = null;
+    let purchasesSort = "desc";
+
+    let userPurchaseCounts = {};
+    let historyLoaded = false;
+
+    function ensureSentinel(listEl, id, cls) {
+      if (!listEl) return null;
+      let sentinel = document.getElementById(id);
+      if (!sentinel) {
+        sentinel = document.createElement("div");
+        sentinel.id = id;
+        sentinel.className = cls;
+        listEl.appendChild(sentinel);
+      }
+      return sentinel;
+    }
+
+    function setSentinelLoading(sentinel, on) {
+      if (!sentinel) return;
+      sentinel.classList.toggle("loading", Boolean(on));
+      sentinel.innerHTML = on
+        ? `<div class="gift-loading-indicator">
+            <span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+            <span class="gift-loading-text">جاري التحميل...</span>
+          </div>`
+        : "";
+    }
+
+    function getPurchaseCardHtml(purchase) {
+      const status = purchase.status || "pending";
+      const statusClass =
+        purchase.receivedConfirmed
+          ? "status-received"
+          : status === "accepted"
+            ? "status-accepted"
+            : status === "declined"
+              ? "status-declined"
+              : "status-pending";
+      const statusText =
+        purchase.receivedConfirmed
+          ? "✅ تم الاستلام"
+          : status === "accepted"
+            ? "✅ تم القبول"
+            : status === "declined"
+              ? "❌ تم الرفض"
+              : "⏳ قيد المراجعة";
+
+      const purchasedAt = purchase.purchasedAt
+        ? new Date(purchase.purchasedAt).toLocaleString("ar-EG")
+        : "";
+
+      const purchaseImg = purchase.itemId?.image
+        ? `<div class="gift-item-image"><img src="${(purchase.itemId.image || "").replace(/"/g, "&quot;")}" alt="${(purchase.itemName || "").replace(/"/g, "&quot;")}" loading="lazy" onerror="this.style.display='none';var n=this.nextElementSibling;if(n)n.classList.add('show');"><div class="no-image"><i class="fas fa-gift"></i></div></div>`
+        : `<div class="gift-item-image"><div class="no-image show"><i class="fas fa-gift"></i></div></div>`;
+
+      return `
+        <div class="gift-item">
+          ${purchaseImg}
+          <div class="gift-item-content">
+            <h3>${(purchase.itemName || "").replace(/</g, "&lt;")}</h3>
+            <p>${(purchase.itemId?.description || "").replace(/</g, "&lt;")}</p>
+            <div class="cost">${purchase.cost} نقطة</div>
+            <div class="status-badge ${statusClass}">${statusText}</div>
+            ${purchasedAt ? `<div class="purchase-meta">${purchasedAt}</div>` : ""}
+            ${purchase.status === "declined" && purchase.declineReason
+              ? `<div class="decline-reason">السبب: ${String(purchase.declineReason).replace(/</g, "&lt;")}</div>`
+              : ""}
+          </div>
+        </div>
+      `;
+    }
+
+    function recomputePurchaseCountsFromAll() {
+      userPurchaseCounts = {};
+      (allPurchases || []).forEach((purchase) => {
+        const status = purchase && purchase.status ? purchase.status : "pending";
+        const key = purchase && (purchase.itemId?._id || purchase.itemId);
+        if (!key) return;
+        if (!userPurchaseCounts[key]) userPurchaseCounts[key] = 0;
+        if (status === "pending" || status === "accepted") {
+          userPurchaseCounts[key] += 1;
+        }
       });
-    })();
+    }
+
+    function renderPurchases() {
+      const list = document.getElementById("my-purchases-list");
+      if (!list) return;
+      if (!allPurchases.length) {
+        list.innerHTML = '<div class="empty-state"><i class="fas fa-history"></i><h3>لا توجد طلبات</h3><p>لم تقم بشراء أي هدايا بعد</p></div>';
+        return;
+      }
+      list.innerHTML = allPurchases.map(getPurchaseCardHtml).join("");
+    }
+
+    async function fetchPurchasesPage(limit, skip, sort) {
+      const params = new URLSearchParams({ limit: String(limit), skip: String(skip), sort: String(sort || "desc") });
+      const res = await fetch("/api/gift-shop/my-purchases?" + params.toString());
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.message || "تعذر تحميل الطلبات");
+      return {
+        purchases: Array.isArray(data.purchases) ? data.purchases : [],
+        total: typeof data.total === "number" ? data.total : null,
+      };
+    }
+
+    async function loadMyPurchases(reset) {
+      const list = document.getElementById("my-purchases-list");
+      if (!list || purchasesLoading) return;
+
+      if (reset !== false) {
+        purchasesSkip = 0;
+        purchasesTotal = null;
+        allPurchases = [];
+        list.innerHTML = '<div class="loading-state"><span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span><p>جاري التحميل...</p></div>';
+      }
+
+      purchasesLoading = true;
+      const requestLimit = purchasesSkip === 0 ? INITIAL_PURCHASES_LIMIT : LOAD_MORE_PURCHASES_LIMIT;
+      const sentinelId = "purchases-sentinel";
+      const sentinel = purchasesSkip > 0 ? ensureSentinel(list, sentinelId, "gift-list-sentinel") : null;
+      if (sentinel) setSentinelLoading(sentinel, true);
+
+      try {
+        const page = await fetchPurchasesPage(requestLimit, purchasesSkip, purchasesSort);
+        if (purchasesTotal == null && page.total != null) purchasesTotal = page.total;
+        const purchases = page.purchases || [];
+
+        if (purchasesSkip === 0 && purchases.length === 0) {
+          list.innerHTML = '<div class="empty-state"><i class="fas fa-history"></i><h3>لا توجد طلبات</h3><p>لم تقم بشراء أي هدايا بعد</p></div>';
+          return;
+        }
+
+        allPurchases = allPurchases.concat(purchases);
+        purchasesSkip += purchases.length;
+        recomputePurchaseCountsFromAll();
+        renderPurchases();
+
+        const hasMore = purchases.length > 0 && (purchasesTotal == null || purchasesSkip < purchasesTotal);
+        if (hasMore) {
+          const s = ensureSentinel(list, sentinelId, "gift-list-sentinel");
+          if (s && !s._observerBound && typeof IntersectionObserver === "function") {
+            if (!purchasesObserver) {
+              purchasesObserver = new IntersectionObserver((entries) => {
+                if (entries && entries[0] && entries[0].isIntersecting) loadMyPurchases(false);
+              }, { root: null, rootMargin: "240px", threshold: 0 });
+            }
+            purchasesObserver.observe(s);
+            s._observerBound = true;
+          }
+        } else {
+          document.getElementById(sentinelId)?.remove();
+        }
+
+        if (itemsSkip > 0) renderItems();
+      } catch (error) {
+        console.error("Error loading purchases:", error);
+        if (purchasesSkip === 0) {
+          list.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>حدث خطأ</h3><p>تعذر تحميل الطلبات</p></div>';
+        }
+      } finally {
+        purchasesLoading = false;
+        const s = document.getElementById(sentinelId);
+        if (s) setSentinelLoading(s, false);
+      }
+    }
+
+    function getItemCardHtml(item) {
+      const purchaseLimit = typeof item.purchaseLimit === "number" ? item.purchaseLimit : -1;
+      const key = item._id;
+      const alreadyPurchased = userPurchaseCounts[key] || 0;
+      const reachedLimit = purchaseLimit !== -1 && alreadyPurchased >= purchaseLimit;
+      const disabled = userPoints < item.cost || (item.stock !== -1 && item.stock <= 0) || reachedLimit;
+
+      let buttonLabel = "شراء الآن";
+      if (userPoints < item.cost) buttonLabel = "نقاط غير كافية";
+      else if (item.stock !== -1 && item.stock <= 0) buttonLabel = "غير متوفر";
+      else if (reachedLimit) buttonLabel = "وصلت للحد الأقصى";
+
+      const imgHtml = item.image
+        ? `<div class="gift-item-image"><img src="${String(item.image).replace(/"/g, "&quot;")}" alt="${String(item.name || "").replace(/"/g, "&quot;")}" loading="lazy" onerror="this.style.display='none';var n=this.nextElementSibling;if(n)n.classList.add('show');"><div class="no-image"><i class="fas fa-gift"></i></div></div>`
+        : `<div class="gift-item-image"><div class="no-image show"><i class="fas fa-gift"></i></div></div>`;
+
+      return `
+        <div class="gift-item">
+          ${imgHtml}
+          <div class="gift-item-content">
+            <h3>${String(item.name || "").replace(/</g, "&lt;")}</h3>
+            <p>${String(item.description || "").replace(/</g, "&lt;")}</p>
+            <div class="gift-meta">
+              <div class="cost">${item.cost} نقطة</div>
+              ${item.stock !== -1 ? `<span class="stock">المتبقي: ${item.stock}</span>` : ""}
+            </div>
+            ${purchaseLimit !== -1 ? `<div class="purchase-limit">الحد: ${purchaseLimit} (طلبت: ${alreadyPurchased})</div>` : ""}
+            <button onclick="purchaseItem('${String(item._id)}', ${Number(item.cost) || 0}, '${String(item.name || "").replace(/'/g, "\\'")}')" ${disabled ? "disabled" : ""} class="purchase-btn ${disabled ? "disabled" : ""}">
+              <i class="fas fa-shopping-cart"></i>
+              ${buttonLabel}
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderItems() {
+      const list = document.getElementById("items-list");
+      if (!list) return;
+      const active = (allItems || []).filter((i) => i && i.active);
+      if (!active.length) {
+        list.innerHTML = '<div class="empty-state"><i class="fas fa-gift"></i><h3>لا توجد هدايا</h3><p>لا توجد هدايا متاحة حالياً</p></div>';
+        return;
+      }
+      list.innerHTML = active.map(getItemCardHtml).join("");
+    }
+
+    async function fetchItemsPage(limit, skip) {
+      const params = new URLSearchParams({ limit: String(limit), skip: String(skip) });
+      const res = await fetch("/api/gift-shop/items?" + params.toString());
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.message || "تعذر تحميل الهدايا");
+      return {
+        items: Array.isArray(data.items) ? data.items : [],
+        total: typeof data.total === "number" ? data.total : null,
+      };
+    }
+
+    async function loadItems(reset) {
+      const list = document.getElementById("items-list");
+      if (!list || itemsLoading) return;
+
+      if (reset !== false) {
+        itemsSkip = 0;
+        itemsTotal = null;
+        allItems = [];
+        list.innerHTML = '<div class="loading-state"><span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span><p>جاري التحميل...</p></div>';
+      }
+
+      itemsLoading = true;
+      const requestLimit = itemsSkip === 0 ? INITIAL_ITEMS_LIMIT : LOAD_MORE_ITEMS_LIMIT;
+      const sentinelId = "items-sentinel";
+      const sentinel = itemsSkip > 0 ? ensureSentinel(list, sentinelId, "gift-list-sentinel") : null;
+      if (sentinel) setSentinelLoading(sentinel, true);
+
+      try {
+        const page = await fetchItemsPage(requestLimit, itemsSkip);
+        if (itemsTotal == null && page.total != null) itemsTotal = page.total;
+        const items = page.items || [];
+
+        allItems = allItems.concat(items);
+        itemsSkip += items.length;
+        renderItems();
+
+        const hasMore = items.length > 0 && (itemsTotal == null || itemsSkip < itemsTotal);
+        if (hasMore) {
+          const s = ensureSentinel(list, sentinelId, "gift-list-sentinel");
+          if (s && !s._observerBound && typeof IntersectionObserver === "function") {
+            if (!itemsObserver) {
+              itemsObserver = new IntersectionObserver((entries) => {
+                if (entries && entries[0] && entries[0].isIntersecting) loadItems(false);
+              }, { root: null, rootMargin: "240px", threshold: 0 });
+            }
+            itemsObserver.observe(s);
+            s._observerBound = true;
+          }
+        } else {
+          document.getElementById(sentinelId)?.remove();
+        }
+      } catch (error) {
+        console.error("Error loading items:", error);
+        if (itemsSkip === 0) {
+          list.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>حدث خطأ</h3><p>تعذر تحميل الهدايا</p></div>';
+        }
+      } finally {
+        itemsLoading = false;
+        const s = document.getElementById(sentinelId);
+        if (s) setSentinelLoading(s, false);
+      }
+    }
 
     async function loadUserInfo() {
       try {
         const response = await fetch("/api/user-info");
-        const data = await response.json();
+        const data = await response.json().catch(() => ({}));
         if (!data.isAuthenticated) {
           window.location.href = "/login";
           return;
@@ -1508,7 +1818,7 @@
     async function loadPoints() {
       try {
         const response = await fetch("/api/gift-shop/my-points");
-        const data = await response.json();
+        const data = await response.json().catch(() => ({}));
         userPoints = data.points || 0;
         const navPoints = document.getElementById("pointsValue");
         if (navPoints) navPoints.textContent = userPoints;
@@ -1517,163 +1827,39 @@
       }
     }
 
-    async function loadMyPurchases() {
-      const list = document.getElementById("my-purchases-list");
-      try {
-        list.innerHTML =
-          '<div class="loading-state"><span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span><p>جاري التحميل...</p></div>';
-
-        const response = await fetch("/api/gift-shop/my-purchases");
-        const data = await response.json();
-
-        userPurchaseCounts = {};
-
-        if (!data.purchases || data.purchases.length === 0) {
-          list.innerHTML =
-            '<div class="empty-state"><i class="fas fa-history"></i><h3>لا توجد طلبات</h3><p>لم تقم بشراء أي هدايا بعد</p></div>';
-          return;
-        }
-
-        list.innerHTML = data.purchases
-          .map((purchase) => {
-            const status = purchase.status || "pending";
-            const statusClass =
-              purchase.receivedConfirmed
-                ? "status-received"
-                : status === "accepted"
-                  ? "status-accepted"
-                  : status === "declined"
-                    ? "status-declined"
-                    : "status-pending";
-            const statusText =
-              purchase.receivedConfirmed
-                ? "✅ تم الاستلام"
-                : status === "accepted"
-                  ? "✅ تم القبول"
-                  : status === "declined"
-                    ? "❌ تم الرفض"
-                    : "⏳ قيد المراجعة";
-
-            const key = purchase.itemId?._id || purchase.itemId;
-            if (key) {
-              if (!userPurchaseCounts[key]) userPurchaseCounts[key] = 0;
-              if (status === "pending" || status === "accepted") {
-                userPurchaseCounts[key] += 1;
-              }
-            }
-
-            const purchasedAt = purchase.purchasedAt
-              ? new Date(purchase.purchasedAt).toLocaleString("ar-EG")
-              : "";
-
-            const purchaseImg = purchase.itemId?.image
-              ? `<div class="gift-item-image"><img src="${(purchase.itemId.image || "").replace(/"/g, "&quot;")}" alt="${(purchase.itemName || "").replace(/"/g, "&quot;")}" loading="lazy" onerror="this.style.display='none';var n=this.nextElementSibling;if(n)n.classList.add('show');"><div class="no-image"><i class="fas fa-gift"></i></div></div>`
-              : `<div class="gift-item-image"><div class="no-image show"><i class="fas fa-gift"></i></div></div>`;
-            return `
-                        <div class="gift-item">
-                            ${purchaseImg}
-                            <div class="gift-item-content">
-                            <h3>${(purchase.itemName || "").replace(/</g, "&lt;")}</h3>
-                            <p>${(purchase.itemId?.description || "").replace(/</g, "&lt;")}</p>
-                            <div class="cost">${purchase.cost} نقطة</div>
-                            <div class="status-badge ${statusClass}">${statusText}</div>
-                            ${purchasedAt
-                ? `<div class="purchase-meta">${purchasedAt}</div>`
-                : ""
-              }
-                            ${purchase.status === "declined" &&
-                purchase.declineReason
-                ? `<div class="decline-reason">السبب: ${purchase.declineReason.replace(/</g, "&lt;")}</div>`
-                : ""
-              }
-                            </div>
-                        </div>
-                    `;
-          })
-          .join("");
-      } catch (error) {
-        console.error("Error loading purchases:", error);
-        document.getElementById("my-purchases-list").innerHTML =
-          '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>حدث خطأ</h3><p>تعذر تحميل الطلبات</p></div>';
+    function resolveGradeCandidate(source) {
+      if (!source) return null;
+      if (typeof source.grade === "string" && source.grade.trim()) return source.grade.trim();
+      if (Array.isArray(source.gradeAccess) && source.gradeAccess.length) {
+        const candidate = source.gradeAccess.find((v) => typeof v === "string" && v.trim());
+        if (candidate) return candidate.trim();
       }
+      if (typeof source.landing === "string") {
+        const m = source.landing.match(/\/grades\/([^/]+)/);
+        if (m) return m[1];
+      }
+      const pathMatch = window.location.pathname.match(/\/grades\/([^/]+)/);
+      return pathMatch ? pathMatch[1] : null;
     }
 
-    async function loadItems() {
-      const list = document.getElementById("items-list");
-      try {
-        list.innerHTML =
-          '<div class="loading-state"><span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span><p>جاري التحميل...</p></div>';
+    function applySuggestionLinks(grade) {
+      const suggestionLink = document.getElementById("suggestionLink");
+      const mobileSuggestionLink = document.getElementById("mobileSuggestionLink");
+      if (suggestionLink) suggestionLink.href = `/grades/${grade}/suggestion/ektm3at`;
+      if (mobileSuggestionLink) mobileSuggestionLink.href = `/grades/${grade}/suggestion/ektm3at`;
+    }
 
-        const response = await fetch("/api/gift-shop/items");
-        const items = await response.json();
+    function applyGradeLinks(grade) {
+      const gradePageLink = document.getElementById("gradePageLink");
+      const mobileGradeLink = document.getElementById("mobileGradeLink");
+      if (gradePageLink) gradePageLink.href = `/grades/${grade}`;
+      if (mobileGradeLink) mobileGradeLink.href = `/grades/${grade}`;
+    }
 
-        if (!items || items.length === 0) {
-          list.innerHTML =
-            '<div class="empty-state"><i class="fas fa-gift"></i><h3>لا توجد هدايا</h3><p>لا توجد هدايا متاحة حالياً</p></div>';
-          return;
-        }
-
-        list.innerHTML = items
-          .filter((item) => item.active)
-          .map((item) => {
-            const purchaseLimit =
-              typeof item.purchaseLimit === "number"
-                ? item.purchaseLimit
-                : -1;
-            const key = item._id;
-            const alreadyPurchased = userPurchaseCounts[key] || 0;
-            const reachedLimit =
-              purchaseLimit !== -1 && alreadyPurchased >= purchaseLimit;
-
-            const disabled =
-              userPoints < item.cost ||
-              (item.stock !== -1 && item.stock <= 0) ||
-              reachedLimit;
-
-            let buttonLabel = "شراء الآن";
-            if (userPoints < item.cost) buttonLabel = "نقاط غير كافية";
-            else if (item.stock !== -1 && item.stock <= 0)
-              buttonLabel = "غير متوفر";
-            else if (reachedLimit) buttonLabel = "وصلت للحد الأقصى";
-
-            const imgHtml = item.image
-              ? `<div class="gift-item-image"><img src="${item.image.replace(/"/g, "&quot;")}" alt="${(item.name || "").replace(/"/g, "&quot;")}" loading="lazy" onerror="this.style.display='none';var n=this.nextElementSibling;if(n)n.classList.add('show');"><div class="no-image"><i class="fas fa-gift"></i></div></div>`
-              : `<div class="gift-item-image"><div class="no-image show"><i class="fas fa-gift"></i></div></div>`;
-            return `
-                        <div class="gift-item">
-                            ${imgHtml}
-                            <div class="gift-item-content">
-                            <h3>${(item.name || "").replace(/</g, "&lt;")}</h3>
-                            <p>${(item.description || "").replace(/</g, "&lt;")}</p>
-                            <div class="gift-meta">
-                                <div class="cost">${item.cost} نقطة</div>
-                                ${item.stock !== -1
-                ? `<span class="stock">المتبقي: ${item.stock}</span>`
-                : ""
-              }
-                            </div>
-                            ${purchaseLimit !== -1
-                ? `<div class="purchase-limit">الحد: ${purchaseLimit} (طلبت: ${alreadyPurchased})</div>`
-                : ""
-              }
-                            <button onclick="purchaseItem('${item._id}', ${item.cost
-              }, '${item.name.replace(/'/g, "\\'")}')" 
-                                    ${disabled ? "disabled" : ""
-              } class="purchase-btn ${disabled ? "disabled" : ""
-              }">
-                                <i class="fas fa-shopping-cart"></i>
-                                ${buttonLabel}
-                            </button>
-                            </div>
-                        </div>
-                    `;
-          })
-          .join("");
-      } catch (error) {
-        console.error("Error loading items:", error);
-        document.getElementById("items-list").innerHTML =
-          '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>حدث خطأ</h3><p>تعذر تحميل الهدايا</p></div>';
-      }
+    function hideCurrentPageFromNav(currentPage) {
+      document.querySelectorAll("[data-page]").forEach((el) => {
+        if (el.getAttribute("data-page") === currentPage) el.style.display = "none";
+      });
     }
 
     async function purchaseItem(itemId, cost, itemName) {
@@ -1687,83 +1873,85 @@
         confirmButtonColor: "#ffcc00",
         cancelButtonColor: "#666",
       });
+      if (!result.isConfirmed) return;
 
-      if (result.isConfirmed) {
-        try {
-          const response = await fetch("/api/gift-shop/purchase", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ itemId }),
-          });
-          const result = await response.json();
+      try {
+        const response = await fetch("/api/gift-shop/purchase", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ itemId }),
+        });
+        const resultData = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(resultData.message || "فشل الشراء");
 
-          if (response.ok) {
-            Swal.fire({
-              title: "تم بنجاح!",
-              text: "تم تقديم طلب الشراء بنجاح! سنراجع هديتك وسنتواصل معك قريباً.",
-              icon: "success",
-              confirmButtonText: "حسنًا",
-              confirmButtonColor: "#ffcc00",
-            });
-            await loadPoints();
-            await loadItems();
-          } else {
-            throw new Error(result.message || "فشل الشراء");
-          }
-        } catch (error) {
-          Swal.fire({
-            title: "خطأ!",
-            text: error.message || "تعذر إتمام الشراء",
-            icon: "error",
-            confirmButtonText: "حسنًا",
-          });
-        }
+        await Swal.fire({
+          title: "تم بنجاح!",
+          text: "تم تقديم طلب الشراء بنجاح! سنراجع هديتك وسنتواصل معك قريباً.",
+          icon: "success",
+          confirmButtonText: "حسنًا",
+          confirmButtonColor: "#ffcc00",
+        });
+
+        await loadPoints();
+        await loadItems();
+        if (historyLoaded) await loadMyPurchases();
+      } catch (error) {
+        Swal.fire({
+          title: "خطأ!",
+          text: error.message || "تعذر إتمام الشراء",
+          icon: "error",
+          confirmButtonText: "حسنًا",
+        });
       }
     }
 
-    document.addEventListener("DOMContentLoaded", async () => {
-      await loadUserInfo();
-      await loadPoints();
-      await loadItems();
+    function initSectionTabs() {
+      const tabBtns = document.querySelectorAll(".section-tab-btn");
+      const shopSection = document.getElementById("shop-section");
+      const purchasesSection = document.getElementById("purchases-section");
+      if (!tabBtns.length || !shopSection || !purchasesSection) return;
+      tabBtns.forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const tab = this.getAttribute("data-tab");
+          tabBtns.forEach((b) => {
+            const active = b.getAttribute("data-tab") === tab;
+            b.classList.toggle("active", active);
+            b.setAttribute("aria-pressed", active ? "true" : "false");
+          });
+          shopSection.classList.toggle("hidden", tab !== "shop");
+          purchasesSection.classList.toggle("hidden", tab !== "purchases");
+          if (tab === "purchases" && !historyLoaded) {
+            historyLoaded = true;
+            loadMyPurchases();
+          }
+        });
+      });
+    }
 
+    async function initNavControls() {
       const mobileMenuBtn = document.getElementById("mobileMenuBtn");
       const mobileDropdown = document.getElementById("mobileDropdown");
-
-      mobileMenuBtn.addEventListener("click", function (e) {
-        e.stopPropagation();
-        const isOpen = mobileDropdown.classList.toggle("active");
-        mobileMenuBtn.classList.toggle("open", isOpen);
-      });
-
-      document.addEventListener("click", function (event) {
-        if (
-          !mobileMenuBtn.contains(event.target) &&
-          !mobileDropdown.contains(event.target)
-        ) {
-          mobileDropdown.classList.remove("active");
-          mobileMenuBtn.classList.remove("open");
-        }
-      });
+      if (mobileMenuBtn && mobileDropdown) {
+        mobileMenuBtn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          const isOpen = mobileDropdown.classList.toggle("active");
+          mobileMenuBtn.classList.toggle("open", isOpen);
+        });
+      }
 
       const suggestionBtn = document.getElementById("suggestionBtn");
-      const suggestionDropdown =
-        document.getElementById("suggestionDropdown");
-      const mobileSuggestionBtn = document.getElementById(
-        "mobileSuggestionBtn"
-      );
-      const mobileSuggestionMenu = document.getElementById(
-        "mobileSuggestionMenu"
-      );
+      const suggestionDropdown = document.getElementById("suggestionDropdown");
       const desktopArrow = document.getElementById("desktopArrow");
+
+      const mobileSuggestionBtn = document.getElementById("mobileSuggestionBtn");
+      const mobileSuggestionMenu = document.getElementById("mobileSuggestionMenu");
       const mobileArrow = document.getElementById("mobileArrow");
 
       if (suggestionBtn && suggestionDropdown) {
         suggestionBtn.addEventListener("click", function (e) {
           e.stopPropagation();
           suggestionDropdown.classList.toggle("active");
-          if (desktopArrow) {
-            desktopArrow.classList.toggle("rotated");
-          }
+          if (desktopArrow) desktopArrow.classList.toggle("rotated");
         });
       }
 
@@ -1771,121 +1959,24 @@
         mobileSuggestionBtn.addEventListener("click", function (e) {
           e.stopPropagation();
           mobileSuggestionMenu.classList.toggle("active");
-          if (mobileArrow) {
-            mobileArrow.classList.toggle("rotated");
-          }
+          if (mobileArrow) mobileArrow.classList.toggle("rotated");
         });
       }
 
       document.addEventListener("click", function (event) {
-        if (
-          suggestionBtn &&
-          suggestionDropdown &&
-          !suggestionBtn.contains(event.target) &&
-          !suggestionDropdown.contains(event.target)
-        ) {
+        if (mobileMenuBtn && mobileDropdown && !mobileMenuBtn.contains(event.target) && !mobileDropdown.contains(event.target)) {
+          mobileDropdown.classList.remove("active");
+          mobileMenuBtn.classList.remove("open");
+        }
+        if (suggestionBtn && suggestionDropdown && !suggestionBtn.contains(event.target) && !suggestionDropdown.contains(event.target)) {
           suggestionDropdown.classList.remove("active");
-          if (desktopArrow) {
-            desktopArrow.classList.remove("rotated");
-          }
+          if (desktopArrow) desktopArrow.classList.remove("rotated");
+        }
+        if (mobileSuggestionBtn && mobileSuggestionMenu && !mobileSuggestionBtn.contains(event.target) && !mobileSuggestionMenu.contains(event.target)) {
+          mobileSuggestionMenu.classList.remove("active");
+          if (mobileArrow) mobileArrow.classList.remove("rotated");
         }
       });
-
-      function applySuggestionLinks(grade) {
-        const suggestionLink = document.getElementById("suggestionLink");
-        const mobileSuggestionLink = document.getElementById(
-          "mobileSuggestionLink"
-        );
-        if (suggestionLink) {
-          suggestionLink.href = `/grades/${grade}/suggestion/ektm3at`;
-        }
-        if (mobileSuggestionLink) {
-          mobileSuggestionLink.href = `/grades/${grade}/suggestion/ektm3at`;
-        }
-      }
-
-      function resolveGradeCandidate(source) {
-        if (!source) {
-          return null;
-        }
-        if (typeof source.grade === "string" && source.grade.trim()) {
-          return source.grade.trim();
-        }
-        if (
-          Array.isArray(source.gradeAccess) &&
-          source.gradeAccess.length > 0
-        ) {
-          const candidate = source.gradeAccess.find(
-            (value) => typeof value === "string" && value.trim()
-          );
-          if (candidate) {
-            return candidate.trim();
-          }
-        }
-        if (typeof source.landing === "string") {
-          const landingMatch = source.landing.match(/\/grades\/([^/]+)/);
-          if (landingMatch) {
-            return landingMatch[1];
-          }
-        }
-        return null;
-      }
-
-      function applyGradeLinks(grade) {
-        const gradePageLink = document.getElementById("gradePageLink");
-        const mobileGradeLink = document.getElementById("mobileGradeLink");
-        if (gradePageLink) {
-          gradePageLink.href = `/grades/${grade}`;
-        }
-        if (mobileGradeLink) {
-          mobileGradeLink.href = `/grades/${grade}`;
-        }
-      }
-
-      async function updateNavigationLinks(initialGrade) {
-        let grade = initialGrade;
-
-        if (!grade) {
-          grade = resolveGradeCandidate(currentUser);
-        }
-
-        if (!grade) {
-          try {
-            const response = await fetch("/api/user-info");
-            if (response.ok) {
-              const data = await response.json();
-              grade = resolveGradeCandidate(data);
-            }
-          } catch (error) {
-            console.error("Error determining grade:", error);
-          }
-        }
-
-        if (!grade) {
-          const gradeMatch =
-            window.location.pathname.match(/\/grades\/([^/]+)/);
-          grade = gradeMatch ? gradeMatch[1] : null;
-        }
-
-        if (!grade) {
-          return;
-        }
-
-        applyGradeLinks(grade);
-        applySuggestionLinks(grade);
-      }
-
-      function hideCurrentPageFromNav(currentPage) {
-        const navButtonsToHide = document.querySelectorAll("[data-page]");
-        navButtonsToHide.forEach((element) => {
-          if (element.getAttribute("data-page") === currentPage) {
-            element.style.display = "none";
-          }
-        });
-      }
-
-      await updateNavigationLinks(currentUser?.grade);
-      hideCurrentPageFromNav("gift-shop");
 
       async function performLogout() {
         const result = await Swal.fire({
@@ -1903,42 +1994,47 @@
           backdrop: "rgba(0,0,0,0.8)",
           allowOutsideClick: false,
         });
-
-        if (result.isConfirmed) {
-          try {
-            const response = await fetch("/logout", { method: "POST" });
-            if (response.ok) {
-              await Swal.fire({
-                title: "تم تسجيل الخروج",
-                text: "وداعاً! تم تسجيل خروجك بنجاح",
-                icon: "success",
-                iconColor: "#27ae60",
-                background: "#2a1b3c",
-                color: "#fff",
-                backdrop: "rgba(0,0,0,0.8)",
-                showConfirmButton: false,
-                timer: 1500,
-              });
-              setTimeout(() => {
-                window.location.href = "/";
-              }, 500);
-            }
-          } catch (error) {
-            console.error("Logout error:", error);
+        if (!result.isConfirmed) return;
+        try {
+          const response = await fetch("/logout", { method: "POST" });
+          if (response.ok) {
             window.location.href = "/";
+            return;
           }
+        } catch (e) {
+          console.error("Logout error:", e);
         }
+        window.location.href = "/";
       }
 
-      const logoutBtn = document.getElementById("logoutBtn");
-      const logoutBtnMobile = document.getElementById("logoutBtnMobile");
+      document.getElementById("logoutBtn")?.addEventListener("click", performLogout);
+      document.getElementById("logoutBtnMobile")?.addEventListener("click", performLogout);
+    }
 
-      if (logoutBtn) {
-        logoutBtn.addEventListener("click", performLogout);
+    document.addEventListener("DOMContentLoaded", async () => {
+      initSectionTabs();
+
+      await loadUserInfo();
+      await loadPoints();
+      await loadItems();
+
+      const grade = resolveGradeCandidate(currentUser);
+      if (grade) {
+        applyGradeLinks(grade);
+        applySuggestionLinks(grade);
       }
-      if (logoutBtnMobile) {
-        logoutBtnMobile.addEventListener("click", performLogout);
+      hideCurrentPageFromNav("gift-shop");
+
+      const historySortEl = document.getElementById("historySort");
+      if (historySortEl) {
+        purchasesSort = historySortEl.value || "desc";
+        historySortEl.addEventListener("change", function () {
+          purchasesSort = this.value || "desc";
+          if (historyLoaded) loadMyPurchases();
+        });
       }
+
+      await initNavControls();
     });
 
   </script>

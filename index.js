@@ -4812,11 +4812,24 @@ app.get("/api/admin/pending-counts", requireAuth, requireRole(["leadadmin", "adm
 
 app.get("/api/gift-shop/items", requireAuth, async (req, res) => {
   try {
-    const items = await GiftShopItem.find({ active: true }).sort({ createdAt: -1 }).lean();
-    res.json(items);
+    const limitRaw = req.query.limit;
+    const skipRaw = req.query.skip;
+    const limit = Math.max(0, Math.min(50, Number.parseInt(String(limitRaw ?? ""), 10) || 0));
+    const skip = Math.max(0, Number.parseInt(String(skipRaw ?? ""), 10) || 0);
+
+    const [items, total] = await Promise.all([
+      GiftShopItem.find({ active: true })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit || 0)
+        .lean(),
+      GiftShopItem.countDocuments({ active: true }),
+    ]);
+
+    res.json({ items, total });
   } catch (err) {
     console.error("[GET /api/gift-shop/items] Error:", err);
-    res.status(500).json({ success: false, message: "تعذر تحميل الهدايا" });
+    res.status(500).json({ items: [], total: 0 });
   }
 });
 
@@ -4834,14 +4847,29 @@ app.get("/api/gift-shop/my-points", requireAuth, async (req, res) => {
 app.get("/api/gift-shop/my-purchases", requireAuth, async (req, res) => {
   try {
     const username = req.session.username.toLowerCase();
-    const purchases = await GiftPurchase.find({ username })
-      .populate("itemId")
-      .sort({ purchasedAt: -1 })
-      .lean();
-    res.json({ purchases });
+
+    const limitRaw = req.query.limit;
+    const skipRaw = req.query.skip;
+    const sortRaw = (req.query.sort || "desc").toString().toLowerCase();
+    const sortDir = sortRaw === "asc" ? 1 : -1;
+    const limit = Math.max(0, Math.min(50, Number.parseInt(String(limitRaw ?? ""), 10) || 0));
+    const skip = Math.max(0, Number.parseInt(String(skipRaw ?? ""), 10) || 0);
+
+    const filter = { username };
+    const [purchases, total] = await Promise.all([
+      GiftPurchase.find(filter)
+        .populate("itemId")
+        .sort({ purchasedAt: sortDir })
+        .skip(skip)
+        .limit(limit || 0)
+        .lean(),
+      GiftPurchase.countDocuments(filter),
+    ]);
+
+    res.json({ purchases, total });
   } catch (err) {
     console.error("[GET /api/gift-shop/my-purchases] Error:", err);
-    res.status(500).json({ purchases: [] });
+    res.status(500).json({ purchases: [], total: 0 });
   }
 });
 
