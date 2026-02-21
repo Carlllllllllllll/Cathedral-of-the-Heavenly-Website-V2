@@ -74,6 +74,13 @@ body > footer,
   margin-top: auto;
 }
 
+footer {
+  text-align: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.2);
+  color: var(--text);
+}
+
 
 body::-webkit-scrollbar,
 *::-webkit-scrollbar {

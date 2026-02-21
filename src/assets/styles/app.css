@@ -244,10 +244,9 @@
 
 footer {
   text-align: center;
-  padding: 2rem;
-  color: var(--text-dim);
-  font-size: 0.9rem;
-  border-top: 1px solid var(--border);
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.2);
+  color: var(--text);
 }
 
 
