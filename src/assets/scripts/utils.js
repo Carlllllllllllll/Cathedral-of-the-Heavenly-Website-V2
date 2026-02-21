@@ -59,7 +59,7 @@ function attachPasswordToggle(inputEl) {
   btn.style.position = "absolute";
   btn.style.left = "12px";
   btn.style.top = "50%";
-  btn.style.transform = "translateY(-50%)";
+  btn.style.transform = "translateY(calc(-50% - 1px))";
   btn.style.width = "34px";
   btn.style.height = "34px";
   btn.style.display = "inline-flex";
@@ -71,7 +71,8 @@ function attachPasswordToggle(inputEl) {
   btn.style.border = "none";
   btn.style.borderRadius = "10px";
   btn.style.cursor = "pointer";
-  btn.style.background = "rgba(255,255,255,0.06)";
+  btn.style.background = "transparent";
+  btn.style.boxShadow = "none";
   btn.style.color = "#ffcc00";
 
   const icon = document.createElement("i");
