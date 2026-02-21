@@ -426,8 +426,14 @@
 
       try {
         if (adminItemsSkip > 0) {
-          clearAdminItemsLoading(list);
-          renderAdminItemsLoading(list);
+          const sentinel = ensureAdminItemsSentinel(list);
+          if (sentinel) {
+            sentinel.classList.add("loading");
+            sentinel.innerHTML = `<div class="admin-items-loading-indicator">
+              <span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+              <span class="admin-items-loading-text">جاري التحميل...</span>
+            </div>`;
+          }
         }
 
         const page = await fetchAdminItemsPage(requestLimit, adminItemsSkip);
@@ -448,7 +454,6 @@
           }
           list.innerHTML = items.map(getAdminItemCardHtml).join("");
         } else {
-          clearAdminItemsLoading(list);
           const sentinel = document.getElementById("admin-items-sentinel");
           if (sentinel) sentinel.remove();
           list.insertAdjacentHTML("beforeend", items.map(getAdminItemCardHtml).join(""));
@@ -480,7 +485,11 @@
         }
       } finally {
         adminItemsLoading = false;
-        clearAdminItemsLoading(document.getElementById("admin-items-list"));
+        const sentinel = document.getElementById("admin-items-sentinel");
+        if (sentinel) {
+          sentinel.classList.remove("loading");
+          sentinel.innerHTML = "";
+        }
       }
     }
 
@@ -990,6 +999,23 @@
     .admin-items-sentinel {
       width: 100%;
       height: 1px;
+      grid-column: 1 / -1;
+    }
+
+    .admin-items-sentinel.loading {
+      height: auto;
+      padding: 14px 0;
+    }
+
+    .admin-items-sentinel .admin-items-loading-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      box-sizing: border-box;
+      text-align: center;
+      opacity: 0.92;
     }
 
     .gift-item.admin-item.admin-item-loading {

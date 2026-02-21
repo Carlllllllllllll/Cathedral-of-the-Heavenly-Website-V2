@@ -919,6 +919,7 @@ async function showPasswordResetLinks(userId, username) {
 
       const statusText = single.active ? "نشط" : "منتهي";
       const verifiedText = single.verifiedAt ? "✅ تم" : "⏳ لم يتم";
+      const createdBy = (single.createdBy || "—").toString().replace(/</g, "&lt;");
 
       return `<div class="reset-links-single">
         <div class="rl-single-top">
@@ -926,9 +927,18 @@ async function showPasswordResetLinks(userId, username) {
             <span class="rl-badge ${single.active ? "rl-badge-active" : "rl-badge-expired"}">${statusText}</span>
             <span class="rl-badge ${single.verifiedAt ? "rl-badge-verified" : "rl-badge-pending"}">${verifiedText}</span>
           </div>
-          <div class="rl-single-meta">
-            <div class="rl-single-meta-row"><span>ينتهي:</span><strong>${formatDate(single.expiresAt)}</strong></div>
-            <div class="rl-single-meta-row"><span>أنشئ:</span><strong>${formatDate(single.createdAt)}</strong></div>
+        </div>
+
+        <div class="rl-single-link">
+          <div class="rl-single-link-label">الرابط</div>
+          <div class="rl-single-link-box">
+            <a class="rl-link-arrow" href="${urlSafeAttr}" target="_blank" rel="noopener noreferrer" title="فتح الرابط">
+              <i class="fas fa-arrow-up-right-from-square"></i>
+            </a>
+            <textarea class="rl-link-text" readonly>${urlSafeAttr}</textarea>
+            <button type="button" class="rl-icon-btn rl-link-copy links-copy-btn" data-url-b64="${urlB64}" title="نسخ الرابط">
+              <i class="fas fa-copy"></i>
+            </button>
           </div>
         </div>
 
@@ -944,17 +954,10 @@ async function showPasswordResetLinks(userId, username) {
             </div>`
           : ""}
 
-        <div class="rl-single-link">
-          <div class="rl-single-link-label">الرابط</div>
-          <div class="rl-single-link-box">
-            <a class="rl-link-arrow" href="${urlSafeAttr}" target="_blank" rel="noopener noreferrer" title="فتح الرابط">
-              <i class="fas fa-arrow-up-right-from-square"></i>
-            </a>
-            <textarea class="rl-link-text" readonly>${urlSafeAttr}</textarea>
-            <button type="button" class="rl-icon-btn rl-link-copy links-copy-btn" data-url-b64="${urlB64}" title="نسخ الرابط">
-              <i class="fas fa-copy"></i>
-            </button>
-          </div>
+        <div class="rl-single-footer" aria-hidden="true">
+          <span>أنشئ: ${formatDate(single.createdAt)}</span>
+          <span>ينتهي: ${formatDate(single.expiresAt)}</span>
+          <span>بواسطة: ${createdBy}</span>
         </div>
       </div>`;
     };
