@@ -4,6 +4,7 @@ const path = require("path");
 const crypto = require("crypto");
 const { sanitizeString, sanitizePayload } = require("../utils/security");
 const { logSecurityEvent } = require("../utils/security");
+const { encryptFields, decryptFields, hash } = require("../utils/encryption");
 
 class SecureUserRegistrationsStore {
   constructor() {
@@ -17,6 +18,80 @@ class SecureUserRegistrationsStore {
     this.minWriteInterval = 100; 
     this.ensureDirectory();
     this.initializeFile();
+    this.migrateLocalUsersEncryption().catch((err) => {
+      console.error("[LOCAL USERS] Encryption migration failed:", err && err.message ? err.message : err);
+    });
+  }
+
+  getSensitiveFields() {
+    return ["firstName", "secondName", "email", "phone"];
+  }
+
+  isEncryptedValue(val) {
+    return typeof val === "string" && val.includes(":");
+  }
+
+  computeHashes(user) {
+    const normalizedEmail = (user.email || "").toString().toLowerCase().trim();
+    const normalizedPhone = (user.phone || "").toString().trim();
+    return {
+      emailHash: normalizedEmail ? hash(normalizedEmail) : null,
+      phoneHash: normalizedPhone ? hash(normalizedPhone) : null,
+    };
+  }
+
+  encryptUserForStorage(user) {
+    const fields = this.getSensitiveFields();
+    const encrypted = encryptFields(user, fields);
+    const hashes = this.computeHashes(user);
+    return { ...encrypted, ...hashes };
+  }
+
+  decryptUserFromStorage(user) {
+    const fields = this.getSensitiveFields();
+    return decryptFields(user, fields);
+  }
+
+  async migrateLocalUsersEncryption() {
+    if (!process.env.ENCRYPTION_KEY) return;
+
+    const lockAcquired = await this.acquireLockAsync();
+    if (!lockAcquired) return;
+
+    try {
+      const content = await fsPromises.readFile(this.filePath, "utf8");
+      const data = JSON.parse(content);
+      if (!data || !Array.isArray(data.users)) return;
+
+      let changed = false;
+      const fields = this.getSensitiveFields();
+
+      const migratedUsers = data.users.map((u) => {
+        if (!u || typeof u !== "object") return u;
+
+        const hasAnyPlaintext = fields.some((f) => u[f] && !this.isEncryptedValue(u[f]));
+        const hashes = this.computeHashes(u);
+        const needsHashes = (hashes.emailHash && !u.emailHash) || (hashes.phoneHash && !u.phoneHash);
+
+        if (!hasAnyPlaintext && !needsHashes) return u;
+
+        changed = true;
+        const encrypted = hasAnyPlaintext ? this.encryptUserForStorage(u) : { ...u, ...hashes };
+        return encrypted;
+      });
+
+      if (!changed) return;
+
+      data.users = migratedUsers;
+      if (data._metadata) {
+        data._metadata.lastModified = new Date().toISOString();
+        data._metadata.totalUsers = Array.isArray(data.users) ? data.users.length : 0;
+        data._metadata.checksum = this.calculateChecksum(data.users);
+      }
+      await this.writeFileSecure(JSON.stringify(data, null, 2));
+    } finally {
+      await this.releaseLockAsync();
+    }
   }
 
   ensureDirectory() {
@@ -400,6 +475,10 @@ class SecureUserRegistrationsStore {
         : [],
     };
 
+    const hashes = this.computeHashes(sanitized);
+    sanitized.emailHash = hashes.emailHash;
+    sanitized.phoneHash = hashes.phoneHash;
+
     if (!sanitized.username || sanitized.username.length < 3) {
       throw new Error("Username must be at least 3 characters");
     }
@@ -431,10 +510,13 @@ class SecureUserRegistrationsStore {
         throw new Error("Invalid file structure");
       }
 
-      return data.users.map((user) => ({
-        ...user,
-        _isLocal: true,
-      }));
+      return data.users.map((user) => {
+        const decrypted = this.decryptUserFromStorage(user);
+        return {
+          ...decrypted,
+          _isLocal: true,
+        };
+      });
     } finally {
       await this.releaseLockAsync();
     }
@@ -459,8 +541,9 @@ class SecureUserRegistrationsStore {
       maxLength: 200,
       stripHtml: true,
     });
+    const emailHash = normalized ? hash(normalized) : null;
     const users = await this.readAll();
-    return users.find((u) => u.email === normalized) || null;
+    return users.find((u) => (u.emailHash || null) === emailHash) || null;
   }
 
   async findByPhone(phone) {
@@ -468,8 +551,9 @@ class SecureUserRegistrationsStore {
       maxLength: 20,
       stripHtml: true,
     });
+    const phoneHash = normalized ? hash(normalized) : null;
     const users = await this.readAll();
-    return users.find((u) => u.phone === normalized) || null;
+    return users.find((u) => (u.phoneHash || null) === phoneHash) || null;
   }
 
   async findByName(firstName, secondName) {
@@ -532,15 +616,16 @@ class SecureUserRegistrationsStore {
       }
 
       const sanitized = this.sanitizeUser(userData);
+      const stored = this.encryptUserForStorage(sanitized);
       const existing = data.users.find(
-        (u) => u.username === sanitized.username || u.email === sanitized.email
+        (u) => u.username === sanitized.username || (stored.emailHash && u.emailHash === stored.emailHash)
       );
 
       if (existing) {
         throw new Error("User with this username or email already exists");
       }
 
-      data.users.push(sanitized);
+      data.users.push(stored);
       data._metadata.totalUsers = data.users.length;
       data._metadata.lastModified = new Date().toISOString();
       data._metadata.checksum = this.calculateChecksum(data.users);
@@ -603,12 +688,14 @@ class SecureUserRegistrationsStore {
       }
 
       const existingUser = data.users[userIndex];
+      const existingDecrypted = this.decryptUserFromStorage(existingUser);
       const sanitizedUpdate = this.sanitizeUser({
-        ...existingUser,
+        ...existingDecrypted,
         ...updateData,
       });
+      const storedUpdate = this.encryptUserForStorage(sanitizedUpdate);
 
-      data.users[userIndex] = sanitizedUpdate;
+      data.users[userIndex] = { ...existingUser, ...storedUpdate };
       data._metadata.lastModified = new Date().toISOString();
       data._metadata.checksum = this.calculateChecksum(data.users);
 

@@ -188,6 +188,8 @@
         align-items: center;
         justify-content: center;
         gap: 8px;
+        width: 100%;
+        box-sizing: border-box;
         margin: 18px 0;
         padding: 10px 0;
         text-align: center;
