@@ -5,8 +5,15 @@
 }
 .gift-shop-container {
   padding: 2rem 1.5rem;
-  max-width: 1400px;
+  max-width: 1700px;
   margin: 0 auto;
+}
+
+@media (min-width: 1200px) {
+  .gift-shop-container {
+    padding: 2.25rem 2.5rem;
+    max-width: 1900px;
+  }
 }
 .gift-shop-page .points-display {
   background: var(--card-bg);
@@ -28,7 +35,7 @@
 }
 .gift-shop-page .gift-shop-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 1.5rem;
 }
 .gift-shop-page .gift-item {
@@ -67,4 +74,23 @@
 }
 .gift-shop-page .purchase-btn:not(.disabled):hover {
   transform: translateY(-2px);
+}
+
+.gift-shop-page .history-range-select {
+  background: rgba(124, 58, 237, 0.28);
+  border: 1px solid rgba(124, 58, 237, 0.45);
+  color: var(--text);
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-weight: 800;
+  outline: none;
+}
+
+.gift-shop-page .history-range-select:hover {
+  border-color: rgba(255, 204, 0, 0.45);
+}
+
+.gift-shop-page .history-range-select:focus {
+  border-color: rgba(255, 204, 0, 0.7);
+  box-shadow: 0 0 0 3px rgba(255, 204, 0, 0.18);
 }

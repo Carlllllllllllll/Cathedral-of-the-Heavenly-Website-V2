@@ -1486,10 +1486,11 @@
           <span>مشترياتي السابقة</span>
         </div>
         <div class="history-controls" style="display:flex;align-items:center;justify-content:flex-start;gap:12px;margin-bottom:14px;flex-wrap:wrap;">
-          <label for="historySort" style="color:var(--muted);font-weight:800;">ترتيب حسب التاريخ:</label>
-          <select id="historySort" style="background:rgba(255,255,255,0.06);border:1px solid var(--border);color:var(--text);padding:10px 12px;border-radius:12px;font-weight:800;">
-            <option value="desc">الأحدث أولاً</option>
-            <option value="asc">الأقدم أولاً</option>
+          <label for="historyRange" style="color:var(--muted);font-weight:800;">عرض:</label>
+          <select id="historyRange" class="history-range-select">
+            <option value="all">الكل</option>
+            <option value="month">آخر شهر</option>
+            <option value="year">آخر سنة</option>
           </select>
         </div>
         <div id="my-purchases-list" class="gift-shop-grid">
@@ -1524,6 +1525,7 @@
     let allPurchases = [];
     let purchasesObserver = null;
     let purchasesSort = "desc";
+    let purchasesRange = "all";
 
     let userPurchaseCounts = {};
     let historyLoaded = false;
@@ -1618,8 +1620,13 @@
       list.innerHTML = allPurchases.map(getPurchaseCardHtml).join("");
     }
 
-    async function fetchPurchasesPage(limit, skip, sort) {
-      const params = new URLSearchParams({ limit: String(limit), skip: String(skip), sort: String(sort || "desc") });
+    async function fetchPurchasesPage(limit, skip, sort, range) {
+      const params = new URLSearchParams({
+        limit: String(limit),
+        skip: String(skip),
+        sort: String(sort || "desc"),
+        range: String(range || "all"),
+      });
       const res = await fetch("/api/gift-shop/my-purchases?" + params.toString());
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.message || "تعذر تحميل الطلبات");
@@ -1647,7 +1654,12 @@
       if (sentinel) setSentinelLoading(sentinel, true);
 
       try {
-        const page = await fetchPurchasesPage(requestLimit, purchasesSkip, purchasesSort);
+        const page = await fetchPurchasesPage(
+          requestLimit,
+          purchasesSkip,
+          purchasesSort,
+          purchasesRange
+        );
         if (purchasesTotal == null && page.total != null) purchasesTotal = page.total;
         const purchases = page.purchases || [];
 
@@ -2025,11 +2037,11 @@
       }
       hideCurrentPageFromNav("gift-shop");
 
-      const historySortEl = document.getElementById("historySort");
-      if (historySortEl) {
-        purchasesSort = historySortEl.value || "desc";
-        historySortEl.addEventListener("change", function () {
-          purchasesSort = this.value || "desc";
+      const historyRangeEl = document.getElementById("historyRange");
+      if (historyRangeEl) {
+        purchasesRange = historyRangeEl.value || "all";
+        historyRangeEl.addEventListener("change", function () {
+          purchasesRange = this.value || "all";
           if (historyLoaded) loadMyPurchases();
         });
       }

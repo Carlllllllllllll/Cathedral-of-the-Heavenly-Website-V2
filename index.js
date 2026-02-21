@@ -4852,10 +4852,17 @@ app.get("/api/gift-shop/my-purchases", requireAuth, async (req, res) => {
     const skipRaw = req.query.skip;
     const sortRaw = (req.query.sort || "desc").toString().toLowerCase();
     const sortDir = sortRaw === "asc" ? 1 : -1;
+    const rangeRaw = (req.query.range || "all").toString().toLowerCase();
     const limit = Math.max(0, Math.min(50, Number.parseInt(String(limitRaw ?? ""), 10) || 0));
     const skip = Math.max(0, Number.parseInt(String(skipRaw ?? ""), 10) || 0);
 
     const filter = { username };
+    if (rangeRaw === "month" || rangeRaw === "year") {
+      const now = Date.now();
+      const days = rangeRaw === "month" ? 30 : 365;
+      const since = new Date(now - days * 24 * 60 * 60 * 1000);
+      filter.purchasedAt = { $gte: since };
+    }
     const [purchases, total] = await Promise.all([
       GiftPurchase.find(filter)
         .populate("itemId")
