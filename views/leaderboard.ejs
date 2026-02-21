@@ -55,9 +55,18 @@
             font-size: 0.75rem;
             padding: 4px 10px;
             line-height: 1;
+            max-width: 92px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+        }
+
+        #username-display {
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            display: block;
         }
 
         .top-nav .user-info,
@@ -1551,7 +1560,9 @@
                                     white-space: nowrap !important;
                                     line-height: 1 !important;
                                     vertical-align: middle !important;
+                                    margin: 0 auto !important;
                                 }
+                                .leaderboard-table td:nth-child(4) { text-align: center !important; }
                                 .leaderboard-table-wrapper { overflow: visible !important; }
                             `;
                             clonedDoc.head.appendChild(style);
