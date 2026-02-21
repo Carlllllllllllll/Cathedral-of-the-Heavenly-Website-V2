@@ -399,6 +399,26 @@
         background: rgba(255, 255, 255, 0.03);
       }
 
+      @media (max-width: 520px) {
+        .swal2-popup {
+          width: min(92vw, 520px) !important;
+          max-height: 92vh !important;
+          overflow: hidden !important;
+        }
+
+        .swal2-html-container {
+          max-height: 68vh !important;
+          overflow-y: auto !important;
+          -webkit-overflow-scrolling: touch;
+        }
+
+        .swal2-popup .reset-links-wrapper {
+          max-height: 56vh;
+          overflow: auto;
+          -webkit-overflow-scrolling: touch;
+        }
+      }
+
       .swal2-popup .reset-links-table {
         min-width: 900px;
       }

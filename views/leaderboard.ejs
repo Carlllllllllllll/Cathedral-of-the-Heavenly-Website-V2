@@ -53,20 +53,10 @@
 
         #user-role-pill.role-badge {
             font-size: 0.75rem;
+            font-weight: 700;
             padding: 4px 10px;
+            border-radius: 999px;
             line-height: 1;
-            max-width: 92px !important;
-            overflow: hidden !important;
-            text-overflow: ellipsis !important;
-            white-space: nowrap !important;
-        }
-
-        #username-display {
-            max-width: 120px !important;
-            overflow: hidden !important;
-            text-overflow: ellipsis !important;
-            white-space: nowrap !important;
-            display: block !important;
         }
 
         .top-nav .user-info,
@@ -313,8 +303,6 @@
             margin-bottom: 30px;
             box-shadow: var(--shadow);
             border: 1px solid var(--border);
-            max-width: calc(100vw - var(--sidebar-width) - 40px);
-            overflow: hidden;
         }
 
         .top-nav .user-info {
@@ -683,9 +671,9 @@
         .grade-cell {
             display: inline-block;
             padding: 6px 14px;
-            background: rgba(52, 152, 219, 0.2);
-            color: #3498db;
-            border-radius: 20px;
+            background: transparent;
+            color: var(--text);
+            border-radius: 0;
             font-size: 13px;
             font-weight: 600;
         }
@@ -1563,9 +1551,13 @@
                                     line-height: 1 !important;
                                     vertical-align: middle !important;
                                     margin: 0 auto !important;
+                                    background: transparent !important;
+                                    color: var(--text) !important;
+                                    border-radius: 0 !important;
+                                    padding: 0 !important;
                                 }
                                 .leaderboard-table td:nth-child(4),
-                                .leaderboard-table th:nth-child(4) { text-align: center !important; }
+                                .leaderboard-table th:nth-child(4) { text-align: center !important; vertical-align: middle !important; }
                                 .leaderboard-table-wrapper { overflow: visible !important; }
                             `;
                             clonedDoc.head.appendChild(style);

@@ -280,57 +280,158 @@
       }
     }
 
-    async function loadAdminItems() {
-      try {
-        const response = await fetch("/api/admin/gift-shop/items");
-        const items = await response.json();
-        const list = document.getElementById("admin-items-list");
+    const INITIAL_ITEMS_LIMIT = 4;
+    const LOAD_MORE_ITEMS_LIMIT = 2;
+    let adminItemsTotal = null;
+    let adminItemsSkip = 0;
+    let adminItemsLoading = false;
 
-        if (!items || items.length === 0) {
-          list.innerHTML =
-            '<div class="empty-state"><i class="fas fa-gift"></i><h3>لا توجد عناصر</h3><p>لم يتم إضافة أي عناصر بعد</p></div>';
-          return;
+    function getAdminItemCardHtml(item) {
+      return `
+          <div class="gift-item admin-item">
+              ${item.image
+          ? `<img src="${item.image}" alt="${item.name}" loading="lazy">`
+          : '<div class="no-image"><i class="fas fa-gift"></i></div>'
+        }
+              <h3>${item.name}</h3>
+              <p>${item.description || ""}</p>
+              <div class="gift-meta">
+                  <div class="cost">${item.cost} نقطة</div>
+                  <span class="stock ${item.active ? "active" : "inactive"}">
+                      ${item.active ? "نشط" : "غير نشط"}
+                  </span>
+              </div>
+              <div class="admin-actions">
+                  <button onclick="toggleItemActive('${item._id}', ${!item.active})" class="${item.active ? "deactivate-btn" : "activate-btn"}">
+                      <i class="fas fa-power-off"></i>
+                      ${item.active ? "تعطيل" : "تفعيل"}
+                  </button>
+                  <button onclick="deleteItem('${item._id}')" class="delete-btn">
+                      <i class="fas fa-trash"></i>
+                      حذف
+                  </button>
+              </div>
+          </div>
+      `;
+    }
+
+    function renderAdminItemsLoading(listEl) {
+      if (!listEl) return;
+      listEl.insertAdjacentHTML(
+        "beforeend",
+        `
+          <div class="gift-item admin-item admin-item-loading" aria-hidden="true">
+            <div class="admin-item-loading-img"></div>
+            <div class="admin-item-loading-line"></div>
+            <div class="admin-item-loading-line short"></div>
+            <div class="admin-item-loading-actions">
+              <div class="admin-item-loading-btn"></div>
+              <div class="admin-item-loading-btn"></div>
+            </div>
+          </div>
+        `
+      );
+    }
+
+    function clearAdminItemsLoading(listEl) {
+      if (!listEl) return;
+      listEl.querySelectorAll(".admin-item-loading").forEach((el) => el.remove());
+    }
+
+    function ensureAdminItemsSentinel(listEl) {
+      if (!listEl) return null;
+      let sentinel = document.getElementById("admin-items-sentinel");
+      if (!sentinel) {
+        sentinel = document.createElement("div");
+        sentinel.id = "admin-items-sentinel";
+        sentinel.className = "admin-items-sentinel";
+        listEl.appendChild(sentinel);
+      }
+      return sentinel;
+    }
+
+    async function fetchAdminItemsPage(limit, skip) {
+      const params = new URLSearchParams({ limit: String(limit), skip: String(skip) });
+      const res = await fetch("/api/admin/gift-shop/items?" + params.toString(), { credentials: "include" });
+      if (res.status === 401) {
+        window.location.href = "/login?redirect=" + encodeURIComponent(window.location.pathname + window.location.search);
+        return null;
+      }
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.message || "فشل تحميل العناصر");
+      const items = Array.isArray(data.items) ? data.items : Array.isArray(data) ? data : [];
+      const total = typeof data.total === "number" ? data.total : null;
+      return { items, total };
+    }
+
+    async function loadAdminItems(reset) {
+      const list = document.getElementById("admin-items-list");
+      if (!list || adminItemsLoading) return;
+
+      if (reset !== false) {
+        adminItemsSkip = 0;
+        adminItemsTotal = null;
+        list.innerHTML =
+          '<div class="empty-state"><span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span><h3>جاري التحميل...</h3></div>';
+      }
+
+      adminItemsLoading = true;
+
+      const requestLimit = adminItemsSkip === 0 ? INITIAL_ITEMS_LIMIT : LOAD_MORE_ITEMS_LIMIT;
+
+      try {
+        if (adminItemsSkip > 0) {
+          clearAdminItemsLoading(list);
+          renderAdminItemsLoading(list);
         }
 
-        list.innerHTML = items
-          .map(
-            (item) => `
-                    <div class="gift-item admin-item">
-                        ${item.image
-                ? `<img src="${item.image}" alt="${item.name}" loading="lazy">`
-                : '<div class="no-image"><i class="fas fa-gift"></i></div>'
-              }
-                        <h3>${item.name}</h3>
-                        <p>${item.description || ""}</p>
-                        <div class="gift-meta">
-                            <div class="cost">${item.cost} نقطة</div>
-                            <span class="stock ${item.active ? "active" : "inactive"
-              }">
-                                ${item.active ? "نشط" : "غير نشط"}
-                            </span>
-                        </div>
-                        <div class="admin-actions">
-                            <button onclick="toggleItemActive('${item._id
-              }', ${!item.active})" 
-                                    class="${item.active
-                ? "deactivate-btn"
-                : "activate-btn"
-              }">
-                                <i class="fas fa-power-off"></i>
-                                ${item.active ? "تعطيل" : "تفعيل"}
-                            </button>
-                            <button onclick="deleteItem('${item._id
-              }')" class="delete-btn">
-                                <i class="fas fa-trash"></i>
-                                حذف
-                            </button>
-                        </div>
-                    </div>
-                `
-          )
-          .join("");
+        const page = await fetchAdminItemsPage(requestLimit, adminItemsSkip);
+        if (!page) return;
+
+        const items = page.items || [];
+        if (adminItemsTotal == null && page.total != null) adminItemsTotal = page.total;
+
+        if (adminItemsSkip === 0) {
+          if (items.length === 0) {
+            list.innerHTML =
+              '<div class="empty-state"><i class="fas fa-gift"></i><h3>لا توجد عناصر</h3><p>لم يتم إضافة أي عناصر بعد</p></div>';
+            return;
+          }
+          list.innerHTML = items.map(getAdminItemCardHtml).join("");
+        } else {
+          clearAdminItemsLoading(list);
+          const sentinel = document.getElementById("admin-items-sentinel");
+          if (sentinel) sentinel.remove();
+          list.insertAdjacentHTML("beforeend", items.map(getAdminItemCardHtml).join(""));
+        }
+
+        adminItemsSkip += items.length;
+
+        const shouldLoadMore = items.length > 0 && (adminItemsTotal == null || adminItemsSkip < adminItemsTotal);
+        if (shouldLoadMore) {
+          const sentinel = ensureAdminItemsSentinel(list);
+          if (sentinel && !sentinel._observerBound) {
+            const observer = new IntersectionObserver(
+              (entries) => {
+                if (entries[0].isIntersecting) loadAdminItems(false);
+              },
+              { root: null, rootMargin: "240px", threshold: 0 }
+            );
+            observer.observe(sentinel);
+            sentinel._observerBound = true;
+          }
+        } else {
+          const sentinel = document.getElementById("admin-items-sentinel");
+          if (sentinel) sentinel.remove();
+        }
       } catch (error) {
         console.error("Error loading admin items:", error);
+        if (adminItemsSkip === 0) {
+          list.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>حدث خطأ</h3><p>تعذر تحميل العناصر</p></div>';
+        }
+      } finally {
+        adminItemsLoading = false;
+        clearAdminItemsLoading(document.getElementById("admin-items-list"));
       }
     }
 
@@ -819,9 +920,93 @@
     .gift-item.admin-item img {
       width: 100%;
       height: 140px;
-      object-fit: cover;
+      object-fit: contain;
+      background: rgba(0, 0, 0, 0.18);
       border-radius: 8px;
       margin-bottom: 1rem;
+    }
+
+    .admin-items-sentinel {
+      width: 100%;
+      height: 1px;
+    }
+
+    .gift-item.admin-item.admin-item-loading {
+      border-style: dashed;
+      opacity: 0.95;
+    }
+
+    .admin-item-loading-img {
+      width: 100%;
+      height: 140px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.06);
+      overflow: hidden;
+      position: relative;
+      margin-bottom: 1rem;
+    }
+
+    .admin-item-loading-line {
+      height: 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      margin-bottom: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .admin-item-loading-line.short {
+      width: 70%;
+    }
+
+    .admin-item-loading-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .admin-item-loading-btn {
+      flex: 1;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.06);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .admin-item-loading-img::after,
+    .admin-item-loading-line::after,
+    .admin-item-loading-btn::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      transform: translateX(-100%);
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.14), transparent);
+      animation: shimmer 1.2s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .close-button {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .close-button:hover {
+      border-radius: 999px;
+    }
+
+    .modal-gift-add {
+      background: var(--panel-bg);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-lg);
     }
 
     .gift-item.admin-item .no-image {
@@ -850,6 +1035,7 @@
       margin-bottom: 1rem;
       line-height: 1.5;
       display: -webkit-box;
+      line-clamp: 2;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;

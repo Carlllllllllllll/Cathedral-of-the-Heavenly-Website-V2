@@ -9,7 +9,7 @@
   <meta name="author" content="كاتدرائية السمائيين" />
   <meta name="theme-color" content="#402958" />
   <meta name="robots" content="noindex, nofollow" />
-  <title>مراجعة الطلبات | كاتدرائية السمائيين</title>
+  <title>طلبات الهدايا | كاتدرائية السمائيين</title>
   <link rel="icon" href="/UI/icon.png" type="image/png" sizes="16x16" />
   <link rel="apple-touch-icon" href="/UI/icon.png" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -59,9 +59,61 @@
     .gift-item img {
       width: 100%;
       height: 180px;
-      object-fit: cover;
+      object-fit: contain;
+      background: rgba(0, 0, 0, 0.18);
       border-radius: 12px;
       margin-bottom: 15px;
+    }
+
+    .purchase-user {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin: 10px 0 12px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(0, 0, 0, 0.16);
+    }
+
+    .purchase-user .user-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .purchase-user .user-line i {
+      width: 18px;
+      text-align: center;
+      opacity: 0.9;
+      flex: 0 0 auto;
+    }
+
+    .purchase-user .user-fullname {
+      font-weight: 800;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .purchase-user .user-handle {
+      font-weight: 800;
+      color: var(--accent);
+      direction: ltr;
+      unicode-bidi: plaintext;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .purchase-user .user-grade {
+      font-weight: 700;
+      color: #d1c4e9;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .gift-item .no-image {
@@ -577,7 +629,7 @@
         <img src="/UI/logo.png" alt="اللوغو" />
         <div class="logo-text">
           <h1>كاتدرائية السمائيين</h1>
-          <p>طلبات المراجعة</p>
+          <p>طلبات الهدايا</p>
         </div>
       </div>
     </div>
@@ -673,7 +725,7 @@
       <div class="nav-item" data-nav-access="hasGiftApproverRole">
         <a href="/admin/gift-shop/approvals" class="nav-link active">
           <i class="fas fa-check-circle"></i>
-          <span>طلبات المراجعة</span>
+          <span>طلبات الهدايا</span>
           <span class="nav-unread-badge" id="nav-badge-gift" aria-hidden="true"></span>
         </a>
       </div>
@@ -969,6 +1021,11 @@
                 purchase.status === 'declined' ? 'مرفوض' :
                   purchase.status === 'received' ? 'تم الاستلام' : 'قيد المراجعة';
 
+            const safeUsername = (purchase.username || "").toString().trim().replace(/^@+/, "");
+            const safeHandle = safeUsername ? `@${safeUsername}` : "غير متوفر";
+            const safeFullName = ((purchase.fullName || purchase.name || "").toString().trim()) || safeUsername || "غير متوفر";
+            const safeGrade = (purchase.grade || "").toString().trim() || "غير متوفر";
+
             return `
                 <div class="gift-item">
                   ${purchase.itemId?.image
@@ -976,7 +1033,20 @@
                 : '<div class="no-image"><i class="fas fa-gift"></i></div>'
               }
                   <h3>${purchase.itemName}</h3>
-                  <p class="user-info"><i class="fas fa-user"></i> @${purchase.username}</p>
+                  <div class="purchase-user">
+                    <div class="user-line">
+                      <i class="fas fa-id-card"></i>
+                      <span class="user-fullname">${safeFullName}</span>
+                    </div>
+                    <div class="user-line">
+                      <i class="fas fa-user"></i>
+                      <span class="user-handle">${safeHandle}</span>
+                    </div>
+                    <div class="user-line">
+                      <i class="fas fa-graduation-cap"></i>
+                      <span class="user-grade">${safeGrade}</span>
+                    </div>
+                  </div>
                   <div class="cost">${purchase.cost} نقطة</div>
                   
                   <div class="purchase-meta">
@@ -1073,13 +1143,22 @@
           const purchasedAt = purchase.purchasedAt
             ? new Date(purchase.purchasedAt).toLocaleString("ar-EG")
             : "";
+          var safeUsername = (purchase.username || "").toString().trim().replace(/^@+/, "");
+          var safeHandle = safeUsername ? "@" + safeUsername : "غير متوفر";
+          var safeFullName = ((purchase.fullName || purchase.name || "").toString().trim()) || safeUsername || "غير متوفر";
+          var safeGrade = (purchase.grade || "").toString().trim() || "غير متوفر";
+
           return (
             '<div class="gift-item pending-item">' +
             (purchase.itemId && purchase.itemId.image
               ? '<img src="' + purchase.itemId.image.replace(/"/g, "&quot;") + '" alt="' + (purchase.itemId.name || "").replace(/"/g, "&quot;") + '" loading="lazy">'
               : '<div class="no-image"><i class="fas fa-gift"></i></div>') +
             "<h3>" + (purchase.itemName || "").replace(/</g, "&lt;") + "</h3>" +
-            '<p class="user-info"><i class="fas fa-user"></i> @' + (purchase.username || "").replace(/</g, "&lt;") + "</p>" +
+            '<div class="purchase-user">' +
+            '<div class="user-line"><i class="fas fa-id-card"></i><span class="user-fullname">' + safeFullName.replace(/</g, "&lt;") + '</span></div>' +
+            '<div class="user-line"><i class="fas fa-user"></i><span class="user-handle">' + safeHandle.replace(/</g, "&lt;") + '</span></div>' +
+            '<div class="user-line"><i class="fas fa-graduation-cap"></i><span class="user-grade">' + safeGrade.replace(/</g, "&lt;") + '</span></div>' +
+            '</div>' +
             "<div class=\"cost\">" + purchase.cost + " نقطة</div>" +
             (purchasedAt ? '<div class="purchase-meta"><i class="fas fa-clock"></i> ' + purchasedAt + "</div>" : "") +
             '<div class="approval-actions">' +

@@ -177,10 +177,14 @@ if (suggestionsToggle) {
 
 async function loadUserInfo() {
   try {
-    const response = await fetch("/api/user-info");
-    const data = await response.json();
+    const response = await fetch("/api/user-info", { credentials: "include" });
+    if (response.status === 401) {
+      window.location.href = "/login?redirect=" + encodeURIComponent(window.location.pathname + window.location.search);
+      return;
+    }
+    const data = await response.json().catch(() => ({}));
     if (!data.isAuthenticated) {
-      window.location.href = "/login";
+      window.location.href = "/login?redirect=" + encodeURIComponent(window.location.pathname + window.location.search);
       return;
     }
     currentAdminUsername = data.username;
@@ -244,15 +248,23 @@ async function loadUsers(reset) {
     const params = new URLSearchParams({ limit: INITIAL_PAGE_SIZE, skip: 0 });
     if (currentCategory && currentCategory !== "all") params.set("grade", currentCategory);
     if (currentSearch) params.set("search", currentSearch);
-    const response = await fetch("/api/admin/users?" + params.toString());
+    const response = await fetch("/api/admin/users?" + params.toString(), { credentials: "include" });
+    if (response.status === 401) {
+      window.location.href = "/login?redirect=" + encodeURIComponent(window.location.pathname + window.location.search);
+      return;
+    }
     if (!response.ok) throw new Error("HTTP error! status: " + response.status);
-    const data = await response.json();
+    const data = await response.json().catch(() => ({}));
     const activeUsers = data.users && Array.isArray(data.users) ? data.users : [];
     totalActiveUsers = data.total != null ? data.total : activeUsers.length;
     allUsers = activeUsers;
 
-    const bannedResponse = await fetch("/api/banned-users");
-    const bannedUsers = await bannedResponse.json();
+    const bannedResponse = await fetch("/api/banned-users", { credentials: "include" });
+    if (bannedResponse.status === 401) {
+      window.location.href = "/login?redirect=" + encodeURIComponent(window.location.pathname + window.location.search);
+      return;
+    }
+    const bannedUsers = await bannedResponse.json().catch(() => ([]));
     allBannedUsers = Array.isArray(bannedUsers) ? bannedUsers : [];
 
     const statsEl = document.getElementById("dashboard-stats");
@@ -323,9 +335,13 @@ async function loadMoreUsers() {
     const params = new URLSearchParams({ limit: LOAD_MORE_SIZE, skip: allUsers.length });
     if (currentCategory && currentCategory !== "all") params.set("grade", currentCategory);
     if (currentSearch) params.set("search", currentSearch);
-    const response = await fetch("/api/admin/users?" + params.toString());
+    const response = await fetch("/api/admin/users?" + params.toString(), { credentials: "include" });
+    if (response.status === 401) {
+      window.location.href = "/login?redirect=" + encodeURIComponent(window.location.pathname + window.location.search);
+      return;
+    }
     if (!response.ok) throw new Error("HTTP " + response.status);
-    const data = await response.json();
+    const data = await response.json().catch(() => ({}));
     const nextUsers = data.users && Array.isArray(data.users) ? data.users : [];
     if (nextUsers.length === 0) {
       loadingMore = false;
@@ -391,6 +407,11 @@ function displayUsersByCategory(category) {
 function getUsersCardsHtml(users) {
   return (users || [])
     .map((user) => {
+      const firstName = user && user.firstName != null ? String(user.firstName).trim() : "";
+      const secondName = user && user.secondName != null ? String(user.secondName).trim() : "";
+      const safeUsername = user && user.username != null ? String(user.username).trim() : "";
+      const fullNameSafe = `${firstName} ${secondName}`.trim() || safeUsername || "غير متوفر";
+
       const gradeText =
         {
           prep1: "أولى إعدادي",
@@ -442,9 +463,9 @@ function getUsersCardsHtml(users) {
                             <i class="fas fa-user-circle"></i>
                         </div>
                         <div class="user-main-info">
-                            <h3>${user.firstName} ${user.secondName}</h3>
+                            <h3>${fullNameSafe}</h3>
                             <div class="user-badges">
-                                <span class="username-badge">@${user.username
+                                <span class="username-badge">@${safeUsername
         }</span>
                                 <span class="role-badge ${user.role
         }">${roleText}</span>

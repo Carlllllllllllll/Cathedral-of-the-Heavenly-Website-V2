@@ -49,6 +49,7 @@ body.admin-page-user-management .main-content {
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  overflow-x: hidden;
   transition: none;
 }
 
@@ -90,6 +91,7 @@ body.admin-page-user-management .main-content {
   gap: 4px;
   flex: 1;
   padding-right: 4px;
+  overflow-x: hidden;
 }
 
 .nav-item {
@@ -108,6 +110,8 @@ body.admin-page-user-management .main-content {
   font-weight: 600;
   font-size: 0.95rem;
   position: relative;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .nav-link i {
@@ -115,6 +119,10 @@ body.admin-page-user-management .main-content {
   text-align: center;
   font-size: 1.1rem;
   opacity: 0.9;
+}
+
+.toggle-icon {
+  flex-shrink: 0;
 }
 
 .nav-link:hover {
@@ -969,6 +977,7 @@ body.admin-page-user-management .main-content {
 .grades-submenu-container,
 .suggestions-submenu-container {
   overflow: hidden;
+  overflow-x: hidden;
 }
 
 .grades-submenu,
@@ -979,6 +988,7 @@ body.admin-page-user-management .main-content {
   margin-right: 20px;
   border-right: 2px solid var(--accent);
   padding-right: 8px;
+  overflow-x: hidden;
 }
 
 .grades-toggle.active+.grades-submenu-container .grades-submenu,
@@ -991,6 +1001,7 @@ body.admin-page-user-management .main-content {
   overflow: hidden;
   transition: max-height 0.3s ease;
   margin-right: 16px;
+  overflow-x: hidden;
 }
 
 .section-toggle.active+.section-submenu {
@@ -1004,6 +1015,10 @@ body.admin-page-user-management .main-content {
   border-radius: 6px;
   margin-bottom: 4px;
   transition: var(--transition);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .submenu-link:hover {
