@@ -249,6 +249,9 @@ const INITIAL_PAGE_SIZE = 4;
 const LOAD_MORE_SIZE = 2;
 let totalActiveUsers = 0;
 let loadingMore = false;
+let usersListObserver = null;
+let usersListScrollFallbackBound = false;
+let usersScrollCheckFn = null;
 
 async function loadUsers(reset) {
   if (reset !== false && usersList) {
@@ -320,6 +323,7 @@ async function loadUsers(reset) {
     updateCategoryCounts();
     displayUsers(allUsers);
     maybeAppendScrollSentinel();
+    await autoFillUsersToEnableScroll();
   } catch (error) {
     console.error("Error loading users:", error);
     if (usersList) {
@@ -378,7 +382,7 @@ async function loadMoreUsers() {
       return true;
     });
     allUsers = allUsers.concat(uniqueNext);
-    const newCardsHtml = getUsersCardsHtml(nextUsers);
+    const newCardsHtml = getUsersCardsHtml(uniqueNext);
     if (sentinel) sentinel.insertAdjacentHTML("beforebegin", newCardsHtml);
     updateCategoryCounts();
 
@@ -397,19 +401,83 @@ async function loadMoreUsers() {
 }
 
 function maybeAppendScrollSentinel() {
-  if (document.getElementById("users-list-sentinel")) return;
+  if (!usersList) return;
+  if (allUsers.length >= totalActiveUsers) {
+    document.getElementById("users-list-sentinel")?.remove();
+    return;
+  }
+
+  const existing = document.getElementById("users-list-sentinel");
+  if (existing) {
+    if (usersListObserver) usersListObserver.observe(existing);
+    bindUsersScrollFallback();
+    return;
+  }
   const sentinel = document.createElement("div");
   sentinel.id = "users-list-sentinel";
   sentinel.className = "users-list-sentinel";
   sentinel.setAttribute("aria-hidden", "true");
-  if (usersList) usersList.appendChild(sentinel);
-  const observer = new IntersectionObserver(
-    (entries) => {
-      if (entries[0].isIntersecting) loadMoreUsers();
-    },
-    { root: null, rootMargin: "200px", threshold: 0 }
-  );
-  observer.observe(sentinel);
+  usersList.appendChild(sentinel);
+
+  if (typeof IntersectionObserver === "function") {
+    if (!usersListObserver) {
+      usersListObserver = new IntersectionObserver(
+        (entries) => {
+          if (entries && entries[0] && entries[0].isIntersecting) loadMoreUsers();
+        },
+        { root: null, rootMargin: "400px", threshold: 0 }
+      );
+    }
+    usersListObserver.observe(sentinel);
+  }
+
+  bindUsersScrollFallback();
+}
+
+function bindUsersScrollFallback() {
+  if (usersListScrollFallbackBound) return;
+  usersListScrollFallbackBound = true;
+
+  const onScroll = () => {
+    if (loadingMore) return;
+    if (allUsers.length >= totalActiveUsers) return;
+    const doc = document.documentElement;
+    const scrollBottom = (window.scrollY || doc.scrollTop || 0) + window.innerHeight;
+    const docHeight = doc.scrollHeight || 0;
+    if (docHeight > 0 && scrollBottom >= docHeight - 800) {
+      loadMoreUsers();
+    }
+  };
+
+  usersScrollCheckFn = onScroll;
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll, { passive: true });
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") onScroll();
+  });
+
+  setTimeout(onScroll, 0);
+}
+
+async function autoFillUsersToEnableScroll() {
+  if (loadingMore) return;
+  if (allUsers.length >= totalActiveUsers) return;
+
+  const maxRounds = 20;
+  for (let i = 0; i < maxRounds; i++) {
+    const doc = document.documentElement;
+    const docHeight = doc.scrollHeight || 0;
+    const viewport = window.innerHeight || 0;
+    const canScroll = docHeight > viewport + 50;
+    if (canScroll) break;
+    if (allUsers.length >= totalActiveUsers) break;
+    await loadMoreUsers();
+  }
+
+  if (typeof usersScrollCheckFn === "function") {
+    usersScrollCheckFn();
+  }
 }
 
 function displayUsersByCategory(category) {
@@ -867,6 +935,7 @@ async function showPasswordResetLinks(userId, username) {
       title: `روابط تغيير كلمة المرور — ${username}`,
       html: `<div class="reset-links-wrapper"><table class="reset-links-table"><thead><tr><th class="col-index">#</th><th class="col-url">الرابط</th><th class="col-status">الحالة</th><th class="col-code">الكود</th><th class="col-verified">تم التحقق</th><th class="col-expires">ينتهي</th><th class="col-created">أنشئ</th><th class="col-by">بواسطة</th></tr></thead><tbody>${rows}</tbody></table></div>`,
       icon: "info",
+      customClass: { popup: "reset-links-swal" },
       confirmButtonText: "إغلاق",
       confirmButtonColor: "#ffcc00",
       width: "min(980px, 98vw)",
