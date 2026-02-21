@@ -5062,10 +5062,23 @@ app.post("/api/admin/gift-shop/purchases/:id/received", requireAuth, requireSpec
 
 app.get("/api/admin/gift-shop/items", requireAuth, requireSpecialRole("form-editor"), async (req, res) => {
   try {
-    const items = await GiftShopItem.find({}).sort({ createdAt: -1 }).lean();
-    res.json(items);
+    const limitRaw = req.query.limit;
+    const skipRaw = req.query.skip;
+    const limit = Math.max(0, Math.min(50, Number.parseInt(String(limitRaw ?? ""), 10) || 0));
+    const skip = Math.max(0, Number.parseInt(String(skipRaw ?? ""), 10) || 0);
+
+    const [items, total] = await Promise.all([
+      GiftShopItem.find({})
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit || 0)
+        .lean(),
+      GiftShopItem.countDocuments({}),
+    ]);
+
+    res.json({ items, total });
   } catch (err) {
-    res.status(500).json([]);
+    res.status(500).json({ items: [], total: 0 });
   }
 });
 
