@@ -179,6 +179,25 @@
         width: 100%;
       }
 
+      .users-list-sentinel.loading {
+        height: auto;
+      }
+
+      .users-list-sentinel .users-loading-indicator {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin: 18px 0;
+        padding: 10px 0;
+        text-align: center;
+        opacity: 0.9;
+      }
+
+      .users-list-sentinel .users-loading-text {
+        display: inline-block;
+      }
+
       @media (max-width: 520px) {
         .users-grid {
           grid-template-columns: 1fr;
@@ -439,6 +458,8 @@
           overscroll-behavior: contain;
           touch-action: pan-x pan-y;
           scrollbar-width: none;
+          display: flex;
+          flex-direction: column;
         }
 
         .swal2-popup.reset-links-swal .swal2-html-container::-webkit-scrollbar {
@@ -452,6 +473,8 @@
           -webkit-overflow-scrolling: touch;
           overscroll-behavior: contain;
           touch-action: pan-x pan-y;
+          flex: 1 1 auto;
+          min-height: 180px;
         }
       }
 

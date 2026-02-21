@@ -285,6 +285,47 @@
     let adminItemsTotal = null;
     let adminItemsSkip = 0;
     let adminItemsLoading = false;
+    let adminItemsById = {};
+    let editingItemId = null;
+
+    function applyModalMode(isEdit) {
+      const modal = document.getElementById("add-item-modal");
+      if (!modal) return;
+      const titleEl = modal.querySelector(".modal-header h2");
+      if (titleEl) {
+        titleEl.innerHTML = isEdit
+          ? '<i class="fas fa-pen"></i> تعديل الهدية'
+          : '<i class="fas fa-gift"></i> إضافة عنصر جديد';
+      }
+      const submitBtn = modal.querySelector("#add-item-form button[type='submit']");
+      if (submitBtn) {
+        submitBtn.innerHTML = isEdit
+          ? '<i class="fas fa-save"></i> حفظ التعديلات'
+          : '<i class="fas fa-plus"></i> إضافة العنصر';
+      }
+    }
+
+    function openEditItem(itemId) {
+      const id = String(itemId || "");
+      if (!id) return;
+      const item = adminItemsById[id];
+      if (!item) return;
+      editingItemId = id;
+      applyModalMode(true);
+      showAddItemModal();
+
+      const setVal = (elId, val) => {
+        const el = document.getElementById(elId);
+        if (el) el.value = val != null ? String(val) : "";
+      };
+
+      setVal("item-name", item.name || "");
+      setVal("item-description", item.description || "");
+      setVal("item-cost", item.cost != null ? item.cost : "");
+      setVal("item-stock", item.stock != null ? item.stock : "");
+      setVal("item-purchase-limit", item.purchaseLimit != null ? item.purchaseLimit : "");
+      setVal("item-image", item.image || "");
+    }
 
     function getAdminItemCardHtml(item) {
       return `
@@ -305,6 +346,10 @@
                   <button onclick="toggleItemActive('${item._id}', ${!item.active})" class="${item.active ? "deactivate-btn" : "activate-btn"}">
                       <i class="fas fa-power-off"></i>
                       ${item.active ? "تعطيل" : "تفعيل"}
+                  </button>
+                  <button onclick="openEditItem('${item._id}')" class="edit-btn">
+                      <i class="fas fa-pen"></i>
+                      تعديل
                   </button>
                   <button onclick="deleteItem('${item._id}')" class="delete-btn">
                       <i class="fas fa-trash"></i>
@@ -390,6 +435,10 @@
 
         const items = page.items || [];
         if (adminItemsTotal == null && page.total != null) adminItemsTotal = page.total;
+
+        items.forEach((it) => {
+          if (it && it._id) adminItemsById[String(it._id)] = it;
+        });
 
         if (adminItemsSkip === 0) {
           if (items.length === 0) {
@@ -607,6 +656,7 @@
     function showAddItemModal() {
       const modal = document.getElementById("add-item-modal");
       if (modal) {
+        if (!editingItemId) applyModalMode(false);
         modal.style.display = "flex";
         modal.classList.add("active");
         modal.classList.add("show");
@@ -627,6 +677,8 @@
         document.body.style.overflow = "";
         const form = document.getElementById("add-item-form");
         if (form) form.reset();
+        editingItemId = null;
+        applyModalMode(false);
       }
     }
 
@@ -662,8 +714,12 @@
         }
 
         try {
-          const response = await fetch("/api/admin/gift-shop/items", {
-            method: "POST",
+          const url = editingItemId
+            ? `/api/admin/gift-shop/items/${encodeURIComponent(editingItemId)}`
+            : "/api/admin/gift-shop/items";
+          const method = editingItemId ? "PUT" : "POST";
+          const response = await fetch(url, {
+            method,
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(formData),
           });
@@ -672,7 +728,7 @@
           if (response.ok) {
             Swal.fire({
               title: "تم!",
-              text: "تم إضافة العنصر بنجاح",
+              text: editingItemId ? "تم تحديث العنصر بنجاح" : "تم إضافة العنصر بنجاح",
               icon: "success",
               confirmButtonText: "حسنًا",
               confirmButtonColor: "#ffcc00",
@@ -685,14 +741,14 @@
         } catch (error) {
           Swal.fire({
             title: "خطأ!",
-            text: error.message || "تعذر إضافة العنصر",
+            text: error.message || (editingItemId ? "تعذر تحديث العنصر" : "تعذر إضافة العنصر"),
             icon: "error",
             confirmButtonText: "حسنًا",
           });
         } finally {
           if (submitBtn) {
             submitBtn.disabled = false;
-            submitBtn.innerHTML = '<i class="fas fa-plus"></i> إضافة العنصر';
+            applyModalMode(Boolean(editingItemId));
           }
         }
       });
@@ -703,7 +759,11 @@
 
       document
         .getElementById("add-item-btn")
-        .addEventListener("click", showAddItemModal);
+        .addEventListener("click", () => {
+          editingItemId = null;
+          applyModalMode(false);
+          showAddItemModal();
+        });
       document
         .getElementById("close-modal-btn")
         .addEventListener("click", closeAddItemModal);
@@ -1113,6 +1173,17 @@
 
     .deactivate-btn:hover {
       background: rgba(243, 156, 18, 0.3);
+      color: #fff;
+    }
+
+    .edit-btn {
+      background: rgba(52, 152, 219, 0.15);
+      color: #3498db;
+      border: 1px solid rgba(52, 152, 219, 0.4);
+    }
+
+    .edit-btn:hover {
+      background: rgba(52, 152, 219, 0.35);
       color: #fff;
     }
 
