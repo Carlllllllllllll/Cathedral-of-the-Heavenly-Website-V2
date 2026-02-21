@@ -899,6 +899,71 @@ async function showPasswordResetLinks(userId, username) {
     const activeOnly = allLinks.filter((l) => l.active);
     const links = activeOnly.length > 0 ? activeOnly : allLinks;
     const formatDate = (d) => (d ? new Date(d).toLocaleString("ar-EG") : "—");
+    const isMobile = (window.innerWidth || 0) <= 520;
+
+    const buildMobileCardsHtml = () => {
+      if (!links.length) {
+        return `<div class="reset-links-mobile-empty">${
+          activeOnly.length === 0 && allLinks.length > 0
+            ? "لا توجد روابط نشطة. جميع الروابط منتهية."
+            : "لا توجد روابط مسجّلة"
+        }</div>`;
+      }
+
+      return `<div class="reset-links-mobile-list">${links
+        .map((l, i) => {
+          const url = (l.url || "").toString();
+          const urlB64 = btoa(unescape(encodeURIComponent(url)));
+          const urlSafe = url.replace(/</g, "&lt;");
+          const code = (l.verificationCode || "").toString();
+          const codeSafe = code.replace(/</g, "&lt;");
+          const codeB64 = btoa(unescape(encodeURIComponent(code)));
+          const statusHtml = l.active
+            ? '<span class="rl-badge rl-badge-active">نشط</span>'
+            : '<span class="rl-badge rl-badge-expired">منتهي</span>';
+          const verifiedHtml = l.verifiedAt
+            ? '<span class="rl-badge rl-badge-verified">✅ تم</span>'
+            : '<span class="rl-badge rl-badge-pending">⏳ لم يتم</span>';
+
+          return `<div class="reset-links-mobile-card">
+            <div class="rl-row rl-row-top">
+              <div class="rl-index">#${i + 1}</div>
+              <div class="rl-badges">${statusHtml}${verifiedHtml}</div>
+            </div>
+
+            <div class="rl-url-wrap">
+              <a class="reset-link-url rl-url" href="${urlSafe}" target="_blank" rel="noopener noreferrer">${urlSafe}</a>
+              <div class="rl-url-actions">
+                <button type="button" class="copy-btn links-copy-btn rl-copy-btn" data-url-b64="${urlB64}">
+                  <i class="fas fa-copy"></i>
+                  نسخ الرابط
+                </button>
+                <a class="rl-open-btn" href="${urlSafe}" target="_blank" rel="noopener noreferrer">
+                  فتح
+                </a>
+              </div>
+            </div>
+
+            <div class="rl-meta">
+              <div class="rl-meta-row"><span class="rl-meta-label">ينتهي:</span><span class="rl-meta-value">${formatDate(l.expiresAt)}</span></div>
+              <div class="rl-meta-row"><span class="rl-meta-label">أنشئ:</span><span class="rl-meta-value">${formatDate(l.createdAt)}</span></div>
+            </div>
+
+            ${codeSafe
+              ? `<div class="rl-code">
+                  <div class="rl-code-label">الكود</div>
+                  <div class="rl-code-value">${codeSafe}
+                    <button type="button" class="copy-btn links-copy-code-btn" data-code-b64="${codeB64}" style="margin-inline-start:8px;">
+                      <i class="fas fa-copy"></i>
+                    </button>
+                  </div>
+                </div>`
+              : ""}
+          </div>`;
+        })
+        .join("")}</div>`;
+    };
+
     const rows = links.length
       ? links
         .map(
@@ -931,12 +996,14 @@ async function showPasswordResetLinks(userId, username) {
       : "<tr><td colspan=\"8\" style=\"padding:20px;text-align:center;color:#d1c4e9;\">" + (activeOnly.length === 0 && allLinks.length > 0 ? "لا توجد روابط نشطة. جميع الروابط منتهية." : "لا توجد روابط مسجّلة") + "</td></tr>";
     Swal.fire({
       title: `روابط تغيير كلمة المرور — ${username}`,
-      html: `<div class="reset-links-wrapper"><table class="reset-links-table"><thead><tr><th class="col-index">#</th><th class="col-url">الرابط</th><th class="col-status">الحالة</th><th class="col-code">الكود</th><th class="col-verified">تم التحقق</th><th class="col-expires">ينتهي</th><th class="col-created">أنشئ</th><th class="col-by">بواسطة</th></tr></thead><tbody>${rows}</tbody></table></div>`,
+      html: isMobile
+        ? buildMobileCardsHtml()
+        : `<div class="reset-links-wrapper"><table class="reset-links-table"><thead><tr><th class="col-index">#</th><th class="col-url">الرابط</th><th class="col-status">الحالة</th><th class="col-code">الكود</th><th class="col-verified">تم التحقق</th><th class="col-expires">ينتهي</th><th class="col-created">أنشئ</th><th class="col-by">بواسطة</th></tr></thead><tbody>${rows}</tbody></table></div>`,
       icon: "info",
       customClass: { popup: "reset-links-swal" },
       confirmButtonText: "إغلاق",
       confirmButtonColor: "#ffcc00",
-      width: "min(980px, 98vw)",
+      width: isMobile ? "min(520px, 94vw)" : "min(980px, 98vw)",
       heightAuto: false,
       scrollbarPadding: false,
       background: "#2a1b3c",
