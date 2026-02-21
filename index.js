@@ -2137,7 +2137,13 @@ async function connectToDatabase() {
         },
       ],
     });
-    process.exit(1);
+    
+
+global.__dbConnected = false;
+setTimeout(() => {
+  connectToDatabase();
+}, Math.max(15000, Number(process.env.DATABASE_RETRY_MS || 30000)));
+
   }
 }
 
