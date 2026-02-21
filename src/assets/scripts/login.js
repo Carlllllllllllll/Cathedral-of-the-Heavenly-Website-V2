@@ -28,7 +28,10 @@ const translateAuthError = (rawMessage) => {
     return "يرجى إدخال كود التحقق المكون من 6 أرقام";
   }
 
-  if (lower.includes("wrong password") || lower.includes("incorrect password")) {
+  if (
+    lower.includes("wrong password") ||
+    lower.includes("incorrect password")
+  ) {
     return "كلمة المرور غير صحيحة";
   }
 
@@ -36,7 +39,11 @@ const translateAuthError = (rawMessage) => {
     return "البيانات غير صحيحة. الرجاء المحاولة مرة أخرى.";
   }
 
-  if (lower.includes("too many") || lower.includes("rate") || lower.includes("limit")) {
+  if (
+    lower.includes("too many") ||
+    lower.includes("rate") ||
+    lower.includes("limit")
+  ) {
     return "تم تنفيذ محاولات كثيرة. يرجى المحاولة لاحقاً.";
   }
 
@@ -74,10 +81,10 @@ whenReady(() => {
   const loginForm = document.getElementById("login-form");
   const errorMessage = document.getElementById("error-message");
   const submitButton = document.querySelector(
-    "#login-form button[type='submit']"
+    "#login-form button[type='submit']",
   );
   const verificationSection = document.getElementById(
-    "verification-code-section"
+    "verification-code-section",
   );
   const verificationInput = document.getElementById("verification-code");
 
@@ -122,8 +129,14 @@ whenReady(() => {
 
     if (usernameEl) {
       usernameEl.addEventListener("input", function () {
-        if (typeof containsArabicCharacters === "function" && containsArabicCharacters(this.value)) {
-          this.value = typeof removeArabicCharacters === "function" ? removeArabicCharacters(this.value) : this.value;
+        if (
+          typeof containsArabicCharacters === "function" &&
+          containsArabicCharacters(this.value)
+        ) {
+          this.value =
+            typeof removeArabicCharacters === "function"
+              ? removeArabicCharacters(this.value)
+              : this.value;
           GlobalErrorHandler.show("العربية غير مسموحة في اسم المستخدم");
         } else {
           GlobalErrorHandler.clear();
@@ -133,8 +146,14 @@ whenReady(() => {
 
     if (passwordEl) {
       passwordEl.addEventListener("input", function () {
-        if (typeof containsArabicCharacters === "function" && containsArabicCharacters(this.value)) {
-          this.value = typeof removeArabicCharacters === "function" ? removeArabicCharacters(this.value) : this.value;
+        if (
+          typeof containsArabicCharacters === "function" &&
+          containsArabicCharacters(this.value)
+        ) {
+          this.value =
+            typeof removeArabicCharacters === "function"
+              ? removeArabicCharacters(this.value)
+              : this.value;
           GlobalErrorHandler.show("العربية غير مسموحة في كلمة المرور");
         } else {
           GlobalErrorHandler.clear();
@@ -169,13 +188,18 @@ whenReady(() => {
       }
 
       const urlParams = new URLSearchParams(window.location.search);
-      const redirect = urlParams.get('redirect');
+      const redirect = urlParams.get("redirect");
 
       try {
         const response = await fetch("/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, password, verificationCode, redirect }),
+          body: JSON.stringify({
+            username,
+            password,
+            verificationCode,
+            redirect,
+          }),
         });
 
         const result = await response.json();
@@ -218,7 +242,11 @@ whenReady(() => {
             },
             preConfirm: async () => {
               const input = document.getElementById("swal-verification-code");
-              const code = input ? String(input.value || "").replace(/\D/g, "").slice(0, 6) : "";
+              const code = input
+                ? String(input.value || "")
+                    .replace(/\D/g, "")
+                    .slice(0, 6)
+                : "";
               if (!code || code.length !== 6) {
                 Swal.showValidationMessage("يرجى إدخال 6 أرقام فقط");
                 return false;
@@ -228,18 +256,39 @@ whenReady(() => {
                 const verifyResponse = await fetch("/login", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ username, password, verificationCode: code, redirect }),
+                  body: JSON.stringify({
+                    username,
+                    password,
+                    verificationCode: code,
+                    redirect,
+                  }),
                 });
-                const verifyResult = await verifyResponse.json().catch(() => ({}));
+                const verifyResult = await verifyResponse
+                  .json()
+                  .catch(() => ({}));
 
                 if (!verifyResponse.ok || !verifyResult.success) {
-                  const translated = translateAuthError(verifyResult.message || "كود التحقق غير صحيح");
-                  const waitSeconds = typeof parseCooldownSeconds === "function"
-                    ? parseCooldownSeconds(verifyResult.message)
-                    : 0;
+                  const translated = translateAuthError(
+                    verifyResult.message || "كود التحقق غير صحيح",
+                  );
+                  const waitSeconds =
+                    typeof parseCooldownSeconds === "function"
+                      ? parseCooldownSeconds(verifyResult.message)
+                      : 0;
                   if (waitSeconds > 0) {
-                    Swal.showValidationMessage(`تم تنفيذ محاولات كثيرة. يرجى الانتظار ${waitSeconds} ثانية.`);
-                  } else if ((verifyResult.message || "").toString().toLowerCase().includes("expired") || (verifyResult.message || "").toString().toLowerCase().includes("link")) {
+                    Swal.showValidationMessage(
+                      `تم تنفيذ محاولات كثيرة. يرجى الانتظار ${waitSeconds} ثانية.`,
+                    );
+                  } else if (
+                    (verifyResult.message || "")
+                      .toString()
+                      .toLowerCase()
+                      .includes("expired") ||
+                    (verifyResult.message || "")
+                      .toString()
+                      .toLowerCase()
+                      .includes("link")
+                  ) {
                     Swal.showValidationMessage("كود التحقق غير صحيح");
                   } else {
                     Swal.showValidationMessage(translated);
@@ -249,7 +298,9 @@ whenReady(() => {
 
                 return verifyResult;
               } catch (err) {
-                Swal.showValidationMessage("تعذر الاتصال بالخادم. تحقق من الإنترنت وحاول مرة أخرى.");
+                Swal.showValidationMessage(
+                  "تعذر الاتصال بالخادم. تحقق من الإنترنت وحاول مرة أخرى.",
+                );
                 return false;
               }
             },
@@ -260,21 +311,23 @@ whenReady(() => {
           }
 
           const verifyResult = swalRes.value;
-          const waitSeconds = typeof parseCooldownSeconds === "function"
-            ? parseCooldownSeconds(verifyResult && verifyResult.message)
-            : 0;
+          const waitSeconds =
+            typeof parseCooldownSeconds === "function"
+              ? parseCooldownSeconds(verifyResult && verifyResult.message)
+              : 0;
           if (waitSeconds > 0) {
             setCooldown(waitSeconds);
             return;
           }
 
-          window.location.href = (verifyResult && verifyResult.redirect) || "/form-panel";
+          window.location.href =
+            (verifyResult && verifyResult.redirect) || "/form-panel";
           return;
         }
 
         if (!response.ok || !result.success) {
           throw new Error(
-            result.message || "البيانات غير صحيحة. الرجاء المحاولة مرة أخرى."
+            result.message || "البيانات غير صحيحة. الرجاء المحاولة مرة أخرى.",
           );
         }
 
@@ -283,9 +336,10 @@ whenReady(() => {
         errorMessage.textContent = translateAuthError(error.message);
         errorMessage.style.color = "#ef4444";
 
-        const waitSeconds = typeof parseCooldownSeconds === "function"
-          ? parseCooldownSeconds(error && error.message)
-          : 0;
+        const waitSeconds =
+          typeof parseCooldownSeconds === "function"
+            ? parseCooldownSeconds(error && error.message)
+            : 0;
         if (waitSeconds > 0) {
           setCooldown(waitSeconds);
         }

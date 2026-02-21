@@ -1,164 +1,104 @@
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
 
 let argon2;
 
 try {
+  argon2 = require("argon2");
+} catch (e) {}
 
-    argon2 = require('argon2');
+const JWT_SECRET = process.env.JWT_SECRET || "fallback_jwt_secret_998877";
 
-} catch (e) {
+const JWT_REFRESH_SECRET =
+  process.env.JWT_REFRESH_SECRET || "fallback_refresh_secret_112233";
 
-    // argon2 not available
+const ACCESS_TOKEN_EXPIRY = "15m";
 
-}
-
-
-
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback_jwt_secret_998877';
-
-const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'fallback_refresh_secret_112233';
-
-const ACCESS_TOKEN_EXPIRY = '15m';
-
-const REFRESH_TOKEN_EXPIRY = '7d';
-
-
+const REFRESH_TOKEN_EXPIRY = "7d";
 
 async function hashPassword(password) {
+  if (argon2) {
+    return await argon2.hash(password, {
+      type: argon2.argon2id,
 
-    if (argon2) {
+      memoryCost: 2 ** 16,
 
-        return await argon2.hash(password, {
+      timeCost: 3,
 
-            type: argon2.argon2id,
+      parallelism: 1,
+    });
+  }
 
-            memoryCost: 2 ** 16,
-
-            timeCost: 3,
-
-            parallelism: 1
-
-        });
-
-    }
-
-    return await bcrypt.hash(password, 12);
-
+  return await bcrypt.hash(password, 12);
 }
-
-
 
 async function comparePassword(password, hashedPassword) {
-
-    if (argon2 && hashedPassword.startsWith('$argon2')) {
-
-        try {
-
-            return await argon2.verify(hashedPassword, password);
-
-        } catch (e) {
-
-            return false;
-
-        }
-
+  if (argon2 && hashedPassword.startsWith("$argon2")) {
+    try {
+      return await argon2.verify(hashedPassword, password);
+    } catch (e) {
+      return false;
     }
+  }
 
-    return await bcrypt.compare(password, hashedPassword);
-
+  return await bcrypt.compare(password, hashedPassword);
 }
-
-
 
 function generateAccessToken(user) {
+  return jwt.sign(
+    {
+      id: user._id,
 
-    return jwt.sign(
+      username: user.username,
 
-        {
+      role: user.role,
 
-            id: user._id,
+      grade: user.grade,
+    },
 
-            username: user.username,
+    JWT_SECRET,
 
-            role: user.role,
-
-            grade: user.grade
-
-        },
-
-        JWT_SECRET,
-
-        { expiresIn: ACCESS_TOKEN_EXPIRY }
-
-    );
-
+    { expiresIn: ACCESS_TOKEN_EXPIRY },
+  );
 }
-
-
 
 function generateRefreshToken(user) {
+  return jwt.sign(
+    { id: user._id },
 
-    return jwt.sign(
+    JWT_REFRESH_SECRET,
 
-        { id: user._id },
-
-        JWT_REFRESH_SECRET,
-
-        { expiresIn: REFRESH_TOKEN_EXPIRY }
-
-    );
-
+    { expiresIn: REFRESH_TOKEN_EXPIRY },
+  );
 }
-
-
 
 function verifyAccessToken(token) {
-
-    try {
-
-        return jwt.verify(token, JWT_SECRET);
-
-    } catch (e) {
-
-        return null;
-
-    }
-
+  try {
+    return jwt.verify(token, JWT_SECRET);
+  } catch (e) {
+    return null;
+  }
 }
-
-
 
 function verifyRefreshToken(token) {
-
-    try {
-
-        return jwt.verify(token, JWT_REFRESH_SECRET);
-
-    } catch (e) {
-
-        return null;
-
-    }
-
+  try {
+    return jwt.verify(token, JWT_REFRESH_SECRET);
+  } catch (e) {
+    return null;
+  }
 }
 
-
-
 module.exports = {
+  hashPassword,
 
-    hashPassword,
+  comparePassword,
 
-    comparePassword,
+  generateAccessToken,
 
-    generateAccessToken,
+  generateRefreshToken,
 
-    generateRefreshToken,
+  verifyAccessToken,
 
-    verifyAccessToken,
-
-    verifyRefreshToken
-
+  verifyRefreshToken,
 };
-

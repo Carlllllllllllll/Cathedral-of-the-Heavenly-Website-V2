@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
   <head>
     <meta charset="UTF-8" />
@@ -32,35 +32,140 @@
     <script src="/scripts/sidebar.js" defer></script>
     <script src="/scripts/console.js" defer></script>
     <style>
-      .live-stats { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
-      .live-stat-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1rem 1.5rem; min-width: 140px; }
-      .live-stat-card .value { font-size: 1.5rem; font-weight: 700; color: var(--accent, #ffcc00); }
-      .live-stat-card .label { font-size: 0.9rem; color: var(--text-muted, #95a5a6); margin-top: 0.25rem; }
-      .live-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
-      .live-actions button { padding: 0.6rem 1rem; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem; }
-      .live-actions .btn-refresh { background: rgba(52, 152, 219, 0.2); color: #3498db; }
-      .live-actions .btn-clear { background: rgba(231, 76, 60, 0.2); color: #e74c3c; }
-      .live-actions .btn-clear-guests { background: rgba(155, 89, 182, 0.2); color: #9b59b6; }
-      .live-actions button:hover { opacity: 0.9; transform: translateY(-1px); }
-      .sessions-table-wrap, .guests-table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 1.5rem; }
-      .sessions-table, .guests-table { width: 100%; border-collapse: collapse; }
-      .sessions-table th, .sessions-table td, .guests-table th, .guests-table td { padding: 0.75rem 1rem; text-align: right; border-bottom: 1px solid rgba(255,255,255,0.06); }
-      .sessions-table th, .guests-table th { background: rgba(255,255,255,0.05); font-weight: 600; color: var(--text); }
-      .sessions-table tr:hover, .guests-table tr:hover { background: rgba(255,255,255,0.03); }
-      .badge-live { background: #27ae60; color: white; padding: 0.2rem 0.5rem; border-radius: 6px; font-size: 0.8rem; }
-      .badge-idle { color: var(--text-muted); font-size: 0.85rem; }
-      .path-cell { font-family: monospace; font-size: 0.85rem; max-width: 200px; overflow: hidden; text-overflow: ellipsis; }
-      .live-note { margin-top: 0.5rem; padding: 0.75rem 1rem; background: rgba(255,204,0,0.08); border-radius: 8px; font-size: 0.9rem; color: var(--text); }
-      .suite-section { margin-top: 2rem; padding: 1.25rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; }
-      .suite-section h2 { margin-bottom: 1rem; font-size: 1.1rem; color: var(--accent); }
-      .section-title { margin: 1.5rem 0 0.75rem; font-size: 1rem; color: var(--text); }
+      .live-stats {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      .live-stat-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 1rem 1.5rem;
+        min-width: 140px;
+      }
+      .live-stat-card .value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--accent, #ffcc00);
+      }
+      .live-stat-card .label {
+        font-size: 0.9rem;
+        color: var(--text-muted, #95a5a6);
+        margin-top: 0.25rem;
+      }
+      .live-actions {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.5rem;
+      }
+      .live-actions button {
+        padding: 0.6rem 1rem;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .live-actions .btn-refresh {
+        background: rgba(52, 152, 219, 0.2);
+        color: #3498db;
+      }
+      .live-actions .btn-clear {
+        background: rgba(231, 76, 60, 0.2);
+        color: #e74c3c;
+      }
+      .live-actions .btn-clear-guests {
+        background: rgba(155, 89, 182, 0.2);
+        color: #9b59b6;
+      }
+      .live-actions button:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+      }
+      .sessions-table-wrap,
+      .guests-table-wrap {
+        overflow-x: auto;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 1.5rem;
+      }
+      .sessions-table,
+      .guests-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .sessions-table th,
+      .sessions-table td,
+      .guests-table th,
+      .guests-table td {
+        padding: 0.75rem 1rem;
+        text-align: right;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      }
+      .sessions-table th,
+      .guests-table th {
+        background: rgba(255, 255, 255, 0.05);
+        font-weight: 600;
+        color: var(--text);
+      }
+      .sessions-table tr:hover,
+      .guests-table tr:hover {
+        background: rgba(255, 255, 255, 0.03);
+      }
+      .badge-live {
+        background: #27ae60;
+        color: white;
+        padding: 0.2rem 0.5rem;
+        border-radius: 6px;
+        font-size: 0.8rem;
+      }
+      .badge-idle {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+      }
+      .path-cell {
+        font-family: monospace;
+        font-size: 0.85rem;
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .live-note {
+        margin-top: 0.5rem;
+        padding: 0.75rem 1rem;
+        background: rgba(255, 204, 0, 0.08);
+        border-radius: 8px;
+        font-size: 0.9rem;
+        color: var(--text);
+      }
+      .suite-section {
+        margin-top: 2rem;
+        padding: 1.25rem;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+      }
+      .suite-section h2 {
+        margin-bottom: 1rem;
+        font-size: 1.1rem;
+        color: var(--accent);
+      }
+      .section-title {
+        margin: 1.5rem 0 0.75rem;
+        font-size: 1rem;
+        color: var(--text);
+      }
       body.admin-live .main-content {
         margin-left: 0;
       }
     </style>
   </head>
   <body class="admin-page-form-panel admin-live">
-
     <main class="main-content">
       <header class="top-nav">
         <div class="user-info">
@@ -75,8 +180,14 @@
         </div>
       </header>
       <div class="admin-container">
-        <h1><i class="fas fa-broadcast-tower"></i> التحكم المتقدم والمتابعة المباشرة</h1>
-        <p style="color: var(--text-muted, #95a5a6); margin-bottom: 1rem;">عرض الجلسات والضيوف والنشاط الحالي (المسار الحالي لكل متصل). صلاحية ليد أدمن فقط.</p>
+        <h1>
+          <i class="fas fa-broadcast-tower"></i> التحكم المتقدم والمتابعة
+          المباشرة
+        </h1>
+        <p style="color: var(--text-muted, #95a5a6); margin-bottom: 1rem">
+          عرض الجلسات والضيوف والنشاط الحالي (المسار الحالي لكل متصل). صلاحية
+          ليد أدمن فقط.
+        </p>
         <div class="live-stats">
           <div class="live-stat-card">
             <div class="value" id="stat-total">0</div>
@@ -96,7 +207,9 @@
           </div>
         </div>
         <div class="live-actions">
-          <button type="button" class="btn-refresh" id="btnRefresh"><i class="fas fa-sync-alt"></i> تحديث</button>
+          <button type="button" class="btn-refresh" id="btnRefresh">
+            <i class="fas fa-sync-alt"></i> تحديث
+          </button>
         </div>
         <div class="section-title">المستخدمون المسجلون (الجلسات)</div>
         <div class="sessions-table-wrap">
@@ -131,12 +244,19 @@
           </table>
         </div>
         <div class="suite-section">
-          <p style="color: var(--text-muted); margin-bottom: 1rem;">تسجيل خروج جميع المستخدمين (حتى غير المتصلين) وإزالة سجل الضيوف.</p>
+          <p style="color: var(--text-muted); margin-bottom: 1rem">
+            تسجيل خروج جميع المستخدمين (حتى غير المتصلين) وإزالة سجل الضيوف.
+          </p>
           <div class="live-actions">
-            <button type="button" class="btn-clear" id="btnClearAll"><i class="fas fa-sign-out-alt"></i> تسجيل خروج الكل (إزالة جميع الجلسات)</button>
-            <button type="button" class="btn-clear-guests" id="btnClearGuests"><i class="fas fa-user-times"></i> إزالة سجل الضيوف</button>
+            <button type="button" class="btn-clear" id="btnClearAll">
+              <i class="fas fa-sign-out-alt"></i> تسجيل خروج الكل (إزالة جميع
+              الجلسات)
+            </button>
+            <button type="button" class="btn-clear-guests" id="btnClearGuests">
+              <i class="fas fa-user-times"></i> إزالة سجل الضيوف
+            </button>
           </div>
-        </div>    
+        </div>
       </div>
     </main>
     <script>
@@ -163,8 +283,8 @@
                 data.role === "leadadmin"
                   ? "ليد أدمن"
                   : data.role === "admin"
-                  ? "أدمن"
-                  : data.role || "أدمن";
+                    ? "أدمن"
+                    : data.role || "أدمن";
               pill.className = "role-badge role-" + (data.role || "admin");
             }
             document
@@ -260,7 +380,9 @@
 
         function loadSessions() {
           fetch("/api/admin/live/sessions", { credentials: "include" })
-            .then(function (r) { return r.json(); })
+            .then(function (r) {
+              return r.json();
+            })
             .then(function (data) {
               if (!data.success) throw new Error(data.message || "فشل التحميل");
               statTotal.textContent = data.count ?? 0;
@@ -270,54 +392,175 @@
               var sessions = data.sessions || [];
               var rows = sessions.map(function (s) {
                 var lastSeen = s.lastSeenAt ? formatTimeAgo(s.lastSeenAt) : "—";
-                var loginTime = s.loginTime ? new Date(s.loginTime).toLocaleString("ar-EG") : "—";
-                var status = s.isLive ? '<span class="badge-live">متصل الآن</span>' : '<span class="badge-idle">غير نشط</span>';
-                var path = (s.currentPath ? (s.currentMethod || "") + " " + (s.currentPath || "") : "—");
-                var userIdShort = s.userIdShort || (s.userId ? String(s.userId).substring(0, 8) + "..." : "—");
-                return "<tr>"
-                  + "<td>@" + (s.username || "—") + "</td>"
-                  + "<td>" + (userIdShort || "—") + "</td>"
-                  + "<td>" + status + "</td>"
-                  + "<td class=\"path-cell\" title=\"" + (s.currentPath || "") + "\">" + path + "</td>"
-                  + "<td>" + lastSeen + "</td>"
-                  + "<td>" + loginTime + "</td>"
-                  + "<td>" + (s.ip || "—") + "</td>"
-                  + "</tr>";
+                var loginTime = s.loginTime
+                  ? new Date(s.loginTime).toLocaleString("ar-EG")
+                  : "—";
+                var status = s.isLive
+                  ? '<span class="badge-live">متصل الآن</span>'
+                  : '<span class="badge-idle">غير نشط</span>';
+                var path = s.currentPath
+                  ? (s.currentMethod || "") + " " + (s.currentPath || "")
+                  : "—";
+                var userIdShort =
+                  s.userIdShort ||
+                  (s.userId ? String(s.userId).substring(0, 8) + "..." : "—");
+                return (
+                  "<tr>" +
+                  "<td>@" +
+                  (s.username || "—") +
+                  "</td>" +
+                  "<td>" +
+                  (userIdShort || "—") +
+                  "</td>" +
+                  "<td>" +
+                  status +
+                  "</td>" +
+                  '<td class="path-cell" title="' +
+                  (s.currentPath || "") +
+                  '">' +
+                  path +
+                  "</td>" +
+                  "<td>" +
+                  lastSeen +
+                  "</td>" +
+                  "<td>" +
+                  loginTime +
+                  "</td>" +
+                  "<td>" +
+                  (s.ip || "—") +
+                  "</td>" +
+                  "</tr>"
+                );
               });
-              sessionsBody.innerHTML = rows.length ? rows.join("") : "<tr><td colspan=\"7\">لا توجد جلسات</td></tr>";
+              sessionsBody.innerHTML = rows.length
+                ? rows.join("")
+                : '<tr><td colspan="7">لا توجد جلسات</td></tr>';
               var guests = data.guests || [];
               var guestRows = guests.map(function (g) {
                 var lastSeen = g.lastSeenAt ? formatTimeAgo(g.lastSeenAt) : "—";
-                var status = g.isLive ? '<span class="badge-live">متصل الآن</span>' : '<span class="badge-idle">غير نشط</span>';
-                var path = (g.currentPath ? (g.currentMethod || "") + " " + (g.currentPath || "") : "—");
-                return "<tr><td>" + status + "</td><td class=\"path-cell\" title=\"" + (g.currentPath || "") + "\">" + path + "</td><td>" + lastSeen + "</td><td>" + (g.ip || "—") + "</td><td>" + (g.userAgent || "—") + "</td></tr>";
+                var status = g.isLive
+                  ? '<span class="badge-live">متصل الآن</span>'
+                  : '<span class="badge-idle">غير نشط</span>';
+                var path = g.currentPath
+                  ? (g.currentMethod || "") + " " + (g.currentPath || "")
+                  : "—";
+                return (
+                  "<tr><td>" +
+                  status +
+                  '</td><td class="path-cell" title="' +
+                  (g.currentPath || "") +
+                  '">' +
+                  path +
+                  "</td><td>" +
+                  lastSeen +
+                  "</td><td>" +
+                  (g.ip || "—") +
+                  "</td><td>" +
+                  (g.userAgent || "—") +
+                  "</td></tr>"
+                );
               });
-              guestsBody.innerHTML = guestRows.length ? guestRows.join("") : "<tr><td colspan=\"5\">لا يوجد ضيوف</td></tr>";
+              guestsBody.innerHTML = guestRows.length
+                ? guestRows.join("")
+                : '<tr><td colspan="5">لا يوجد ضيوف</td></tr>';
             })
             .catch(function (e) {
               console.error(e);
-              sessionsBody.innerHTML = "<tr><td colspan=\"6\">حدث خطأ في التحميل</td></tr>";
-              if (guestsBody) guestsBody.innerHTML = "<tr><td colspan=\"5\">—</td></tr>";
+              sessionsBody.innerHTML =
+                '<tr><td colspan="6">حدث خطأ في التحميل</td></tr>';
+              if (guestsBody)
+                guestsBody.innerHTML = '<tr><td colspan="5">—</td></tr>';
             });
         }
 
         if (btnRefresh) btnRefresh.addEventListener("click", loadSessions);
-        if (btnClearAll) btnClearAll.addEventListener("click", function () {
-          Swal.fire({ title: "تسجيل خروج الكل؟", text: "سيتم إزالة جميع الجلسات (حتى غير المتصلين). سيحتاج كل المستخدمين لتسجيل الدخول مرة أخرى. هل أنت متأكد؟", icon: "warning", showCancelButton: true, confirmButtonText: "نعم، تسجيل خروج الكل", cancelButtonText: "إلغاء", confirmButtonColor: "#e74c3c" }).then(function (result) {
-            if (!result.isConfirmed) return;
-            fetch("/api/admin/live/clear-sessions", { method: "POST", credentials: "include" }).then(function (r) { return r.json(); }).then(function (data) {
-              if (data.success) { Swal.fire({ title: "تم", text: "تم إزالة " + (data.destroyed ?? data.total) + " جلسة.", icon: "success" }); loadSessions(); } else Swal.fire({ title: "خطأ", text: data.message || "فشل", icon: "error" });
-            }).catch(function (e) { Swal.fire({ title: "خطأ", text: e.message || "فشل إزالة الجلسات", icon: "error" }); });
+        if (btnClearAll)
+          btnClearAll.addEventListener("click", function () {
+            Swal.fire({
+              title: "تسجيل خروج الكل؟",
+              text: "سيتم إزالة جميع الجلسات (حتى غير المتصلين). سيحتاج كل المستخدمين لتسجيل الدخول مرة أخرى. هل أنت متأكد؟",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonText: "نعم، تسجيل خروج الكل",
+              cancelButtonText: "إلغاء",
+              confirmButtonColor: "#e74c3c",
+            }).then(function (result) {
+              if (!result.isConfirmed) return;
+              fetch("/api/admin/live/clear-sessions", {
+                method: "POST",
+                credentials: "include",
+              })
+                .then(function (r) {
+                  return r.json();
+                })
+                .then(function (data) {
+                  if (data.success) {
+                    Swal.fire({
+                      title: "تم",
+                      text:
+                        "تم إزالة " + (data.destroyed ?? data.total) + " جلسة.",
+                      icon: "success",
+                    });
+                    loadSessions();
+                  } else
+                    Swal.fire({
+                      title: "خطأ",
+                      text: data.message || "فشل",
+                      icon: "error",
+                    });
+                })
+                .catch(function (e) {
+                  Swal.fire({
+                    title: "خطأ",
+                    text: e.message || "فشل إزالة الجلسات",
+                    icon: "error",
+                  });
+                });
+            });
           });
-        });
-        if (btnClearGuests) btnClearGuests.addEventListener("click", function () {
-          Swal.fire({ title: "إزالة سجل الضيوف؟", text: "سيتم حذف قائمة الضيوف الحالية من السجل.", icon: "warning", showCancelButton: true, confirmButtonText: "نعم، إزالة", cancelButtonText: "إلغاء", confirmButtonColor: "#9b59b6" }).then(function (result) {
-            if (!result.isConfirmed) return;
-            fetch("/api/admin/live/clear-guests", { method: "POST", credentials: "include" }).then(function (r) { return r.json(); }).then(function (data) {
-              if (data.success) { Swal.fire({ title: "تم", text: "تم إزالة سجل الضيوف.", icon: "success" }); loadSessions(); } else Swal.fire({ title: "خطأ", text: data.message || "فشل", icon: "error" });
-            }).catch(function (e) { Swal.fire({ title: "خطأ", text: e.message || "فشل", icon: "error" }); });
+        if (btnClearGuests)
+          btnClearGuests.addEventListener("click", function () {
+            Swal.fire({
+              title: "إزالة سجل الضيوف؟",
+              text: "سيتم حذف قائمة الضيوف الحالية من السجل.",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonText: "نعم، إزالة",
+              cancelButtonText: "إلغاء",
+              confirmButtonColor: "#9b59b6",
+            }).then(function (result) {
+              if (!result.isConfirmed) return;
+              fetch("/api/admin/live/clear-guests", {
+                method: "POST",
+                credentials: "include",
+              })
+                .then(function (r) {
+                  return r.json();
+                })
+                .then(function (data) {
+                  if (data.success) {
+                    Swal.fire({
+                      title: "تم",
+                      text: "تم إزالة سجل الضيوف.",
+                      icon: "success",
+                    });
+                    loadSessions();
+                  } else
+                    Swal.fire({
+                      title: "خطأ",
+                      text: data.message || "فشل",
+                      icon: "error",
+                    });
+                })
+                .catch(function (e) {
+                  Swal.fire({
+                    title: "خطأ",
+                    text: e.message || "فشل",
+                    icon: "error",
+                  });
+                });
+            });
           });
-        });
 
         loadUserInfo().then(loadSessions);
 

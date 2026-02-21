@@ -502,7 +502,8 @@ main {
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(
+  background:
+    radial-gradient(
       circle at 20% 50%,
       rgba(255, 204, 0, 0.15),
       transparent 50%

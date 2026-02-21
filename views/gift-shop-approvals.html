@@ -1,1045 +1,1116 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="كاتدرائية السمائيين – «اِفْرَحُوا فِي الرَّبِّ كُلَّ حِينٍ» (فيلبي ٤: ٤)" />
-  <meta name="keywords" content="كاتدرائية السمائيين – «اِفْرَحُوا فِي الرَّبِّ كُلَّ حِينٍ» (فيلبي ٤: ٤)" />
-  <meta name="author" content="كاتدرائية السمائيين" />
-  <meta name="theme-color" content="#402958" />
-  <meta name="robots" content="noindex, nofollow" />
-  <title>طلبات الهدايا | لوحة الإدارة | كاتدرائية السمائيين</title>
-  <link rel="icon" href="/UI/icon.png" type="image/png" sizes="16x16" />
-  <link rel="apple-touch-icon" href="/UI/icon.png" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap"
-    rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js" defer></script>
-  <link rel="stylesheet" href="/design/theme.css" />
-  <link rel="stylesheet" href="/design/admin.css" />
-  <link rel="stylesheet" href="/design/admin-dashboard.css" />
-  <style>
-    body {
-      user-select: none;
-      -webkit-user-select: none;
-    }
-
-    .admin-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-
-    .gift-shop-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 18px;
-      margin-top: 20px;
-    }
-
-    .gift-item {
-      max-width: 100%;
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(4px);
-      border-radius: 14px;
-      padding: 16px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: all 0.3s ease;
-    }
-
-    .gift-item:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 30px rgba(255, 204, 0, 0.2);
-      border-color: rgba(255, 204, 0, 0.4);
-    }
-
-    .gift-item img {
-      width: 100%;
-      height: 260px;
-      object-fit: cover;
-      background: rgba(0, 0, 0, 0.18);
-      border-radius: 12px;
-      margin-bottom: 15px;
-      display: block;
-      max-height: 260px;
-    }
-
-    .purchase-user {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin: 10px 0 12px;
-      padding: 8px 10px;
-      border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      background: rgba(0, 0, 0, 0.16);
-      direction: ltr;
-    }
-
-    .purchase-user .user-line {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      min-width: 0;
-    }
-
-    .purchase-user .user-line i {
-      width: 18px;
-      text-align: center;
-      opacity: 0.9;
-      flex: 0 0 auto;
-    }
-
-    .purchase-user .user-label {
-      font-weight: 700;
-      color: rgba(255, 255, 255, 0.7);
-      white-space: nowrap;
-      flex: 0 0 auto;
-    }
-
-    .purchase-user .user-handle {
-      font-weight: 800;
-      color: var(--accent);
-      direction: ltr;
-      unicode-bidi: plaintext;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .purchase-user .user-grade {
-      font-weight: 700;
-      color: #d1c4e9;
-      direction: rtl;
-      unicode-bidi: plaintext;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .purchases-sentinel {
-      width: 100%;
-      height: 1px;
-      grid-column: 1 / -1;
-    }
-
-    .purchases-sentinel.loading {
-      height: auto;
-      padding: 14px 0;
-    }
-
-    .purchases-sentinel .purchases-loading-indicator {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      width: 100%;
-      box-sizing: border-box;
-      text-align: center;
-      opacity: 0.92;
-    }
-
-    .gift-item .no-image {
-      width: 100%;
-      height: 180px;
-      background: rgba(255, 204, 0, 0.1);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 15px;
-    }
-
-    .gift-item .no-image i {
-      font-size: 48px;
-      color: var(--accent);
-    }
-
-    .gift-item h3 {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 10px;
-      color: var(--light);
-    }
-
-    .gift-item p {
-      font-size: 14px;
-      color: var(--muted);
-      margin-bottom: 15px;
-    }
-
-    .cost {
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--accent);
-      margin-bottom: 15px;
-    }
-
-    .approval-actions {
-      display: flex;
-      gap: 10px;
-      margin-top: 15px;
-    }
-
-    .approval-actions button {
-      flex: 1;
-      padding: 12px;
-      border-radius: 10px;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: all 0.3s ease;
-    }
-
-    .approve-btn {
-      background: rgba(0, 255, 136, 0.1);
-      color: #00ff88;
-      border: 1px solid rgba(0, 255, 136, 0.2);
-    }
-
-    .approve-btn:hover {
-      background: rgba(0, 255, 136, 0.2);
-      transform: translateY(-2px);
-    }
-
-    .decline-btn {
-      background: rgba(255, 100, 100, 0.1);
-      color: #ff6666;
-      border: 1px solid rgba(255, 100, 100, 0.2);
-    }
-
-    .decline-btn:hover {
-      background: rgba(255, 100, 100, 0.2);
-      transform: translateY(-2px);
-    }
-
-    .status-badge {
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-      display: inline-block;
-      margin-top: 5px;
-    }
-
-    .status-approved {
-      background-color: rgba(46, 213, 115, 0.2);
-      color: #2ed573;
-    }
-
-    .status-rejected {
-      background-color: rgba(255, 71, 87, 0.2);
-      color: #ff4757;
-    }
-
-    .status-received {
-      background: rgba(39, 174, 96, 0.2);
-      color: #27ae60;
-      border: 1px solid rgba(39, 174, 96, 0.35);
-    }
-
-    .status-pending {
-      background-color: rgba(255, 165, 2, 0.2);
-      color: #ffa502;
-    }
-
-    .received-btn {
-      width: 100%;
-      margin-top: 10px;
-      background: linear-gradient(135deg, #27ae60, #2ecc71);
-      color: #fff;
-      border: 1px solid rgba(39, 174, 96, 0.5);
-      padding: 10px 16px;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .received-btn:hover:not(:disabled) {
-      background: linear-gradient(135deg, #2ecc71, #27ae60);
-      opacity: 0.95;
-    }
-
-    .received-btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      cursor: default;
-      background: rgba(39, 174, 96, 0.2);
-      color: #27ae60;
-      border-color: rgba(39, 174, 96, 0.4);
-    }
-
-    .purchase-meta {
-      margin: 15px 0;
-      font-size: 13px;
-      color: #a4b0be;
-    }
-
-    .purchase-meta div {
-      margin-bottom: 5px;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .purchase-meta i {
-      width: 18px;
-      text-align: center;
-    }
-
-    .grades-submenu {
-      max-height: 0;
-      overflow-y: hidden;
-      transition: max-height 0.3s ease;
-      margin-right: 20px;
-      border-right: 2px solid var(--accent);
-      margin-top: 5px;
-      padding-right: 10px;
-    }
-
-    .grades-toggle.active+.grades-submenu-container .grades-submenu {
-      max-height: 250px;
-      overflow-y: auto;
-    }
-
-    .grades-submenu::-webkit-scrollbar {
-      width: 5px;
-    }
-
-    .grades-submenu::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 10px;
-    }
-
-    .grades-submenu::-webkit-scrollbar-thumb {
-      background: var(--accent);
-      border-radius: 10px;
-      transition: background 0.3s ease;
-    }
-
-    .grades-submenu::-webkit-scrollbar-thumb:hover {
-      background: #ffd700;
-    }
-
-    .section-submenu {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease;
-      margin-right: 20px;
-      margin-top: 5px;
-    }
-
-    @media (max-width: 992px) {
-      .sidebar {
-        overflow-y: auto;
-        overflow-x: hidden;
-        -webkit-overflow-scrolling: touch;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="كاتدرائية السمائيين – «اِفْرَحُوا فِي الرَّبِّ كُلَّ حِينٍ» (فيلبي ٤: ٤)"
+    />
+    <meta
+      name="keywords"
+      content="كاتدرائية السمائيين – «اِفْرَحُوا فِي الرَّبِّ كُلَّ حِينٍ» (فيلبي ٤: ٤)"
+    />
+    <meta name="author" content="كاتدرائية السمائيين" />
+    <meta name="theme-color" content="#402958" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>طلبات الهدايا | لوحة الإدارة | كاتدرائية السمائيين</title>
+    <link rel="icon" href="/UI/icon.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="/UI/icon.png" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"
+      defer
+    ></script>
+    <link rel="stylesheet" href="/design/theme.css" />
+    <link rel="stylesheet" href="/design/admin.css" />
+    <link rel="stylesheet" href="/design/admin-dashboard.css" />
+    <style>
+      body {
+        user-select: none;
+        -webkit-user-select: none;
       }
 
-      .sidebar::-webkit-scrollbar {
-        width: 5px;
+      .admin-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
       }
 
-      .sidebar::-webkit-scrollbar-track {
+      .gift-shop-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 18px;
+        margin-top: 20px;
+      }
+
+      .gift-item {
+        max-width: 100%;
         background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(4px);
+        border-radius: 14px;
+        padding: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
       }
 
-      .sidebar::-webkit-scrollbar-thumb {
-        background: var(--accent);
+      .gift-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(255, 204, 0, 0.2);
+        border-color: rgba(255, 204, 0, 0.4);
+      }
+
+      .gift-item img {
+        width: 100%;
+        height: 260px;
+        object-fit: cover;
+        background: rgba(0, 0, 0, 0.18);
+        border-radius: 12px;
+        margin-bottom: 15px;
+        display: block;
+        max-height: 260px;
+      }
+
+      .purchase-user {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin: 10px 0 12px;
+        padding: 8px 10px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(0, 0, 0, 0.16);
+        direction: ltr;
+      }
+
+      .purchase-user .user-line {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+      }
+
+      .purchase-user .user-line i {
+        width: 18px;
+        text-align: center;
+        opacity: 0.9;
+        flex: 0 0 auto;
+      }
+
+      .purchase-user .user-label {
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.7);
+        white-space: nowrap;
+        flex: 0 0 auto;
+      }
+
+      .purchase-user .user-handle {
+        font-weight: 800;
+        color: var(--accent);
+        direction: ltr;
+        unicode-bidi: plaintext;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .purchase-user .user-grade {
+        font-weight: 700;
+        color: #d1c4e9;
+        direction: rtl;
+        unicode-bidi: plaintext;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .purchases-sentinel {
+        width: 100%;
+        height: 1px;
+        grid-column: 1 / -1;
+      }
+
+      .purchases-sentinel.loading {
+        height: auto;
+        padding: 14px 0;
+      }
+
+      .purchases-sentinel .purchases-loading-indicator {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        box-sizing: border-box;
+        text-align: center;
+        opacity: 0.92;
+      }
+
+      .gift-item .no-image {
+        width: 100%;
+        height: 180px;
+        background: rgba(255, 204, 0, 0.1);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 15px;
+      }
+
+      .gift-item .no-image i {
+        font-size: 48px;
+        color: var(--accent);
+      }
+
+      .gift-item h3 {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: var(--light);
+      }
+
+      .gift-item p {
+        font-size: 14px;
+        color: var(--muted);
+        margin-bottom: 15px;
+      }
+
+      .cost {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--accent);
+        margin-bottom: 15px;
+      }
+
+      .approval-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+      }
+
+      .approval-actions button {
+        flex: 1;
+        padding: 12px;
         border-radius: 10px;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.3s ease;
       }
 
-      .sidebar::-webkit-scrollbar-thumb:hover {
-        background: #ffd700;
+      .approve-btn {
+        background: rgba(0, 255, 136, 0.1);
+        color: #00ff88;
+        border: 1px solid rgba(0, 255, 136, 0.2);
+      }
+
+      .approve-btn:hover {
+        background: rgba(0, 255, 136, 0.2);
+        transform: translateY(-2px);
+      }
+
+      .decline-btn {
+        background: rgba(255, 100, 100, 0.1);
+        color: #ff6666;
+        border: 1px solid rgba(255, 100, 100, 0.2);
+      }
+
+      .decline-btn:hover {
+        background: rgba(255, 100, 100, 0.2);
+        transform: translateY(-2px);
+      }
+
+      .status-badge {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        display: inline-block;
+        margin-top: 5px;
+      }
+
+      .status-approved {
+        background-color: rgba(46, 213, 115, 0.2);
+        color: #2ed573;
+      }
+
+      .status-rejected {
+        background-color: rgba(255, 71, 87, 0.2);
+        color: #ff4757;
+      }
+
+      .status-received {
+        background: rgba(39, 174, 96, 0.2);
+        color: #27ae60;
+        border: 1px solid rgba(39, 174, 96, 0.35);
+      }
+
+      .status-pending {
+        background-color: rgba(255, 165, 2, 0.2);
+        color: #ffa502;
+      }
+
+      .received-btn {
+        width: 100%;
+        margin-top: 10px;
+        background: linear-gradient(135deg, #27ae60, #2ecc71);
+        color: #fff;
+        border: 1px solid rgba(39, 174, 96, 0.5);
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      .received-btn:hover:not(:disabled) {
+        background: linear-gradient(135deg, #2ecc71, #27ae60);
+        opacity: 0.95;
+      }
+
+      .received-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        cursor: default;
+        background: rgba(39, 174, 96, 0.2);
+        color: #27ae60;
+        border-color: rgba(39, 174, 96, 0.4);
+      }
+
+      .purchase-meta {
+        margin: 15px 0;
+        font-size: 13px;
+        color: #a4b0be;
+      }
+
+      .purchase-meta div {
+        margin-bottom: 5px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .purchase-meta i {
+        width: 18px;
+        text-align: center;
       }
 
       .grades-submenu {
         max-height: 0;
-        margin-right: 15px;
+        overflow-y: hidden;
+        transition: max-height 0.3s ease;
+        margin-right: 20px;
+        border-right: 2px solid var(--accent);
+        margin-top: 5px;
+        padding-right: 10px;
       }
 
-      .grades-toggle.active+.grades-submenu-container .grades-submenu {
-        max-height: 200px;
+      .grades-toggle.active + .grades-submenu-container .grades-submenu {
+        max-height: 250px;
         overflow-y: auto;
       }
-    }
 
-    .grades-submenu {
-      scrollbar-width: thin;
-      scrollbar-color: var(--accent) rgba(255, 255, 255, 0.05);
-    }
+      .grades-submenu::-webkit-scrollbar {
+        width: 5px;
+      }
 
-    @media (max-width: 992px) {
-      .sidebar {
+      .grades-submenu::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+      }
+
+      .grades-submenu::-webkit-scrollbar-thumb {
+        background: var(--accent);
+        border-radius: 10px;
+        transition: background 0.3s ease;
+      }
+
+      .grades-submenu::-webkit-scrollbar-thumb:hover {
+        background: #ffd700;
+      }
+
+      .section-submenu {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        margin-right: 20px;
+        margin-top: 5px;
+      }
+
+      @media (max-width: 992px) {
+        .sidebar {
+          overflow-y: auto;
+          overflow-x: hidden;
+          -webkit-overflow-scrolling: touch;
+        }
+
+        .sidebar::-webkit-scrollbar {
+          width: 5px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+          background: var(--accent);
+          border-radius: 10px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+          background: #ffd700;
+        }
+
+        .grades-submenu {
+          max-height: 0;
+          margin-right: 15px;
+        }
+
+        .grades-toggle.active + .grades-submenu-container .grades-submenu {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      }
+
+      .grades-submenu {
         scrollbar-width: thin;
         scrollbar-color: var(--accent) rgba(255, 255, 255, 0.05);
       }
-    }
 
-    @media (max-width: 992px) {
-      html {
-        scroll-behavior: smooth;
+      @media (max-width: 992px) {
+        .sidebar {
+          scrollbar-width: thin;
+          scrollbar-color: var(--accent) rgba(255, 255, 255, 0.05);
+        }
       }
 
-      .sidebar {
-        overscroll-behavior: contain;
+      @media (max-width: 992px) {
+        html {
+          scroll-behavior: smooth;
+        }
+
+        .sidebar {
+          overscroll-behavior: contain;
+        }
       }
-    }
 
-    .grades-nav-item {
-      position: relative;
-    }
+      .grades-nav-item {
+        position: relative;
+      }
 
-    .grades-submenu-container {
-      overflow: hidden;
-      position: relative;
-    }
+      .grades-submenu-container {
+        overflow: hidden;
+        position: relative;
+      }
 
-    .grades-submenu {
-      max-height: 0;
-      overflow-y: auto;
-      overflow-x: hidden;
-      transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      margin-right: 20px;
-      border-right: 2px solid var(--accent);
-      margin-top: 5px;
-      padding-right: 8px;
-    }
+      .grades-submenu {
+        max-height: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+        transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        margin-right: 20px;
+        border-right: 2px solid var(--accent);
+        margin-top: 5px;
+        padding-right: 8px;
+      }
 
-    .grades-submenu::-webkit-scrollbar {
-      width: 5px;
-    }
+      .grades-submenu::-webkit-scrollbar {
+        width: 5px;
+      }
 
-    .grades-submenu::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 10px;
-    }
+      .grades-submenu::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+      }
 
-    .grades-submenu::-webkit-scrollbar-thumb {
-      background: var(--accent);
-      border-radius: 10px;
-    }
+      .grades-submenu::-webkit-scrollbar-thumb {
+        background: var(--accent);
+        border-radius: 10px;
+      }
 
-    .grades-submenu::-webkit-scrollbar-thumb:hover {
-      background: #ffd700;
-    }
+      .grades-submenu::-webkit-scrollbar-thumb:hover {
+        background: #ffd700;
+      }
 
-    .grades-submenu-container::before,
-    .grades-submenu-container::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      right: 12px;
-      height: 20px;
-      pointer-events: none;
-      z-index: 2;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
+      .grades-submenu-container::before,
+      .grades-submenu-container::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 12px;
+        height: 20px;
+        pointer-events: none;
+        z-index: 2;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
 
-    .grades-submenu-container::before {
-      top: 0;
-      background: linear-gradient(to bottom,
+      .grades-submenu-container::before {
+        top: 0;
+        background: linear-gradient(
+          to bottom,
           rgba(42, 27, 60, 0.95),
-          transparent);
-    }
+          transparent
+        );
+      }
 
-    .grades-submenu-container::after {
-      bottom: 0;
-      background: linear-gradient(to top,
+      .grades-submenu-container::after {
+        bottom: 0;
+        background: linear-gradient(
+          to top,
           rgba(42, 27, 60, 0.95),
-          transparent);
-    }
+          transparent
+        );
+      }
 
-    .grades-toggle.active+.grades-submenu-container::before,
-    .grades-toggle.active+.grades-submenu-container::after {
-      opacity: 1;
-    }
+      .grades-toggle.active + .grades-submenu-container::before,
+      .grades-toggle.active + .grades-submenu-container::after {
+        opacity: 1;
+      }
 
-    .section-submenu {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease;
-      margin-right: 20px;
-      margin-top: 5px;
-    }
+      .section-submenu {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        margin-right: 20px;
+        margin-top: 5px;
+      }
 
-    .grades-toggle.active+.grades-submenu-container .grades-submenu {
-      max-height: 250px;
-      overflow-y: auto;
-    }
+      .grades-toggle.active + .grades-submenu-container .grades-submenu {
+        max-height: 250px;
+        overflow-y: auto;
+      }
 
-    .section-toggle.active+.section-submenu {
-      max-height: 150px;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-    }
+      .section-toggle.active + .section-submenu {
+        max-height: 150px;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
 
-    .grades-submenu {
-      scrollbar-width: thin;
-      scrollbar-color: var(--accent) rgba(255, 255, 255, 0.05);
-    }
+      .grades-submenu {
+        scrollbar-width: thin;
+        scrollbar-color: var(--accent) rgba(255, 255, 255, 0.05);
+      }
 
-    .suggestions-nav-item {
-      position: relative;
-    }
+      .suggestions-nav-item {
+        position: relative;
+      }
 
-    .suggestions-submenu-container {
-      overflow: hidden;
-      position: relative;
-    }
+      .suggestions-submenu-container {
+        overflow: hidden;
+        position: relative;
+      }
 
-    .suggestions-submenu {
-      max-height: 0;
-      overflow-y: auto;
-      overflow-x: hidden;
-      transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      margin-right: 20px;
-      border-right: 2px solid var(--accent);
-      margin-top: 5px;
-      padding-right: 8px;
-      scrollbar-width: thin;
-      scrollbar-color: var(--accent) rgba(255, 255, 255, 0.05);
-    }
-
-    .suggestions-toggle.active+.suggestions-submenu-container .suggestions-submenu {
-      max-height: 200px;
-      animation: fadeInDown 0.3s ease-out;
-    }
-
-    .suggestions-submenu::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .suggestions-submenu::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.03);
-      border-radius: 10px;
-      margin: 5px 0;
-    }
-
-    .suggestions-submenu::-webkit-scrollbar-thumb {
-      background: linear-gradient(to bottom, var(--accent), #ffd700);
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .suggestions-submenu::-webkit-scrollbar-thumb:hover {
-      background: linear-gradient(to bottom, #ffd700, var(--accent));
-      box-shadow: 0 0 8px rgba(255, 204, 0, 0.3);
-    }
-
-    .suggestions-submenu-container::before,
-    .suggestions-submenu-container::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      right: 12px;
-      height: 20px;
-      pointer-events: none;
-      z-index: 2;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .suggestions-submenu-container::before {
-      top: 0;
-      background: linear-gradient(to bottom,
-          rgba(42, 27, 60, 0.95),
-          transparent);
-    }
-
-    .suggestions-submenu-container::after {
-      bottom: 0;
-      background: linear-gradient(to top,
-          rgba(42, 27, 60, 0.95),
-          transparent);
-    }
-
-    .suggestions-toggle.active+.suggestions-submenu-container::before,
-    .suggestions-toggle.active+.suggestions-submenu-container::after {
-      opacity: 1;
-    }
-
-    .suggestions-submenu .submenu-link {
-      padding: 12px 15px;
-      font-size: 14px;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 6px;
-      margin-bottom: 3px;
-      display: block;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-      border: 1px solid transparent;
-    }
-
-    .suggestions-submenu .submenu-link:hover {
-      background: rgba(255, 204, 0, 0.15);
-      transform: translateX(-5px);
-      border-color: var(--accent);
-      box-shadow: 0 4px 12px rgba(255, 204, 0, 0.2);
-    }
-
-    .suggestions-submenu .submenu-link::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg,
-          transparent,
-          rgba(255, 255, 255, 0.1),
-          transparent);
-      transition: left 0.5s ease;
-    }
-
-    .suggestions-submenu .submenu-link:hover::before {
-      left: 100%;
-    }
-
-    .suggestions-submenu .submenu-link i {
-      font-size: 12px;
-      color: var(--accent);
-      transition: transform 0.3s ease;
-    }
-
-    .suggestions-submenu .submenu-link:hover i {
-      transform: translateX(-3px);
-    }
-
-    @media (max-width: 992px) {
       .suggestions-submenu {
         max-height: 0;
-        margin-right: 15px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        margin-right: 20px;
+        border-right: 2px solid var(--accent);
+        margin-top: 5px;
+        padding-right: 8px;
+        scrollbar-width: thin;
+        scrollbar-color: var(--accent) rgba(255, 255, 255, 0.05);
       }
 
-      .suggestions-toggle.active+.suggestions-submenu-container .suggestions-submenu {
-        max-height: 180px;
+      .suggestions-toggle.active
+        + .suggestions-submenu-container
+        .suggestions-submenu {
+        max-height: 200px;
+        animation: fadeInDown 0.3s ease-out;
       }
-    }
 
-    @media (max-width: 576px) {
-      .suggestions-toggle.active+.suggestions-submenu-container .suggestions-submenu {
-        max-height: 160px;
+      .suggestions-submenu::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .suggestions-submenu::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 10px;
+        margin: 5px 0;
+      }
+
+      .suggestions-submenu::-webkit-scrollbar-thumb {
+        background: linear-gradient(to bottom, var(--accent), #ffd700);
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .suggestions-submenu::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(to bottom, #ffd700, var(--accent));
+        box-shadow: 0 0 8px rgba(255, 204, 0, 0.3);
+      }
+
+      .suggestions-submenu-container::before,
+      .suggestions-submenu-container::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 12px;
+        height: 20px;
+        pointer-events: none;
+        z-index: 2;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .suggestions-submenu-container::before {
+        top: 0;
+        background: linear-gradient(
+          to bottom,
+          rgba(42, 27, 60, 0.95),
+          transparent
+        );
+      }
+
+      .suggestions-submenu-container::after {
+        bottom: 0;
+        background: linear-gradient(
+          to top,
+          rgba(42, 27, 60, 0.95),
+          transparent
+        );
+      }
+
+      .suggestions-toggle.active + .suggestions-submenu-container::before,
+      .suggestions-toggle.active + .suggestions-submenu-container::after {
+        opacity: 1;
       }
 
       .suggestions-submenu .submenu-link {
-        padding: 10px 12px;
-        font-size: 13px;
+        padding: 12px 15px;
+        font-size: 14px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 6px;
+        margin-bottom: 3px;
+        display: block;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid transparent;
       }
-    }
-  </style>
-</head>
 
-<body>
-  <div class="mobile-toggle" id="mobileToggle">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
+      .suggestions-submenu .submenu-link:hover {
+        background: rgba(255, 204, 0, 0.15);
+        transform: translateX(-5px);
+        border-color: var(--accent);
+        box-shadow: 0 4px 12px rgba(255, 204, 0, 0.2);
+      }
 
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <div class="logo-container">
-        <img src="/UI/logo.png" alt="اللوغو" />
-        <div class="logo-text">
-          <h1>كاتدرائية السمائيين</h1>
-          <p>مراجعة طلبات الهدايا وتأكيد الاستلام</p>
-        </div>
-      </div>
+      .suggestions-submenu .submenu-link::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.1),
+          transparent
+        );
+        transition: left 0.5s ease;
+      }
+
+      .suggestions-submenu .submenu-link:hover::before {
+        left: 100%;
+      }
+
+      .suggestions-submenu .submenu-link i {
+        font-size: 12px;
+        color: var(--accent);
+        transition: transform 0.3s ease;
+      }
+
+      .suggestions-submenu .submenu-link:hover i {
+        transform: translateX(-3px);
+      }
+
+      @media (max-width: 992px) {
+        .suggestions-submenu {
+          max-height: 0;
+          margin-right: 15px;
+        }
+
+        .suggestions-toggle.active
+          + .suggestions-submenu-container
+          .suggestions-submenu {
+          max-height: 180px;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .suggestions-toggle.active
+          + .suggestions-submenu-container
+          .suggestions-submenu {
+          max-height: 160px;
+        }
+
+        .suggestions-submenu .submenu-link {
+          padding: 10px 12px;
+          font-size: 13px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="mobile-toggle" id="mobileToggle">
+      <span></span>
+      <span></span>
+      <span></span>
     </div>
 
-    <nav class="nav-menu">
-      <div class="nav-item">
-        <a href="https://kenisa-el-sama2eyeen.ooguy.com" class="nav-link">
-          <i class="fas fa-home"></i>
-          الصفحة الرئيسية
-        </a>
-      </div>
-      <div class="nav-item" data-nav-access="hasFormEditorRole">
-        <a href="/admin/form-panel" class="nav-link">
-          <i class="fas fa-tachometer-alt"></i>
-          النماذج
-        </a>
-      </div>
-
-      <div class="nav-item grades-nav-item">
-        <div class="nav-link grades-toggle" id="gradesToggle">
-          <i class="fas fa-graduation-cap"></i>
-          الصفوف الدراسية
-          <i class="fas fa-chevron-down toggle-icon"></i>
-        </div>
-        <div class="grades-submenu-container">
-          <div class="grades-submenu" id="gradesSubmenu">
-            <div class="submenu-header">
-              <div class="nav-link section-toggle" data-section="prep">
-                <i class="fas fa-school"></i>
-                الإعدادية
-                <i class="fas fa-chevron-down toggle-icon"></i>
-              </div>
-              <div class="section-submenu" data-section="prep">
-                <a href="/grades/prep1" class="nav-link submenu-link">
-                  <i class="fas fa-arrow-left"></i>
-                  أولي إعدادي
-                </a>
-                <a href="/grades/prep2" class="nav-link submenu-link">
-                  <i class="fas fa-arrow-left"></i>
-                  ثانية إعدادي
-                </a>
-                <a href="/grades/prep3" class="nav-link submenu-link">
-                  <i class="fas fa-arrow-left"></i>
-                  ثالثة إعدادي
-                </a>
-              </div>
-            </div>
-
-            <div class="submenu-header">
-              <div class="nav-link section-toggle" data-section="sec">
-                <i class="fas fa-university"></i>
-                الثانوية
-                <i class="fas fa-chevron-down toggle-icon"></i>
-              </div>
-              <div class="section-submenu" data-section="sec">
-                <a href="/grades/sec1" class="nav-link submenu-link">
-                  <i class="fas fa-arrow-left"></i>
-                  أولي ثانوي
-                </a>
-                <a href="/grades/sec2" class="nav-link submenu-link">
-                  <i class="fas fa-arrow-left"></i>
-                  ثانية ثانوي
-                </a>
-                <a href="/grades/sec3" class="nav-link submenu-link">
-                  <i class="fas fa-arrow-left"></i>
-                  ثالثة ثانوي
-                </a>
-              </div>
-            </div>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-container">
+          <img src="/UI/logo.png" alt="اللوغو" />
+          <div class="logo-text">
+            <h1>كاتدرائية السمائيين</h1>
+            <p>مراجعة طلبات الهدايا وتأكيد الاستلام</p>
           </div>
         </div>
       </div>
 
-      <div class="nav-item" data-nav-access="hasUserApproverRole">
-        <a href="/admin/user-approvals" class="nav-link">
-          <i class="fas fa-user-check"></i>
-          <span>طلبات التسجيل</span>
-          <span class="nav-unread-badge" id="nav-badge-login" aria-hidden="true"></span>
-        </a>
-      </div>
-      <div class="nav-item" data-nav-access="hasUserApproverRole">
-        <a href="/admin/user-management" class="nav-link">
-          <i class="fas fa-users"></i>
-          إدارة المستخدمين
-        </a>
-      </div>
-      <div class="nav-item" data-nav-access="hasFormEditorRole">
-        <a href="/admin/gift-shop/add" class="nav-link">
-          <i class="fas fa-plus-circle"></i>
-          إضافة هدية
-        </a>
-      </div>
-      <div class="nav-item" data-nav-access="hasGiftApproverRole">
-        <a href="/admin/gift-shop/approvals" class="nav-link active">
-          <i class="fas fa-gift"></i>
-          <span>طلبات الهدايا</span>
-          <span class="nav-unread-badge" id="nav-badge-gift" aria-hidden="true"></span>
-        </a>
-      </div>
-      <div class="nav-item suggestions-nav-item">
-        <div class="nav-link suggestions-toggle" id="suggestionsToggle">
-          <i class="fas fa-lightbulb"></i>
-          الاقتراحات
-          <i class="fas fa-chevron-down toggle-icon"></i>
+      <nav class="nav-menu">
+        <div class="nav-item">
+          <a href="https://kenisa-el-sama2eyeen.ooguy.com" class="nav-link">
+            <i class="fas fa-home"></i>
+            الصفحة الرئيسية
+          </a>
         </div>
-        <div class="suggestions-submenu-container">
-          <div class="suggestions-submenu" id="suggestionsSubmenu">
-            <a href="/admin/suggestion/ektma3at" class="nav-link submenu-link">
-              <i class="fas fa-users"></i>
-              اقتراحات الاجتماعات
-            </a>
+        <div class="nav-item" data-nav-access="hasFormEditorRole">
+          <a href="/admin/form-panel" class="nav-link">
+            <i class="fas fa-tachometer-alt"></i>
+            النماذج
+          </a>
+        </div>
+
+        <div class="nav-item grades-nav-item">
+          <div class="nav-link grades-toggle" id="gradesToggle">
+            <i class="fas fa-graduation-cap"></i>
+            الصفوف الدراسية
+            <i class="fas fa-chevron-down toggle-icon"></i>
+          </div>
+          <div class="grades-submenu-container">
+            <div class="grades-submenu" id="gradesSubmenu">
+              <div class="submenu-header">
+                <div class="nav-link section-toggle" data-section="prep">
+                  <i class="fas fa-school"></i>
+                  الإعدادية
+                  <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+                <div class="section-submenu" data-section="prep">
+                  <a href="/grades/prep1" class="nav-link submenu-link">
+                    <i class="fas fa-arrow-left"></i>
+                    أولي إعدادي
+                  </a>
+                  <a href="/grades/prep2" class="nav-link submenu-link">
+                    <i class="fas fa-arrow-left"></i>
+                    ثانية إعدادي
+                  </a>
+                  <a href="/grades/prep3" class="nav-link submenu-link">
+                    <i class="fas fa-arrow-left"></i>
+                    ثالثة إعدادي
+                  </a>
+                </div>
+              </div>
+
+              <div class="submenu-header">
+                <div class="nav-link section-toggle" data-section="sec">
+                  <i class="fas fa-university"></i>
+                  الثانوية
+                  <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+                <div class="section-submenu" data-section="sec">
+                  <a href="/grades/sec1" class="nav-link submenu-link">
+                    <i class="fas fa-arrow-left"></i>
+                    أولي ثانوي
+                  </a>
+                  <a href="/grades/sec2" class="nav-link submenu-link">
+                    <i class="fas fa-arrow-left"></i>
+                    ثانية ثانوي
+                  </a>
+                  <a href="/grades/sec3" class="nav-link submenu-link">
+                    <i class="fas fa-arrow-left"></i>
+                    ثالثة ثانوي
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </nav>
 
-    <div class="sidebar-footer">
-      <button class="logout-btn" id="logoutBtn">
-        <i class="fas fa-sign-out-alt"></i>
-        تسجيل الخروج
-      </button>
-    </div>
-  </aside>
-
-  <main class="main-content">
-    <header class="top-nav">
-      <div class="user-info">
-        <img src="/UI/pfp.jpg" alt="المستخدم" class="user-avatar" />
-        <div class="user-details">
-          <h3 id="username-display">جاري التحميل...</h3>
-          <span id="user-role-pill" class="role-badge">مشرف</span>
+        <div class="nav-item" data-nav-access="hasUserApproverRole">
+          <a href="/admin/user-approvals" class="nav-link">
+            <i class="fas fa-user-check"></i>
+            <span>طلبات التسجيل</span>
+            <span
+              class="nav-unread-badge"
+              id="nav-badge-login"
+              aria-hidden="true"
+            ></span>
+          </a>
         </div>
-        <button class="logout-btn-mobile" id="logoutBtnMobile">
+        <div class="nav-item" data-nav-access="hasUserApproverRole">
+          <a href="/admin/user-management" class="nav-link">
+            <i class="fas fa-users"></i>
+            إدارة المستخدمين
+          </a>
+        </div>
+        <div class="nav-item" data-nav-access="hasFormEditorRole">
+          <a href="/admin/gift-shop/add" class="nav-link">
+            <i class="fas fa-plus-circle"></i>
+            إضافة هدية
+          </a>
+        </div>
+        <div class="nav-item" data-nav-access="hasGiftApproverRole">
+          <a href="/admin/gift-shop/approvals" class="nav-link active">
+            <i class="fas fa-gift"></i>
+            <span>طلبات الهدايا</span>
+            <span
+              class="nav-unread-badge"
+              id="nav-badge-gift"
+              aria-hidden="true"
+            ></span>
+          </a>
+        </div>
+        <div class="nav-item suggestions-nav-item">
+          <div class="nav-link suggestions-toggle" id="suggestionsToggle">
+            <i class="fas fa-lightbulb"></i>
+            الاقتراحات
+            <i class="fas fa-chevron-down toggle-icon"></i>
+          </div>
+          <div class="suggestions-submenu-container">
+            <div class="suggestions-submenu" id="suggestionsSubmenu">
+              <a
+                href="/admin/suggestion/ektma3at"
+                class="nav-link submenu-link"
+              >
+                <i class="fas fa-users"></i>
+                اقتراحات الاجتماعات
+              </a>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="logout-btn" id="logoutBtn">
           <i class="fas fa-sign-out-alt"></i>
+          تسجيل الخروج
         </button>
       </div>
-    </header>
+    </aside>
 
-    <div class="admin-container">
-      <h1><i class="fas fa-gift"></i> طلبات الهدايا</h1>
-
-      <div id="dashboard-stats" class="dashboard-stats"></div>
-
-      <div class="tabs">
-        <button class="tab-button active" onclick="showTab('pending-tab')">قيد المراجعة</button>
-        <button class="tab-button" onclick="showTab('processed-tab')">الطلبات المعالجة</button>
-      </div>
-
-      <div id="pending-tab" class="tab-content active">
-        <div class="dashboard-toolbar">
-          <div class="dashboard-search-wrap">
-            <i class="fas fa-search"></i>
-            <input type="text" id="pending-search" placeholder="ابحث بالاسم أو المستخدم أو الهدية..." />
+    <main class="main-content">
+      <header class="top-nav">
+        <div class="user-info">
+          <img src="/UI/pfp.jpg" alt="المستخدم" class="user-avatar" />
+          <div class="user-details">
+            <h3 id="username-display">جاري التحميل...</h3>
+            <span id="user-role-pill" class="role-badge">مشرف</span>
           </div>
-          <select id="pending-sort-grade" class="dashboard-select">
-            <option value="">جميع الصفوف</option>
-            <option value="أولي إعدادي">أولي إعدادي</option>
-            <option value="ثانية إعدادي">ثانية إعدادي</option>
-            <option value="ثالثة إعدادي">ثالثة إعدادي</option>
-            <option value="أولي ثانوي">أولي ثانوي</option>
-            <option value="ثانية ثانوي">ثانية ثانوي</option>
-            <option value="ثالثة ثانوي">ثالثة ثانوي</option>
-          </select>
-          <button type="button" id="pending-refresh-btn" class="dashboard-refresh-btn">
-            <i class="fas fa-sync-alt"></i>
-            تحديث
+          <button class="logout-btn-mobile" id="logoutBtnMobile">
+            <i class="fas fa-sign-out-alt"></i>
           </button>
         </div>
-        <div id="pending-purchases-list" class="gift-shop-grid">
-          <div class="loading-state">
-            <span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span>
-            <p>جاري التحميل...</p>
+      </header>
+
+      <div class="admin-container">
+        <h1><i class="fas fa-gift"></i> طلبات الهدايا</h1>
+
+        <div id="dashboard-stats" class="dashboard-stats"></div>
+
+        <div class="tabs">
+          <button class="tab-button active" onclick="showTab('pending-tab')">
+            قيد المراجعة
+          </button>
+          <button class="tab-button" onclick="showTab('processed-tab')">
+            الطلبات المعالجة
+          </button>
+        </div>
+
+        <div id="pending-tab" class="tab-content active">
+          <div class="dashboard-toolbar">
+            <div class="dashboard-search-wrap">
+              <i class="fas fa-search"></i>
+              <input
+                type="text"
+                id="pending-search"
+                placeholder="ابحث بالاسم أو المستخدم أو الهدية..."
+              />
+            </div>
+            <select id="pending-sort-grade" class="dashboard-select">
+              <option value="">جميع الصفوف</option>
+              <option value="أولي إعدادي">أولي إعدادي</option>
+              <option value="ثانية إعدادي">ثانية إعدادي</option>
+              <option value="ثالثة إعدادي">ثالثة إعدادي</option>
+              <option value="أولي ثانوي">أولي ثانوي</option>
+              <option value="ثانية ثانوي">ثانية ثانوي</option>
+              <option value="ثالثة ثانوي">ثالثة ثانوي</option>
+            </select>
+            <button
+              type="button"
+              id="pending-refresh-btn"
+              class="dashboard-refresh-btn"
+            >
+              <i class="fas fa-sync-alt"></i>
+              تحديث
+            </button>
+          </div>
+          <div id="pending-purchases-list" class="gift-shop-grid">
+            <div class="loading-state">
+              <span class="loading-dots" aria-hidden="true"
+                ><span></span><span></span><span></span
+              ></span>
+              <p>جاري التحميل...</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="processed-tab" class="tab-content">
+          <div id="processed-purchases-list" class="gift-shop-grid">
+            <div class="loading-state">
+              <span class="loading-dots" aria-hidden="true"
+                ><span></span><span></span><span></span
+              ></span>
+              <p>جاري تحميل الطلبات المعالجة...</p>
+            </div>
           </div>
         </div>
       </div>
+    </main>
 
-      <div id="processed-tab" class="tab-content">
-        <div id="processed-purchases-list" class="gift-shop-grid">
-          <div class="loading-state">
-            <span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span>
-            <p>جاري تحميل الطلبات المعالجة...</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <style>
-    .tabs {
-      display: flex;
-      gap: 10px;
-      margin: 20px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      padding-bottom: 10px;
-    }
-
-    .tab-button {
-      background: rgba(255, 255, 255, 0.1);
-      border: none;
-      padding: 10px 20px;
-      border-radius: 8px;
-      color: var(--text);
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-    }
-
-    .tab-button:hover {
-      background: rgba(255, 255, 255, 0.2);
-    }
-
-    .tab-button.active {
-      background: var(--accent);
-      color: #000;
-      font-weight: 700;
-    }
-
-    .tab-content {
-      display: none;
-    }
-
-    .tab-content.active {
-      display: block;
-    }
-
-    .status-badge {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 12px;
-      font-size: 12px;
-      font-weight: 600;
-      margin-right: 8px;
-    }
-
-    .status-pending {
-      background: rgba(241, 196, 15, 0.2);
-      color: #f1c40f;
-    }
-
-    .status-approved {
-      background: rgba(46, 204, 113, 0.2);
-      color: #2ecc71;
-    }
-
-    .status-rejected {
-      background: rgba(231, 76, 60, 0.2);
-      color: #e74c3c;
-    }
-
-    .status-received {
-      background: rgba(39, 174, 96, 0.2);
-      color: #27ae60;
-      border: 1px solid rgba(39, 174, 96, 0.35);
-    }
-
-    .received-btn {
-      background: linear-gradient(135deg, #27ae60, #2ecc71);
-      color: #fff;
-      border: 1px solid rgba(39, 174, 96, 0.5);
-      padding: 10px 16px;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      margin-top: 10px;
-      width: 100%;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .received-btn:hover:not(:disabled) {
-      background: linear-gradient(135deg, #2ecc71, #27ae60);
-      opacity: 0.95;
-    }
-
-    .received-btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
-  </style>
-
-  <script>
-    function showTab(tabId) {
-      document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.classList.remove('active');
-      });
-
-      document.querySelectorAll('.tab-button').forEach(button => {
-        button.classList.remove('active');
-      });
-
-      document.getElementById(tabId).classList.add('active');
-
-      event.currentTarget.classList.add('active');
-
-      if (tabId === 'processed-tab') {
-        loadProcessedPurchases(false);
+    <style>
+      .tabs {
+        display: flex;
+        gap: 10px;
+        margin: 20px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 10px;
       }
-    }
 
-    const INITIAL_PURCHASES_LIMIT = 4;
-    const LOAD_MORE_PURCHASES_LIMIT = 2;
+      .tab-button {
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        color: var(--text);
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
 
-    let pendingTotal = null;
-    let pendingSkip = 0;
-    let pendingLoading = false;
-    let processedTotal = null;
-    let processedSkip = 0;
-    let processedLoading = false;
+      .tab-button:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
 
-    async function loadUserInfo() {
-      try {
-        const response = await fetch("/api/user-info");
-        const data = await response.json();
-        if (!data.isAuthenticated) {
-          window.location.href = "/login";
-          return;
-        }
-        if (!data.hasGiftApproverRole) {
-          window.location.href = "/403";
-          return;
-        }
-        document.getElementById("username-display").textContent =
-          data.username;
-        const pill = document.getElementById("user-role-pill");
-        pill.textContent = data.role === "leadadmin" ? "ليد أدمن" : "أدمن";
-        pill.className = "role-badge role-" + (data.role || "admin");
-        document.querySelectorAll("[data-nav-access]").forEach(function (el) {
-          var key = el.getAttribute("data-nav-access");
-          el.style.display = data[key] ? "" : "none";
+      .tab-button.active {
+        background: var(--accent);
+        color: #000;
+        font-weight: 700;
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      .status-badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+        margin-right: 8px;
+      }
+
+      .status-pending {
+        background: rgba(241, 196, 15, 0.2);
+        color: #f1c40f;
+      }
+
+      .status-approved {
+        background: rgba(46, 204, 113, 0.2);
+        color: #2ecc71;
+      }
+
+      .status-rejected {
+        background: rgba(231, 76, 60, 0.2);
+        color: #e74c3c;
+      }
+
+      .status-received {
+        background: rgba(39, 174, 96, 0.2);
+        color: #27ae60;
+        border: 1px solid rgba(39, 174, 96, 0.35);
+      }
+
+      .received-btn {
+        background: linear-gradient(135deg, #27ae60, #2ecc71);
+        color: #fff;
+        border: 1px solid rgba(39, 174, 96, 0.5);
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        margin-top: 10px;
+        width: 100%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      .received-btn:hover:not(:disabled) {
+        background: linear-gradient(135deg, #2ecc71, #27ae60);
+        opacity: 0.95;
+      }
+
+      .received-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+    </style>
+
+    <script>
+      function showTab(tabId) {
+        document.querySelectorAll(".tab-content").forEach((tab) => {
+          tab.classList.remove("active");
         });
-      } catch (error) {
-        console.error("Error fetching user info:", error);
+
+        document.querySelectorAll(".tab-button").forEach((button) => {
+          button.classList.remove("active");
+        });
+
+        document.getElementById(tabId).classList.add("active");
+
+        event.currentTarget.classList.add("active");
+
+        if (tabId === "processed-tab") {
+          loadProcessedPurchases(false);
+        }
       }
-    }
 
-    function toArabicGrade(rawGrade) {
-      const g = (rawGrade || "").toString().trim();
-      const key = g.toLowerCase();
-      const map = {
-        prep1: "أولى إعدادي",
-        prep2: "ثانية إعدادي",
-        prep3: "ثالثة إعدادي",
-        sec1: "أولى ثانوي",
-        sec2: "ثانية ثانوي",
-        sec3: "ثالثة ثانوي",
-      };
-      if (map[key]) return map[key];
-      return g || "غير متوفر";
-    }
+      const INITIAL_PURCHASES_LIMIT = 4;
+      const LOAD_MORE_PURCHASES_LIMIT = 2;
 
-    function getPurchaseCardHtml(purchase, mode) {
-      const purchasedAt = purchase.purchasedAt
-        ? new Date(purchase.purchasedAt).toLocaleString("ar-EG")
-        : "";
+      let pendingTotal = null;
+      let pendingSkip = 0;
+      let pendingLoading = false;
+      let processedTotal = null;
+      let processedSkip = 0;
+      let processedLoading = false;
 
-      const statusClass =
-        purchase.status === "accepted" ? "status-approved" :
-          purchase.status === "declined" ? "status-rejected" :
-            purchase.status === "received" ? "status-received" : "status-pending";
-
-      const statusText =
-        purchase.status === "accepted" ? "مقبول" :
-          purchase.status === "declined" ? "مرفوض" :
-            purchase.status === "received" ? "تم الاستلام" : "قيد المراجعة";
-
-      const safeUsername = (purchase.username || "").toString().trim().replace(/^@+/, "");
-      const safeHandle = safeUsername ? `@${safeUsername}` : "غير متوفر";
-      const safeGrade = toArabicGrade(purchase.grade);
-
-      return `
-        <div class="gift-item ${mode === 'pending' ? 'pending-item' : ''}">
-          ${purchase.itemId?.image
-            ? `<img src="${purchase.itemId.image}" alt="${purchase.itemName}" loading="lazy">`
-            : '<div class="no-image"><i class="fas fa-gift"></i></div>'
+      async function loadUserInfo() {
+        try {
+          const response = await fetch("/api/user-info");
+          const data = await response.json();
+          if (!data.isAuthenticated) {
+            window.location.href = "/login";
+            return;
           }
-          <h3>${purchase.itemName || ''}</h3>
+          if (!data.hasGiftApproverRole) {
+            window.location.href = "/403";
+            return;
+          }
+          document.getElementById("username-display").textContent =
+            data.username;
+          const pill = document.getElementById("user-role-pill");
+          pill.textContent = data.role === "leadadmin" ? "ليد أدمن" : "أدمن";
+          pill.className = "role-badge role-" + (data.role || "admin");
+          document.querySelectorAll("[data-nav-access]").forEach(function (el) {
+            var key = el.getAttribute("data-nav-access");
+            el.style.display = data[key] ? "" : "none";
+          });
+        } catch (error) {
+          console.error("Error fetching user info:", error);
+        }
+      }
+
+      function toArabicGrade(rawGrade) {
+        const g = (rawGrade || "").toString().trim();
+        const key = g.toLowerCase();
+        const map = {
+          prep1: "أولى إعدادي",
+          prep2: "ثانية إعدادي",
+          prep3: "ثالثة إعدادي",
+          sec1: "أولى ثانوي",
+          sec2: "ثانية ثانوي",
+          sec3: "ثالثة ثانوي",
+        };
+        if (map[key]) return map[key];
+        return g || "غير متوفر";
+      }
+
+      function getPurchaseCardHtml(purchase, mode) {
+        const purchasedAt = purchase.purchasedAt
+          ? new Date(purchase.purchasedAt).toLocaleString("ar-EG")
+          : "";
+
+        const statusClass =
+          purchase.status === "accepted"
+            ? "status-approved"
+            : purchase.status === "declined"
+              ? "status-rejected"
+              : purchase.status === "received"
+                ? "status-received"
+                : "status-pending";
+
+        const statusText =
+          purchase.status === "accepted"
+            ? "مقبول"
+            : purchase.status === "declined"
+              ? "مرفوض"
+              : purchase.status === "received"
+                ? "تم الاستلام"
+                : "قيد المراجعة";
+
+        const safeUsername = (purchase.username || "")
+          .toString()
+          .trim()
+          .replace(/^@+/, "");
+        const safeHandle = safeUsername ? `@${safeUsername}` : "غير متوفر";
+        const safeGrade = toArabicGrade(purchase.grade);
+
+        return `
+        <div class="gift-item ${mode === "pending" ? "pending-item" : ""}">
+          ${
+            purchase.itemId?.image
+              ? `<img src="${purchase.itemId.image}" alt="${purchase.itemName}" loading="lazy">`
+              : '<div class="no-image"><i class="fas fa-gift"></i></div>'
+          }
+          <h3>${purchase.itemName || ""}</h3>
 
           <div class="purchase-user">
             <div class="user-line">
@@ -1054,601 +1125,725 @@
 
           <div class="cost">${purchase.cost} نقطة</div>
 
-          ${mode === 'pending'
-            ? (purchasedAt ? `<div class="purchase-meta"><i class="fas fa-clock"></i> ${purchasedAt}</div>` : '')
-            : `
+          ${
+            mode === "pending"
+              ? purchasedAt
+                ? `<div class="purchase-meta"><i class="fas fa-clock"></i> ${purchasedAt}</div>`
+                : ""
+              : `
               <div class="purchase-meta">
-                ${purchasedAt ? `<div><i class="fas fa-clock"></i> ${purchasedAt}</div>` : ''}
+                ${purchasedAt ? `<div><i class="fas fa-clock"></i> ${purchasedAt}</div>` : ""}
                 <div><span class="status-badge ${statusClass}">${statusText}</span></div>
               </div>
             `
           }
 
-          ${mode === 'processed' && purchase.status === 'accepted' && !purchase.receivedConfirmed ? `
+          ${
+            mode === "processed" &&
+            purchase.status === "accepted" &&
+            !purchase.receivedConfirmed
+              ? `
             <button onclick="markAsReceived('${purchase._id}')" class="action-btn received-btn">
               <i class="fas fa-gift"></i> تأكيد الاستلام
             </button>
-          ` : ''}
+          `
+              : ""
+          }
 
-          ${mode === 'processed' && purchase.receivedConfirmed ? `
+          ${
+            mode === "processed" && purchase.receivedConfirmed
+              ? `
             <button class="action-btn received-btn" disabled>
               <i class="fas fa-check-double"></i> تم الاستلام بنجاح
             </button>
-          ` : ''}
+          `
+              : ""
+          }
 
-          ${mode === 'pending' ? `
+          ${
+            mode === "pending"
+              ? `
             <div class="approval-actions">
               <button onclick="approvePurchase('${purchase._id}')" class="approve-btn"><i class="fas fa-gift"></i> قبول</button>
               <button onclick="declinePurchase('${purchase._id}')" class="decline-btn"><i class="fas fa-times"></i> رفض</button>
             </div>
-          ` : ''}
+          `
+              : ""
+          }
         </div>
       `;
-    }
-
-    function ensureSentinel(listEl, id) {
-      if (!listEl) return null;
-      let sentinel = document.getElementById(id);
-      if (!sentinel) {
-        sentinel = document.createElement('div');
-        sentinel.id = id;
-        sentinel.className = 'purchases-sentinel';
-        listEl.appendChild(sentinel);
-      }
-      return sentinel;
-    }
-
-    async function fetchPurchasesPage(status, limit, skip) {
-      const params = new URLSearchParams({ status: String(status), limit: String(limit), skip: String(skip) });
-      const res = await fetch('/api/admin/gift-shop/purchases?' + params.toString(), { credentials: 'include' });
-      if (res.status === 401) {
-        window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname + window.location.search);
-        return null;
-      }
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.message || 'فشل تحميل الطلبات');
-      const purchases = Array.isArray(data.purchases) ? data.purchases : [];
-      const total = typeof data.total === 'number' ? data.total : null;
-      return { purchases, total };
-    }
-
-    async function loadProcessedPurchases(reset) {
-      const list = document.getElementById('processed-purchases-list');
-      if (!list || processedLoading) return;
-
-      if (reset !== false) {
-        processedSkip = 0;
-        processedTotal = null;
-        list.innerHTML = '<div class="loading-state"><span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span><p>جاري تحميل الطلبات...</p></div>';
       }
 
-      processedLoading = true;
-      const requestLimit = processedSkip === 0 ? INITIAL_PURCHASES_LIMIT : LOAD_MORE_PURCHASES_LIMIT;
+      function ensureSentinel(listEl, id) {
+        if (!listEl) return null;
+        let sentinel = document.getElementById(id);
+        if (!sentinel) {
+          sentinel = document.createElement("div");
+          sentinel.id = id;
+          sentinel.className = "purchases-sentinel";
+          listEl.appendChild(sentinel);
+        }
+        return sentinel;
+      }
 
-      try {
-        if (processedSkip > 0) {
-          const sentinel = ensureSentinel(list, 'processed-purchases-sentinel');
-          if (sentinel) {
-            sentinel.classList.add('loading');
-            sentinel.innerHTML = `<div class="purchases-loading-indicator">
+      async function fetchPurchasesPage(status, limit, skip) {
+        const params = new URLSearchParams({
+          status: String(status),
+          limit: String(limit),
+          skip: String(skip),
+        });
+        const res = await fetch(
+          "/api/admin/gift-shop/purchases?" + params.toString(),
+          { credentials: "include" },
+        );
+        if (res.status === 401) {
+          window.location.href =
+            "/login?redirect=" +
+            encodeURIComponent(
+              window.location.pathname + window.location.search,
+            );
+          return null;
+        }
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.message || "فشل تحميل الطلبات");
+        const purchases = Array.isArray(data.purchases) ? data.purchases : [];
+        const total = typeof data.total === "number" ? data.total : null;
+        return { purchases, total };
+      }
+
+      async function loadProcessedPurchases(reset) {
+        const list = document.getElementById("processed-purchases-list");
+        if (!list || processedLoading) return;
+
+        if (reset !== false) {
+          processedSkip = 0;
+          processedTotal = null;
+          list.innerHTML =
+            '<div class="loading-state"><span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span><p>جاري تحميل الطلبات...</p></div>';
+        }
+
+        processedLoading = true;
+        const requestLimit =
+          processedSkip === 0
+            ? INITIAL_PURCHASES_LIMIT
+            : LOAD_MORE_PURCHASES_LIMIT;
+
+        try {
+          if (processedSkip > 0) {
+            const sentinel = ensureSentinel(
+              list,
+              "processed-purchases-sentinel",
+            );
+            if (sentinel) {
+              sentinel.classList.add("loading");
+              sentinel.innerHTML = `<div class="purchases-loading-indicator">
               <span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span>
               <span class="purchases-loading-text">جاري التحميل...</span>
             </div>`;
+            }
           }
-        }
-        const page = await fetchPurchasesPage('processed', requestLimit, processedSkip);
-        if (!page) return;
+          const page = await fetchPurchasesPage(
+            "processed",
+            requestLimit,
+            processedSkip,
+          );
+          if (!page) return;
 
-        const purchases = page.purchases || [];
-        if (processedTotal == null && page.total != null) processedTotal = page.total;
+          const purchases = page.purchases || [];
+          if (processedTotal == null && page.total != null)
+            processedTotal = page.total;
 
-        if (processedSkip === 0) {
-          if (purchases.length === 0) {
-            list.innerHTML = '<div class="empty-state"><i class="fas fa-gift"></i><h3>لا توجد طلبات</h3><p>لا توجد طلبات معالجة حالياً</p></div>';
-            return;
-          }
-          list.innerHTML = purchases.map((p) => getPurchaseCardHtml(p, 'processed')).join('');
-        } else {
-          const sentinel = document.getElementById('processed-purchases-sentinel');
-          if (sentinel) sentinel.remove();
-          list.insertAdjacentHTML('beforeend', purchases.map((p) => getPurchaseCardHtml(p, 'processed')).join(''));
-        }
-
-        processedSkip += purchases.length;
-
-        const shouldLoadMore = purchases.length > 0 && (processedTotal == null || processedSkip < processedTotal);
-        if (shouldLoadMore) {
-          const sentinel = ensureSentinel(list, 'processed-purchases-sentinel');
-          if (sentinel && !sentinel._observerBound) {
-            const observer = new IntersectionObserver(
-              (entries) => {
-                if (entries[0].isIntersecting) loadProcessedPurchases(false);
-              },
-              { root: null, rootMargin: '240px', threshold: 0 }
+          if (processedSkip === 0) {
+            if (purchases.length === 0) {
+              list.innerHTML =
+                '<div class="empty-state"><i class="fas fa-gift"></i><h3>لا توجد طلبات</h3><p>لا توجد طلبات معالجة حالياً</p></div>';
+              return;
+            }
+            list.innerHTML = purchases
+              .map((p) => getPurchaseCardHtml(p, "processed"))
+              .join("");
+          } else {
+            const sentinel = document.getElementById(
+              "processed-purchases-sentinel",
             );
-            observer.observe(sentinel);
-            sentinel._observerBound = true;
+            if (sentinel) sentinel.remove();
+            list.insertAdjacentHTML(
+              "beforeend",
+              purchases
+                .map((p) => getPurchaseCardHtml(p, "processed"))
+                .join(""),
+            );
           }
-        } else {
-          const sentinel = document.getElementById('processed-purchases-sentinel');
-          if (sentinel) sentinel.remove();
-        }
-      } catch (error) {
-        console.error('Error loading processed purchases:', error);
-        if (processedSkip === 0) {
-          list.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>حدث خطأ</h3><p>تعذر تحميل الطلبات المعالجة. يرجى المحاولة مرة أخرى.</p></div>';
-        }
-      } finally {
-        processedLoading = false;
-        const sentinel = document.getElementById('processed-purchases-sentinel');
-        if (sentinel) {
-          sentinel.classList.remove('loading');
-          sentinel.innerHTML = '';
-        }
-      }
-    }
 
-    async function markAsReceived(purchaseId) {
-      try {
-        const response = await fetch(`/api/admin/gift-shop/purchases/${purchaseId}/received`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-        });
+          processedSkip += purchases.length;
 
-        const result = await response.json();
-
-        if (response.ok) {
-          Swal.fire({
-            title: 'تم!',
-            text: 'تم تأكيد استلام الهدية بنجاح',
-            icon: 'success',
-            confirmButtonText: 'حسنًا',
-            confirmButtonColor: '#3498db',
-          }).then(() => {
-            loadProcessedPurchases();
-          });
-        } else {
-          throw new Error(result.message || 'فشل تأكيد الاستلام');
-        }
-      } catch (error) {
-        console.error('Error marking as received:', error);
-        Swal.fire({
-          title: 'خطأ!',
-          text: error.message || 'حدث خطأ أثناء تأكيد الاستلام',
-          icon: 'error',
-          confirmButtonText: 'حسنًا',
-        });
-      }
-    }
-
-    let _pendingPurchases = [];
-
-    function renderPendingList() {
-      const list = document.getElementById("pending-purchases-list");
-      if (!list) return;
-      const searchVal = (document.getElementById("pending-search") && document.getElementById("pending-search").value) || "";
-      const gradeVal = (document.getElementById("pending-sort-grade") && document.getElementById("pending-sort-grade").value) || "";
-      const q = (searchVal || "").trim().toLowerCase();
-      let items = _pendingPurchases;
-      if (gradeVal) {
-        items = items.filter(function (p) { return (p.grade || "") === gradeVal; });
-      }
-      if (q) {
-        items = items.filter(function (p) {
-          const un = (p.username || "").toLowerCase();
-          const name = (p.itemName || "").toLowerCase();
-          return un.indexOf(q) !== -1 || name.indexOf(q) !== -1;
-        });
-      }
-      if (items.length === 0) {
-        list.innerHTML = '<div class="empty-state"><i class="fas fa-search"></i><h3>لا توجد نتائج</h3><p>' + (_pendingPurchases.length === 0 ? 'لا توجد طلبات قيد المراجعة حالياً' : 'لا توجد طلبات تطابق البحث أو الصف') + '</p></div>';
-        return;
-      }
-      list.innerHTML = items.map(function (purchase) { return getPurchaseCardHtml(purchase, 'pending'); }).join('');
-    }
-
-    async function loadPendingPurchases(reset) {
-      const list = document.getElementById("pending-purchases-list");
-      if (!list || pendingLoading) return;
-
-      if (reset !== false) {
-        pendingSkip = 0;
-        pendingTotal = null;
-        _pendingPurchases = [];
-        list.innerHTML = '<div class="loading-state"><span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span><p>جاري التحميل...</p></div>';
-      }
-
-      pendingLoading = true;
-      const requestLimit = pendingSkip === 0 ? INITIAL_PURCHASES_LIMIT : LOAD_MORE_PURCHASES_LIMIT;
-
-      try {
-        if (pendingSkip > 0) {
-          const sentinel = ensureSentinel(list, 'pending-purchases-sentinel');
+          const shouldLoadMore =
+            purchases.length > 0 &&
+            (processedTotal == null || processedSkip < processedTotal);
+          if (shouldLoadMore) {
+            const sentinel = ensureSentinel(
+              list,
+              "processed-purchases-sentinel",
+            );
+            if (sentinel && !sentinel._observerBound) {
+              const observer = new IntersectionObserver(
+                (entries) => {
+                  if (entries[0].isIntersecting) loadProcessedPurchases(false);
+                },
+                { root: null, rootMargin: "240px", threshold: 0 },
+              );
+              observer.observe(sentinel);
+              sentinel._observerBound = true;
+            }
+          } else {
+            const sentinel = document.getElementById(
+              "processed-purchases-sentinel",
+            );
+            if (sentinel) sentinel.remove();
+          }
+        } catch (error) {
+          console.error("Error loading processed purchases:", error);
+          if (processedSkip === 0) {
+            list.innerHTML =
+              '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>حدث خطأ</h3><p>تعذر تحميل الطلبات المعالجة. يرجى المحاولة مرة أخرى.</p></div>';
+          }
+        } finally {
+          processedLoading = false;
+          const sentinel = document.getElementById(
+            "processed-purchases-sentinel",
+          );
           if (sentinel) {
-            sentinel.classList.add('loading');
-            sentinel.innerHTML = `<div class="purchases-loading-indicator">
-              <span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span>
-              <span class="purchases-loading-text">جاري التحميل...</span>
-            </div>`;
+            sentinel.classList.remove("loading");
+            sentinel.innerHTML = "";
           }
-        }
-        const page = await fetchPurchasesPage('pending', requestLimit, pendingSkip);
-        if (!page) return;
-        const data = page;
-
-        const statsEl = document.getElementById("dashboard-stats");
-        if (statsEl) {
-          const pending = typeof data.total === 'number' ? data.total : (data.purchases?.length || 0);
-          const total = typeof data.total === 'number' ? data.total : (data.purchases?.length || 0);
-          statsEl.innerHTML =
-            '<div class="stat-card stat-warning"><div class="stat-icon"><i class="fas fa-clock"></i></div><div class="stat-value">' + pending + '</div><div class="stat-label">قيد المراجعة</div></div>' +
-            '<div class="stat-card stat-info"><div class="stat-icon"><i class="fas fa-gift"></i></div><div class="stat-value">' + total + '</div><div class="stat-label">إجمالي الطلبات</div></div>';
-        }
-
-        if (pendingTotal == null && data.total != null) pendingTotal = data.total;
-
-        const purchases = data.purchases || [];
-        _pendingPurchases = _pendingPurchases.concat(purchases);
-        pendingSkip += purchases.length;
-        renderPendingList();
-
-        const shouldLoadMore = purchases.length > 0 && (pendingTotal == null || pendingSkip < pendingTotal);
-        if (shouldLoadMore) {
-          const sentinel = ensureSentinel(list, 'pending-purchases-sentinel');
-          if (sentinel && !sentinel._observerBound) {
-            const observer = new IntersectionObserver(
-              (entries) => {
-                if (entries[0].isIntersecting) loadPendingPurchases(false);
-              },
-              { root: null, rootMargin: '240px', threshold: 0 }
-            );
-            observer.observe(sentinel);
-            sentinel._observerBound = true;
-          }
-        } else {
-          const sentinel = document.getElementById('pending-purchases-sentinel');
-          if (sentinel) sentinel.remove();
-        }
-      } catch (error) {
-        console.error("Error loading pending purchases:", error);
-        if (pendingSkip === 0) {
-          list.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>حدث خطأ</h3><p>تعذر تحميل طلبات الهدايا. يرجى المحاولة مرة أخرى.</p></div>';
-        }
-      } finally {
-        pendingLoading = false;
-        const sentinel = document.getElementById('pending-purchases-sentinel');
-        if (sentinel) {
-          sentinel.classList.remove('loading');
-          sentinel.innerHTML = '';
         }
       }
-    }
 
-    window.approvePurchase = async function approvePurchase(purchaseId) {
-      Swal.fire({
-        title: "جاري المعالجة...",
-        html: '<span class="swal-loading-dots" aria-hidden="true"><span></span><span></span><span></span></span>',
-        allowOutsideClick: false,
-        allowEscapeKey: false,
-        didOpen: async () => {
-          try {
-            const response = await fetch(
-              `/api/admin/gift-shop/purchases/${purchaseId}/accept`,
-              {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-              }
-            );
-            const result = await response.json();
-            if (response.ok) {
-              Swal.fire({
-                title: "تم القبول!",
-                text: result.message || "تم قبول طلب الهدية بنجاح.",
-                icon: "success",
-                confirmButtonText: "حسنًا",
-                confirmButtonColor: "#ffcc00",
-              });
-              await Promise.all([
-                loadPendingPurchases(),
-                loadProcessedPurchases()
-              ]);
-            } else {
-              throw new Error(result.message || "فشل قبول الطلب");
-            }
-          } catch (error) {
-            Swal.fire({
-              title: "خطأ!",
-              text: error.message || "تعذر قبول الطلب",
-              icon: "error",
-              confirmButtonText: "حسنًا",
-            });
-          }
-        },
-      });
-    };
-
-    window.declinePurchase = async function declinePurchase(purchaseId) {
-      const { value: reason } = await Swal.fire({
-        title: "رفض الطلب",
-        input: "textarea",
-        inputLabel: "سبب الرفض",
-        inputPlaceholder: "اكتب سبباً واضحاً يفهمه الطالب...",
-        showCancelButton: true,
-        confirmButtonText: "رفض",
-        cancelButtonText: "إلغاء",
-        confirmButtonColor: "#e74c3c",
-        cancelButtonColor: "#666",
-      });
-
-      if (reason === undefined) return;
-
-      Swal.fire({
-        title: "جاري المعالجة...",
-        html: '<span class="swal-loading-dots" aria-hidden="true"><span></span><span></span><span></span></span>',
-        allowOutsideClick: false,
-        allowEscapeKey: false,
-        didOpen: async () => {
-          try {
-            const response = await fetch(
-              `/api/admin/gift-shop/purchases/${purchaseId}/decline`,
-              {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ reason }),
-              }
-            );
-            const result = await response.json();
-            if (response.ok) {
-              Swal.fire({
-                title: "تم الرفض!",
-                text:
-                  result.message || "تم رفض الطلب وتمت إعادة النقاط لصاحبها.",
-                icon: "success",
-                confirmButtonText: "حسنًا",
-                confirmButtonColor: "#ffcc00",
-              });
-              await Promise.all([
-                loadPendingPurchases(),
-                loadProcessedPurchases()
-              ]);
-            } else {
-              throw new Error(result.message || "فشل رفض الطلب");
-            }
-          } catch (error) {
-            Swal.fire({
-              title: "خطأ!",
-              text: error.message || "تعذر رفض الطلب",
-              icon: "error",
-              confirmButtonText: "حسنًا",
-            });
-          }
-        },
-      });
-    };
-
-    document.addEventListener("DOMContentLoaded", async function () {
-      await loadUserInfo();
-      await loadPendingPurchases(true);
-      var searchEl = document.getElementById("pending-search");
-      var gradeEl = document.getElementById("pending-sort-grade");
-      var refreshBtn = document.getElementById("pending-refresh-btn");
-      if (searchEl) { searchEl.addEventListener("input", renderPendingList); searchEl.addEventListener("keyup", renderPendingList); }
-      if (gradeEl) { gradeEl.addEventListener("change", renderPendingList); }
-      if (refreshBtn) { refreshBtn.addEventListener("click", function () { loadPendingPurchases(true); }); }
-
-      setInterval(function () { loadPendingPurchases(true); }, 30000);
-
-      const mobileToggle = document.getElementById("mobileToggle");
-      const sidebar = document.getElementById("sidebar");
-      const logoutBtn = document.getElementById("logoutBtn");
-      const logoutBtnMobile = document.getElementById("logoutBtnMobile");
-      const gradesToggle = document.getElementById("gradesToggle");
-      const gradesSubmenu = document.getElementById("gradesSubmenu");
-      const sectionToggles = document.querySelectorAll(".section-toggle");
-
-      if (mobileToggle) {
-        mobileToggle.addEventListener("click", () => {
-          sidebar.classList.toggle("active");
-          const spans = mobileToggle.querySelectorAll("span");
-          if (sidebar.classList.contains("active")) {
-            spans[0].style.transform = "rotate(45deg) translate(5px, 5px)";
-            spans[1].style.opacity = "0";
-            spans[2].style.transform = "rotate(-45deg) translate(7px, -6px)";
-          } else {
-            spans[0].style.transform = "none";
-            spans[1].style.opacity = "1";
-            spans[2].style.transform = "none";
-          }
-        });
-      }
-
-      if (gradesToggle) {
-        gradesToggle.addEventListener("click", function (e) {
-          e.stopPropagation();
-          this.classList.toggle("active");
-          const icon = this.querySelector(".toggle-icon");
-          if (this.classList.contains("active")) {
-            icon.classList.remove("fa-chevron-down");
-            icon.classList.add("fa-chevron-up");
-            gradesSubmenu.style.maxHeight = "200px";
-          } else {
-            icon.classList.remove("fa-chevron-up");
-            icon.classList.add("fa-chevron-down");
-            gradesSubmenu.style.maxHeight = "0";
-            document
-              .querySelectorAll(".section-toggle.active")
-              .forEach((toggle) => {
-                toggle.classList.remove("active");
-                const subIcon = toggle.querySelector(".toggle-icon");
-                subIcon.classList.remove("fa-chevron-up");
-                subIcon.classList.add("fa-chevron-down");
-                const sectionSub = document.querySelector(
-                  `.section-submenu[data-section="${toggle.dataset.section}"]`
-                );
-                if (sectionSub) sectionSub.style.maxHeight = "0";
-              });
-          }
-        });
-      }
-
-      sectionToggles.forEach((toggle) => {
-        toggle.addEventListener("click", function (e) {
-          e.stopPropagation();
-          this.classList.toggle("active");
-          const icon = this.querySelector(".toggle-icon");
-          const sectionSub = document.querySelector(
-            `.section-submenu[data-section="${this.dataset.section}"]`
+      async function markAsReceived(purchaseId) {
+        try {
+          const response = await fetch(
+            `/api/admin/gift-shop/purchases/${purchaseId}/received`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+            },
           );
 
-          if (this.classList.contains("active")) {
-            icon.classList.remove("fa-chevron-down");
-            icon.classList.add("fa-chevron-up");
-            sectionSub.style.maxHeight = sectionSub.scrollHeight + "px";
-          } else {
-            icon.classList.remove("fa-chevron-up");
-            icon.classList.add("fa-chevron-down");
-            sectionSub.style.maxHeight = "0";
-          }
-        });
-      });
+          const result = await response.json();
 
-      const handleLogoutClick = async () => {
-        const result = await Swal.fire({
-          title: "تسجيل الخروج",
-          text: "هل تريد فعلاً تسجيل الخروج من النظام؟",
-          icon: "question",
-          iconColor: "#ffcc00",
+          if (response.ok) {
+            Swal.fire({
+              title: "تم!",
+              text: "تم تأكيد استلام الهدية بنجاح",
+              icon: "success",
+              confirmButtonText: "حسنًا",
+              confirmButtonColor: "#3498db",
+            }).then(() => {
+              loadProcessedPurchases();
+            });
+          } else {
+            throw new Error(result.message || "فشل تأكيد الاستلام");
+          }
+        } catch (error) {
+          console.error("Error marking as received:", error);
+          Swal.fire({
+            title: "خطأ!",
+            text: error.message || "حدث خطأ أثناء تأكيد الاستلام",
+            icon: "error",
+            confirmButtonText: "حسنًا",
+          });
+        }
+      }
+
+      let _pendingPurchases = [];
+
+      function renderPendingList() {
+        const list = document.getElementById("pending-purchases-list");
+        if (!list) return;
+        const searchVal =
+          (document.getElementById("pending-search") &&
+            document.getElementById("pending-search").value) ||
+          "";
+        const gradeVal =
+          (document.getElementById("pending-sort-grade") &&
+            document.getElementById("pending-sort-grade").value) ||
+          "";
+        const q = (searchVal || "").trim().toLowerCase();
+        let items = _pendingPurchases;
+        if (gradeVal) {
+          items = items.filter(function (p) {
+            return (p.grade || "") === gradeVal;
+          });
+        }
+        if (q) {
+          items = items.filter(function (p) {
+            const un = (p.username || "").toLowerCase();
+            const name = (p.itemName || "").toLowerCase();
+            return un.indexOf(q) !== -1 || name.indexOf(q) !== -1;
+          });
+        }
+        if (items.length === 0) {
+          list.innerHTML =
+            '<div class="empty-state"><i class="fas fa-search"></i><h3>لا توجد نتائج</h3><p>' +
+            (_pendingPurchases.length === 0
+              ? "لا توجد طلبات قيد المراجعة حالياً"
+              : "لا توجد طلبات تطابق البحث أو الصف") +
+            "</p></div>";
+          return;
+        }
+        list.innerHTML = items
+          .map(function (purchase) {
+            return getPurchaseCardHtml(purchase, "pending");
+          })
+          .join("");
+      }
+
+      async function loadPendingPurchases(reset) {
+        const list = document.getElementById("pending-purchases-list");
+        if (!list || pendingLoading) return;
+
+        if (reset !== false) {
+          pendingSkip = 0;
+          pendingTotal = null;
+          _pendingPurchases = [];
+          list.innerHTML =
+            '<div class="loading-state"><span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span><p>جاري التحميل...</p></div>';
+        }
+
+        pendingLoading = true;
+        const requestLimit =
+          pendingSkip === 0
+            ? INITIAL_PURCHASES_LIMIT
+            : LOAD_MORE_PURCHASES_LIMIT;
+
+        try {
+          if (pendingSkip > 0) {
+            const sentinel = ensureSentinel(list, "pending-purchases-sentinel");
+            if (sentinel) {
+              sentinel.classList.add("loading");
+              sentinel.innerHTML = `<div class="purchases-loading-indicator">
+              <span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+              <span class="purchases-loading-text">جاري التحميل...</span>
+            </div>`;
+            }
+          }
+          const page = await fetchPurchasesPage(
+            "pending",
+            requestLimit,
+            pendingSkip,
+          );
+          if (!page) return;
+          const data = page;
+
+          const statsEl = document.getElementById("dashboard-stats");
+          if (statsEl) {
+            const pending =
+              typeof data.total === "number"
+                ? data.total
+                : data.purchases?.length || 0;
+            const total =
+              typeof data.total === "number"
+                ? data.total
+                : data.purchases?.length || 0;
+            statsEl.innerHTML =
+              '<div class="stat-card stat-warning"><div class="stat-icon"><i class="fas fa-clock"></i></div><div class="stat-value">' +
+              pending +
+              '</div><div class="stat-label">قيد المراجعة</div></div>' +
+              '<div class="stat-card stat-info"><div class="stat-icon"><i class="fas fa-gift"></i></div><div class="stat-value">' +
+              total +
+              '</div><div class="stat-label">إجمالي الطلبات</div></div>';
+          }
+
+          if (pendingTotal == null && data.total != null)
+            pendingTotal = data.total;
+
+          const purchases = data.purchases || [];
+          _pendingPurchases = _pendingPurchases.concat(purchases);
+          pendingSkip += purchases.length;
+          renderPendingList();
+
+          const shouldLoadMore =
+            purchases.length > 0 &&
+            (pendingTotal == null || pendingSkip < pendingTotal);
+          if (shouldLoadMore) {
+            const sentinel = ensureSentinel(list, "pending-purchases-sentinel");
+            if (sentinel && !sentinel._observerBound) {
+              const observer = new IntersectionObserver(
+                (entries) => {
+                  if (entries[0].isIntersecting) loadPendingPurchases(false);
+                },
+                { root: null, rootMargin: "240px", threshold: 0 },
+              );
+              observer.observe(sentinel);
+              sentinel._observerBound = true;
+            }
+          } else {
+            const sentinel = document.getElementById(
+              "pending-purchases-sentinel",
+            );
+            if (sentinel) sentinel.remove();
+          }
+        } catch (error) {
+          console.error("Error loading pending purchases:", error);
+          if (pendingSkip === 0) {
+            list.innerHTML =
+              '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>حدث خطأ</h3><p>تعذر تحميل طلبات الهدايا. يرجى المحاولة مرة أخرى.</p></div>';
+          }
+        } finally {
+          pendingLoading = false;
+          const sentinel = document.getElementById(
+            "pending-purchases-sentinel",
+          );
+          if (sentinel) {
+            sentinel.classList.remove("loading");
+            sentinel.innerHTML = "";
+          }
+        }
+      }
+
+      window.approvePurchase = async function approvePurchase(purchaseId) {
+        Swal.fire({
+          title: "جاري المعالجة...",
+          html: '<span class="swal-loading-dots" aria-hidden="true"><span></span><span></span><span></span></span>',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          didOpen: async () => {
+            try {
+              const response = await fetch(
+                `/api/admin/gift-shop/purchases/${purchaseId}/accept`,
+                {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                },
+              );
+              const result = await response.json();
+              if (response.ok) {
+                Swal.fire({
+                  title: "تم القبول!",
+                  text: result.message || "تم قبول طلب الهدية بنجاح.",
+                  icon: "success",
+                  confirmButtonText: "حسنًا",
+                  confirmButtonColor: "#ffcc00",
+                });
+                await Promise.all([
+                  loadPendingPurchases(),
+                  loadProcessedPurchases(),
+                ]);
+              } else {
+                throw new Error(result.message || "فشل قبول الطلب");
+              }
+            } catch (error) {
+              Swal.fire({
+                title: "خطأ!",
+                text: error.message || "تعذر قبول الطلب",
+                icon: "error",
+                confirmButtonText: "حسنًا",
+              });
+            }
+          },
+        });
+      };
+
+      window.declinePurchase = async function declinePurchase(purchaseId) {
+        const { value: reason } = await Swal.fire({
+          title: "رفض الطلب",
+          input: "textarea",
+          inputLabel: "سبب الرفض",
+          inputPlaceholder: "اكتب سبباً واضحاً يفهمه الطالب...",
           showCancelButton: true,
-          confirmButtonText: "نعم، تسجيل خروج",
+          confirmButtonText: "رفض",
           cancelButtonText: "إلغاء",
           confirmButtonColor: "#e74c3c",
           cancelButtonColor: "#666",
-          background: "#2a1b3c",
-          color: "#fff",
-          backdrop: "rgba(0,0,0,0.8)",
-          allowOutsideClick: false,
         });
 
-        if (result.isConfirmed) {
-          try {
-            const response = await fetch("/logout", { method: "POST" });
-            if (response.ok) {
-              await Swal.fire({
-                title: "تم تسجيل الخروج",
-                text: "وداعاً! تم تسجيل خروجك بنجاح",
-                icon: "success",
-                iconColor: "#27ae60",
-                background: "#2a1b3c",
-                color: "#fff",
-                backdrop: "rgba(0,0,0,0.8)",
-                showConfirmButton: false,
-                timer: 1500,
+        if (reason === undefined) return;
+
+        Swal.fire({
+          title: "جاري المعالجة...",
+          html: '<span class="swal-loading-dots" aria-hidden="true"><span></span><span></span><span></span></span>',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          didOpen: async () => {
+            try {
+              const response = await fetch(
+                `/api/admin/gift-shop/purchases/${purchaseId}/decline`,
+                {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ reason }),
+                },
+              );
+              const result = await response.json();
+              if (response.ok) {
+                Swal.fire({
+                  title: "تم الرفض!",
+                  text:
+                    result.message || "تم رفض الطلب وتمت إعادة النقاط لصاحبها.",
+                  icon: "success",
+                  confirmButtonText: "حسنًا",
+                  confirmButtonColor: "#ffcc00",
+                });
+                await Promise.all([
+                  loadPendingPurchases(),
+                  loadProcessedPurchases(),
+                ]);
+              } else {
+                throw new Error(result.message || "فشل رفض الطلب");
+              }
+            } catch (error) {
+              Swal.fire({
+                title: "خطأ!",
+                text: error.message || "تعذر رفض الطلب",
+                icon: "error",
+                confirmButtonText: "حسنًا",
               });
-              setTimeout(() => {
-                window.location.href = "/";
-              }, 500);
             }
-          } catch (error) {
-            console.error("Logout error:", error);
-            window.location.href = "/";
-          }
-        }
+          },
+        });
       };
 
-      if (logoutBtn) {
-        logoutBtn.addEventListener("click", handleLogoutClick);
-      }
-      if (logoutBtnMobile) {
-        logoutBtnMobile.addEventListener("click", handleLogoutClick);
+      document.addEventListener("DOMContentLoaded", async function () {
+        await loadUserInfo();
+        await loadPendingPurchases(true);
+        var searchEl = document.getElementById("pending-search");
+        var gradeEl = document.getElementById("pending-sort-grade");
+        var refreshBtn = document.getElementById("pending-refresh-btn");
+        if (searchEl) {
+          searchEl.addEventListener("input", renderPendingList);
+          searchEl.addEventListener("keyup", renderPendingList);
+        }
+        if (gradeEl) {
+          gradeEl.addEventListener("change", renderPendingList);
+        }
+        if (refreshBtn) {
+          refreshBtn.addEventListener("click", function () {
+            loadPendingPurchases(true);
+          });
+        }
+
+        setInterval(function () {
+          loadPendingPurchases(true);
+        }, 30000);
+
+        const mobileToggle = document.getElementById("mobileToggle");
+        const sidebar = document.getElementById("sidebar");
+        const logoutBtn = document.getElementById("logoutBtn");
+        const logoutBtnMobile = document.getElementById("logoutBtnMobile");
+        const gradesToggle = document.getElementById("gradesToggle");
+        const gradesSubmenu = document.getElementById("gradesSubmenu");
+        const sectionToggles = document.querySelectorAll(".section-toggle");
+
+        if (mobileToggle) {
+          mobileToggle.addEventListener("click", () => {
+            sidebar.classList.toggle("active");
+            const spans = mobileToggle.querySelectorAll("span");
+            if (sidebar.classList.contains("active")) {
+              spans[0].style.transform = "rotate(45deg) translate(5px, 5px)";
+              spans[1].style.opacity = "0";
+              spans[2].style.transform = "rotate(-45deg) translate(7px, -6px)";
+            } else {
+              spans[0].style.transform = "none";
+              spans[1].style.opacity = "1";
+              spans[2].style.transform = "none";
+            }
+          });
+        }
+
+        if (gradesToggle) {
+          gradesToggle.addEventListener("click", function (e) {
+            e.stopPropagation();
+            this.classList.toggle("active");
+            const icon = this.querySelector(".toggle-icon");
+            if (this.classList.contains("active")) {
+              icon.classList.remove("fa-chevron-down");
+              icon.classList.add("fa-chevron-up");
+              gradesSubmenu.style.maxHeight = "200px";
+            } else {
+              icon.classList.remove("fa-chevron-up");
+              icon.classList.add("fa-chevron-down");
+              gradesSubmenu.style.maxHeight = "0";
+              document
+                .querySelectorAll(".section-toggle.active")
+                .forEach((toggle) => {
+                  toggle.classList.remove("active");
+                  const subIcon = toggle.querySelector(".toggle-icon");
+                  subIcon.classList.remove("fa-chevron-up");
+                  subIcon.classList.add("fa-chevron-down");
+                  const sectionSub = document.querySelector(
+                    `.section-submenu[data-section="${toggle.dataset.section}"]`,
+                  );
+                  if (sectionSub) sectionSub.style.maxHeight = "0";
+                });
+            }
+          });
+        }
+
+        sectionToggles.forEach((toggle) => {
+          toggle.addEventListener("click", function (e) {
+            e.stopPropagation();
+            this.classList.toggle("active");
+            const icon = this.querySelector(".toggle-icon");
+            const sectionSub = document.querySelector(
+              `.section-submenu[data-section="${this.dataset.section}"]`,
+            );
+
+            if (this.classList.contains("active")) {
+              icon.classList.remove("fa-chevron-down");
+              icon.classList.add("fa-chevron-up");
+              sectionSub.style.maxHeight = sectionSub.scrollHeight + "px";
+            } else {
+              icon.classList.remove("fa-chevron-up");
+              icon.classList.add("fa-chevron-down");
+              sectionSub.style.maxHeight = "0";
+            }
+          });
+        });
+
+        const handleLogoutClick = async () => {
+          const result = await Swal.fire({
+            title: "تسجيل الخروج",
+            text: "هل تريد فعلاً تسجيل الخروج من النظام؟",
+            icon: "question",
+            iconColor: "#ffcc00",
+            showCancelButton: true,
+            confirmButtonText: "نعم، تسجيل خروج",
+            cancelButtonText: "إلغاء",
+            confirmButtonColor: "#e74c3c",
+            cancelButtonColor: "#666",
+            background: "#2a1b3c",
+            color: "#fff",
+            backdrop: "rgba(0,0,0,0.8)",
+            allowOutsideClick: false,
+          });
+
+          if (result.isConfirmed) {
+            try {
+              const response = await fetch("/logout", { method: "POST" });
+              if (response.ok) {
+                await Swal.fire({
+                  title: "تم تسجيل الخروج",
+                  text: "وداعاً! تم تسجيل خروجك بنجاح",
+                  icon: "success",
+                  iconColor: "#27ae60",
+                  background: "#2a1b3c",
+                  color: "#fff",
+                  backdrop: "rgba(0,0,0,0.8)",
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+                setTimeout(() => {
+                  window.location.href = "/";
+                }, 500);
+              }
+            } catch (error) {
+              console.error("Logout error:", error);
+              window.location.href = "/";
+            }
+          }
+        };
+
+        if (logoutBtn) {
+          logoutBtn.addEventListener("click", handleLogoutClick);
+        }
+        if (logoutBtnMobile) {
+          logoutBtnMobile.addEventListener("click", handleLogoutClick);
+        }
+
+        document.addEventListener("click", function (event) {
+          if (window.innerWidth <= 992 && sidebar && mobileToggle) {
+            if (
+              !sidebar.contains(event.target) &&
+              !mobileToggle.contains(event.target)
+            ) {
+              sidebar.classList.remove("active");
+              const spans = mobileToggle.querySelectorAll("span");
+              spans[0].style.transform = "none";
+              spans[1].style.opacity = "1";
+              spans[2].style.transform = "none";
+            }
+          }
+        });
+      });
+      const suggestionsToggle = document.getElementById("suggestionsToggle");
+      const suggestionsSubmenu = document.getElementById("suggestionsSubmenu");
+
+      if (suggestionsToggle) {
+        suggestionsToggle.addEventListener("click", function (e) {
+          e.stopPropagation();
+          this.classList.toggle("active");
+          const icon = this.querySelector(".toggle-icon");
+          if (this.classList.contains("active")) {
+            icon.classList.remove("fa-chevron-down");
+            icon.classList.add("fa-chevron-up");
+            suggestionsSubmenu.style.maxHeight =
+              suggestionsSubmenu.scrollHeight + "px";
+          } else {
+            icon.classList.remove("fa-chevron-up");
+            icon.classList.add("fa-chevron-down");
+            suggestionsSubmenu.style.maxHeight = "0";
+          }
+        });
       }
 
-      document.addEventListener("click", function (event) {
-        if (window.innerWidth <= 992 && sidebar && mobileToggle) {
+      document.addEventListener("click", function (e) {
+        if (!e.target.closest(".suggestions-nav-item")) {
+          const suggestionsToggle =
+            document.getElementById("suggestionsToggle");
+          const suggestionsSubmenu =
+            document.getElementById("suggestionsSubmenu");
+
           if (
-            !sidebar.contains(event.target) &&
-            !mobileToggle.contains(event.target)
+            suggestionsToggle &&
+            suggestionsToggle.classList.contains("active")
           ) {
-            sidebar.classList.remove("active");
-            const spans = mobileToggle.querySelectorAll("span");
-            spans[0].style.transform = "none";
-            spans[1].style.opacity = "1";
-            spans[2].style.transform = "none";
+            suggestionsToggle.classList.remove("active");
+            const icon = suggestionsToggle.querySelector(".toggle-icon");
+            icon.classList.remove("fa-chevron-up");
+            icon.classList.add("fa-chevron-down");
+            suggestionsSubmenu.style.maxHeight = "0";
           }
         }
       });
-    });
-    const suggestionsToggle = document.getElementById("suggestionsToggle");
-    const suggestionsSubmenu = document.getElementById("suggestionsSubmenu");
-
-    if (suggestionsToggle) {
-      suggestionsToggle.addEventListener("click", function (e) {
-        e.stopPropagation();
-        this.classList.toggle("active");
-        const icon = this.querySelector(".toggle-icon");
-        if (this.classList.contains("active")) {
-          icon.classList.remove("fa-chevron-down");
-          icon.classList.add("fa-chevron-up");
-          suggestionsSubmenu.style.maxHeight =
-            suggestionsSubmenu.scrollHeight + "px";
-        } else {
-          icon.classList.remove("fa-chevron-up");
-          icon.classList.add("fa-chevron-down");
-          suggestionsSubmenu.style.maxHeight = "0";
+    </script>
+    <script>
+      (function () {
+        function updatePendingBadges() {
+          if (document.visibilityState !== "visible") return;
+          fetch("/api/admin/pending-counts")
+            .then(function (r) {
+              return r.json();
+            })
+            .then(function (d) {
+              var loginBadge = document.getElementById("nav-badge-login");
+              var giftBadge = document.getElementById("nav-badge-gift");
+              var loginCount = d.pendingRegistration || 0;
+              var giftCount = d.pendingGift || 0;
+              if (loginBadge) {
+                loginBadge.textContent = loginCount;
+                loginBadge.classList.toggle("empty", loginCount === 0);
+                loginBadge.setAttribute(
+                  "aria-hidden",
+                  loginCount === 0 ? "true" : "false",
+                );
+              }
+              if (giftBadge) {
+                giftBadge.textContent = giftCount;
+                giftBadge.classList.toggle("empty", giftCount === 0);
+                giftBadge.setAttribute(
+                  "aria-hidden",
+                  giftCount === 0 ? "true" : "false",
+                );
+              }
+            })
+            .catch(function () {});
         }
-      });
-    }
-
-    document.addEventListener("click", function (e) {
-      if (!e.target.closest(".suggestions-nav-item")) {
-        const suggestionsToggle =
-          document.getElementById("suggestionsToggle");
-        const suggestionsSubmenu =
-          document.getElementById("suggestionsSubmenu");
-
-        if (
-          suggestionsToggle &&
-          suggestionsToggle.classList.contains("active")
-        ) {
-          suggestionsToggle.classList.remove("active");
-          const icon = suggestionsToggle.querySelector(".toggle-icon");
-          icon.classList.remove("fa-chevron-up");
-          icon.classList.add("fa-chevron-down");
-          suggestionsSubmenu.style.maxHeight = "0";
-        }
-      }
-    });
-  </script>
-  <script>
-    (function () {
-      function updatePendingBadges() {
-        if (document.visibilityState !== "visible") return;
-        fetch("/api/admin/pending-counts")
-          .then(function (r) { return r.json(); })
-          .then(function (d) {
-            var loginBadge = document.getElementById("nav-badge-login");
-            var giftBadge = document.getElementById("nav-badge-gift");
-            var loginCount = d.pendingRegistration || 0;
-            var giftCount = d.pendingGift || 0;
-            if (loginBadge) {
-              loginBadge.textContent = loginCount;
-              loginBadge.classList.toggle("empty", loginCount === 0);
-              loginBadge.setAttribute("aria-hidden", loginCount === 0 ? "true" : "false");
-            }
-            if (giftBadge) {
-              giftBadge.textContent = giftCount;
-              giftBadge.classList.toggle("empty", giftCount === 0);
-              giftBadge.setAttribute("aria-hidden", giftCount === 0 ? "true" : "false");
-            }
-          })
-          .catch(function () { });
-      }
-      updatePendingBadges();
-      setInterval(updatePendingBadges, 10000);
-      document.addEventListener("visibilitychange", function () {
-        if (document.visibilityState === "visible") updatePendingBadges();
-      });
-    })();
-  </script>
-</body>
-
+        updatePendingBadges();
+        setInterval(updatePendingBadges, 10000);
+        document.addEventListener("visibilitychange", function () {
+          if (document.visibilityState === "visible") updatePendingBadges();
+        });
+      })();
+    </script>
+  </body>
 </html>

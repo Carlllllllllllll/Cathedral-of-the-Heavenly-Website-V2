@@ -8,7 +8,6 @@ body.admin-page-user-management .main-content {
 }
 
 @supports not (zoom: 0.9) {
-
   body.admin-page-form-panel .main-content,
   body.admin-page-user-management .main-content {
     transform: scale(0.9);
@@ -170,7 +169,6 @@ body.admin-page-user-management .main-content {
 }
 
 @keyframes nav-badge-shake {
-
   0%,
   100% {
     transform: translateX(0);
@@ -190,7 +188,6 @@ body.admin-page-user-management .main-content {
   border-top: 1px solid var(--border);
 }
 
-
 .sidebar-footer .nav-link {
   width: 100%;
   box-sizing: border-box;
@@ -206,7 +203,12 @@ body.admin-page-user-management .main-content {
   border-radius: var(--radius);
   font-size: 0.95rem;
   font-weight: 600;
-  font-family: "Cairo", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+  font-family:
+    "Cairo",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
     sans-serif;
   cursor: pointer;
   display: flex;
@@ -233,13 +235,11 @@ body.admin-page-user-management .main-content {
   opacity: 0.9;
 }
 
-
 .main-content {
   margin-left: var(--sidebar-width);
   padding: 1.5rem;
   min-height: 100vh;
 }
-
 
 .top-nav {
   background: var(--card-bg);
@@ -249,7 +249,6 @@ body.admin-page-user-management .main-content {
   box-shadow: var(--shadow);
   border: 1px solid var(--border);
 }
-
 
 .top-nav .user-info {
   display: flex;
@@ -262,12 +261,10 @@ body.admin-page-user-management .main-content {
   direction: ltr;
 }
 
-
 .top-nav .user-info .logout-btn-mobile {
   order: 1;
   margin-right: auto;
 }
-
 
 .top-nav .user-info .user-details {
   display: flex;
@@ -331,7 +328,6 @@ body.admin-page-user-management .main-content {
   white-space: nowrap;
 }
 
-
 @media (min-width: 992px) {
   .top-nav .user-info {
     max-width: 100%;
@@ -342,7 +338,6 @@ body.admin-page-user-management .main-content {
     max-width: 180px;
   }
 }
-
 
 .logout-btn-mobile {
   display: none;
@@ -356,7 +351,6 @@ body.admin-page-user-management .main-content {
   font-size: 1.1rem;
   transition: var(--transition);
 }
-
 
 .swal2-container {
   z-index: 10000 !important;
@@ -468,7 +462,6 @@ body.admin-page-user-management .main-content {
   box-shadow: 0 0 0 3px rgba(255, 204, 0, 0.1) !important;
 }
 
-/* Aggressive Modal Centering Fix */
 .swal2-popup {
   text-align: center !important;
 }
@@ -483,8 +476,6 @@ body.admin-page-user-management .main-content {
 .swal2-actions {
   justify-content: center !important;
 }
-
-
 
 .admin-container {
   max-width: 1200px;
@@ -501,7 +492,6 @@ body.admin-page-user-management .main-content {
   gap: 12px;
   text-align: center;
 }
-
 
 .dashboard-stats {
   display: grid;
@@ -600,7 +590,9 @@ body.admin-page-user-management .main-content {
   font-weight: 600;
   font-size: 0.9rem;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s;
 }
 
 .dashboard-refresh-btn:hover {
@@ -650,7 +642,6 @@ body.admin-page-user-management .main-content {
   margin: 0;
   max-width: 420px;
 }
-
 
 .create-form-btn,
 #add-item-btn,
@@ -736,7 +727,6 @@ body.admin-page-user-management .main-content {
   color: white;
 }
 
-
 .registrations-grid,
 .users-grid,
 .gift-shop-grid {
@@ -783,7 +773,6 @@ body.admin-page-user-management .main-content {
   border-color: rgba(255, 204, 0, 0.15);
 }
 
-
 .filters {
   display: flex;
   flex-wrap: wrap;
@@ -828,13 +817,14 @@ body.admin-page-user-management .main-content {
   font-weight: 600;
   font-size: 0.9rem;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s;
 }
 
 .refresh-btn:hover {
   background: rgba(255, 204, 0, 0.2);
 }
-
 
 .empty-state,
 .loading-state {
@@ -849,7 +839,6 @@ body.admin-page-user-management .main-content {
   color: var(--accent);
   margin-bottom: 1rem;
 }
-
 
 .modal {
   display: none;
@@ -911,7 +900,6 @@ body.admin-page-user-management .main-content {
   padding: 1.5rem;
 }
 
-
 .form-group {
   margin-bottom: 1.25rem;
 }
@@ -972,7 +960,6 @@ body.admin-page-user-management .main-content {
   transition: var(--transition);
 }
 
-
 .grades-submenu-container,
 .suggestions-submenu-container {
   overflow: hidden;
@@ -990,8 +977,10 @@ body.admin-page-user-management .main-content {
   overflow-x: hidden;
 }
 
-.grades-toggle.active+.grades-submenu-container .grades-submenu,
-.suggestions-toggle.active+.suggestions-submenu-container .suggestions-submenu {
+.grades-toggle.active + .grades-submenu-container .grades-submenu,
+.suggestions-toggle.active
+  + .suggestions-submenu-container
+  .suggestions-submenu {
   max-height: 300px;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -1005,7 +994,7 @@ body.admin-page-user-management .main-content {
   overflow-x: hidden;
 }
 
-.section-toggle.active+.section-submenu {
+.section-toggle.active + .section-submenu {
   max-height: 200px;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -1029,11 +1018,9 @@ body.admin-page-user-management .main-content {
   color: var(--accent);
 }
 
-
 [dir="rtl"] .nav-link:hover {
   transform: translateX(4px);
 }
-
 
 @media (max-width: 992px) {
   .mobile-toggle {
@@ -1065,7 +1052,6 @@ body.admin-page-user-management .main-content {
 }
 
 @media (max-width: 768px) {
-
   .registrations-grid,
   .forms-grid {
     grid-template-columns: 1fr;

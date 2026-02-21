@@ -24,11 +24,19 @@ let argon2;
 try {
   argon2 = require("argon2");
 } catch (e) {
-  console.warn("[SERVER] argon2 not available, falling back to bcrypt with high salt rounds.");
+  console.warn(
+    "[SERVER] argon2 not available, falling back to bcrypt with high salt rounds.",
+  );
 }
 
 function loadViteManifest() {
-  const manifestPath = path.join(__dirname, "public", "dist", ".vite", "manifest.json");
+  const manifestPath = path.join(
+    __dirname,
+    "public",
+    "dist",
+    ".vite",
+    "manifest.json",
+  );
   try {
     if (!fs.existsSync(manifestPath)) {
       return null;
@@ -43,26 +51,46 @@ function loadViteManifest() {
 
 console.log(`[SERVER] Starting Church Website Application...`);
 
-const { apiHashMiddleware, generateClientAPIMap } = require('./src/utils/api-hasher');
-const { requireAPIRole, hasRequiredRole, requireRole: rbacRequireRole } = require('./src/utils/rbac-middleware');
-const { encrypt, decrypt, encryptFields, decryptFields, hash } = require('./src/utils/encryption');
-const { hashPassword, comparePassword, generateAccessToken, generateRefreshToken, verifyAccessToken, verifyRefreshToken } = require('./src/utils/auth');
+const {
+  apiHashMiddleware,
+  generateClientAPIMap,
+} = require("./src/utils/api-hasher");
+const {
+  requireAPIRole,
+  hasRequiredRole,
+  requireRole: rbacRequireRole,
+} = require("./src/utils/rbac-middleware");
+const {
+  encrypt,
+  decrypt,
+  encryptFields,
+  decryptFields,
+  hash,
+} = require("./src/utils/encryption");
+const {
+  hashPassword,
+  comparePassword,
+  generateAccessToken,
+  generateRefreshToken,
+  verifyAccessToken,
+  verifyRefreshToken,
+} = require("./src/utils/auth");
 const {
   loginLimiter: secureLoginLimiter,
   apiLimiter: secureAPILimiter,
   strictLimiter,
   trackFailedAttempt,
   clearFailedAttempts,
-  checkIPBan
-} = require('./src/utils/rate-limiter');
+  checkIPBan,
+} = require("./src/utils/rate-limiter");
 const {
   validateSessionFingerprint,
   trackActivity,
   checkSessionTimeout,
   rotateSessionID,
   detectSuspiciousActivity,
-} = require('./src/utils/session-security');
-const { maliciousFilter, spamBlocker } = require('./src/utils/automod');
+} = require("./src/utils/session-security");
+const { maliciousFilter, spamBlocker } = require("./src/utils/automod");
 const userRegistrationsStore = require("./src/db/userregistrations-store");
 
 const submissionLimiter = rateLimit({
@@ -164,32 +192,32 @@ const gradeBlueprints = {
   prep1: {
     heroTitle: "أولي إعدادي",
     heroSubtitle:
-      'لاَ تَخَفْ لأَنِّي مَعَكَ، وَأُبَارِكُكَ (سفر التكوين 26: 24)',
+      "لاَ تَخَفْ لأَنِّي مَعَكَ، وَأُبَارِكُكَ (سفر التكوين 26: 24)",
   },
   prep2: {
     heroTitle: "ثانية إعدادي",
     heroSubtitle:
-      'لاَ تَخَفْ لأَنِّي مَعَكَ، وَأُبَارِكُكَ (سفر التكوين 26: 24)',
+      "لاَ تَخَفْ لأَنِّي مَعَكَ، وَأُبَارِكُكَ (سفر التكوين 26: 24)",
   },
   prep3: {
     heroTitle: "ثالثة إعدادي",
     heroSubtitle:
-      'لاَ تَخَفْ لأَنِّي مَعَكَ، وَأُبَارِكُكَ (سفر التكوين 26: 24)',
+      "لاَ تَخَفْ لأَنِّي مَعَكَ، وَأُبَارِكُكَ (سفر التكوين 26: 24)",
   },
   sec1: {
     heroTitle: "أولي ثانوي",
     heroSubtitle:
-      'لاَ تَخَفْ لأَنِّي مَعَكَ، وَأُبَارِكُكَ (سفر التكوين 26: 24)',
+      "لاَ تَخَفْ لأَنِّي مَعَكَ، وَأُبَارِكُكَ (سفر التكوين 26: 24)",
   },
   sec2: {
     heroTitle: "ثانية ثانوي",
     heroSubtitle:
-      'لاَ تَخَفْ لأَنِّي مَعَكَ، وَأُبَارِكُكَ (سفر التكوين 26: 24)',
+      "لاَ تَخَفْ لأَنِّي مَعَكَ، وَأُبَارِكُكَ (سفر التكوين 26: 24)",
   },
   sec3: {
     heroTitle: "ثالثة ثانوي",
     heroSubtitle:
-      'لاَ تَخَفْ لأَنِّي مَعَكَ، وَأُبَارِكُكَ (سفر التكوين 26: 24)',
+      "لاَ تَخَفْ لأَنِّي مَعَكَ، وَأُبَارِكُكَ (سفر التكوين 26: 24)",
   },
 };
 
@@ -200,6 +228,21 @@ const app = express();
 app.disable("x-powered-by");
 app.set("trust proxy", 1);
 app.set("etag", "weak");
+
+const viteManifest = loadViteManifest();
+
+app.locals.vite = (srcPath, fallback = srcPath) => {
+  if (!srcPath || typeof srcPath !== "string") {
+    return fallback;
+  }
+
+  const entry = viteManifest?.[srcPath];
+  if (entry?.file) {
+    return "/dist/" + entry.file;
+  }
+
+  return fallback;
+};
 
 const corsOptions = {
   origin: (origin, callback) => {
@@ -229,53 +272,68 @@ const staticAssetOptions = {
       res.setHeader("Content-Type", "application/javascript; charset=utf-8");
     }
 
-    // Hashed assets in dist are immutable
-    if (filePath.includes(path.join('public', 'dist'))) {
+    if (filePath.includes(path.join("public", "dist"))) {
       res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
     } else {
-      // Source assets: force validation or short cache to prevent Safari hangs on updates
       res.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
     }
   },
 };
 
-
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com"],
-      fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com"],
-      scriptSrcAttr: ["'unsafe-inline'"],
-      imgSrc: ["'self'", "data:", "https:"],
-      connectSrc: ["'self'"],
-      frameSrc: ["'self'", "https://www.google.com", "https://google.com"],
-      upgradeInsecureRequests: [],
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: [
+          "'self'",
+          "'unsafe-inline'",
+          "https://fonts.googleapis.com",
+          "https://cdn.jsdelivr.net",
+          "https://cdnjs.cloudflare.com",
+        ],
+        fontSrc: [
+          "'self'",
+          "https://fonts.gstatic.com",
+          "https://cdnjs.cloudflare.com",
+        ],
+        scriptSrc: [
+          "'self'",
+          "'unsafe-inline'",
+          "https://cdn.jsdelivr.net",
+          "https://cdnjs.cloudflare.com",
+        ],
+        scriptSrcAttr: ["'unsafe-inline'"],
+        imgSrc: ["'self'", "data:", "https:"],
+        connectSrc: ["'self'"],
+        frameSrc: ["'self'", "https://www.google.com", "https://google.com"],
+        upgradeInsecureRequests: [],
+      },
     },
-  },
-  crossOriginEmbedderPolicy: false,
-  crossOriginResourcePolicy: false,
-}));
+    crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: false,
+  }),
+);
 
-// Safari Compliance & HTTPS enforcement
 app.use((req, res, next) => {
-  if (process.env.NODE_ENV === "production" && req.headers["x-forwarded-proto"] !== "https") {
+  if (
+    process.env.NODE_ENV === "production" &&
+    req.headers["x-forwarded-proto"] !== "https"
+  ) {
     return res.redirect(`https://${req.get("Host")}${req.url}`);
   }
 
   const ua = req.headers["user-agent"] || "";
-  const isSafari = ua.includes("Safari") && !ua.includes("Chrome") && !ua.includes("Chromium");
+  const isSafari =
+    ua.includes("Safari") && !ua.includes("Chrome") && !ua.includes("Chromium");
 
   if (isSafari) {
-    // Safari-specific: Force keep-alive and allow document caching to stabilize initial load
     res.setHeader("Connection", "keep-alive");
     if (req.accepts("html")) {
       res.setHeader("Cache-Control", "no-cache, must-revalidate");
       res.setHeader("Pragma", "no-cache");
       res.setHeader("Expires", "0");
     }
-    // Optimization: Don't vary on User-Agent for Safari to prevent loader confusion
     res.setHeader("Vary", "Accept-Encoding, Cookie");
   } else {
     res.setHeader("Vary", "Accept-Encoding, Cookie, User-Agent");
@@ -283,108 +341,146 @@ app.use((req, res, next) => {
   next();
 });
 
-
 app.use(mongoSanitize());
 app.use(xss());
-app.use(compression({
-  filter: (req, res) => {
-    const ua = req.headers["user-agent"] || "";
-    const isSafari = ua.includes("Safari") && !ua.includes("Chrome") && !ua.includes("Chromium");
+app.use(
+  compression({
+    filter: (req, res) => {
+      const ua = req.headers["user-agent"] || "";
+      const isSafari =
+        ua.includes("Safari") &&
+        !ua.includes("Chrome") &&
+        !ua.includes("Chromium");
+      if (
+        isSafari &&
+        res.getHeader("Content-Type")?.toString().includes("text/html")
+      ) {
+        return false;
+      }
 
-    // Safari-specific fix: Disable compression for HTML documents to prevent indefinite 'blue line' loading hang
-    if (isSafari && res.getHeader("Content-Type")?.toString().includes("text/html")) {
-      return false;
-    }
-
-    return compression.filter(req, res);
-  }
-}));
+      return compression.filter(req, res);
+    },
+  }),
+);
 app.use(cookieParser(process.env.COOKIE_SECRET || "default_cookie_secret"));
 
-app.use(cors({
-  origin: (origin, callback) => {
-    const allowed = [
-      "https://kenisa-el-sama2eyeen.ooguy.com",
-      "http://localhost:3000",
-      "http://localhost:5173"
-    ];
-    if (!origin || allowed.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      const allowed = [
+        "https://kenisa-el-sama2eyeen.ooguy.com",
+        "http://localhost:3000",
+        "http://localhost:5173",
+      ];
+      if (!origin || allowed.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+    credentials: true,
+  }),
+);
+
+app.use(bodyParser.json({ limit: "10mb" }));
+app.use(bodyParser.urlencoded({ extended: true, limit: "10mb" }));
+app.get("/health", (req, res) => res.status(200).send("OK"));
+
+if (process.env.NODE_ENV === "production") {
+  app.get("/scripts/:file", (req, res, next) => {
+    const file = String(req.params.file || "");
+    if (!file.toLowerCase().endsWith(".js")) return next();
+
+    const entry = viteManifest?.[`src/assets/scripts/${file}`];
+    if (entry?.file) {
+      return res.redirect(302, `/dist/${entry.file}`);
     }
-  },
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
-  credentials: true,
-}));
+    return res.status(404).send("Not found");
+  });
 
-app.use(bodyParser.json({ limit: '10mb' }));
-app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
-app.get('/health', (req, res) => res.status(200).send('OK'));
+  app.get("/design/:file", (req, res, next) => {
+    const file = String(req.params.file || "");
+    if (!file.toLowerCase().endsWith(".css")) return next();
 
-app.use("/design", express.static(path.join(__dirname, "src/assets/styles"), staticAssetOptions));
-app.use("/scripts", express.static(path.join(__dirname, "src/assets/scripts"), staticAssetOptions));
-app.use("/UI", express.static(path.join(__dirname, "src/assets/images"), staticAssetOptions));
-app.use("/dist", express.static(path.join(__dirname, "public/dist"), staticAssetOptions));
+    const entry = viteManifest?.[`src/assets/styles/${file}`];
+    if (entry?.file) {
+      return res.redirect(302, `/dist/${entry.file}`);
+    }
+    return res.status(404).send("Not found");
+  });
+} else {
+  app.use(
+    "/design",
+    express.static(
+      path.join(__dirname, "src/assets/styles"),
+      staticAssetOptions,
+    ),
+  );
+  app.use(
+    "/scripts",
+    express.static(
+      path.join(__dirname, "src/assets/scripts"),
+      staticAssetOptions,
+    ),
+  );
+}
+
+app.use(
+  "/UI",
+  express.static(path.join(__dirname, "src/assets/images"), staticAssetOptions),
+);
+app.use(
+  "/dist",
+  express.static(path.join(__dirname, "public/dist"), staticAssetOptions),
+);
 app.use(express.static(path.join(__dirname, "public"), staticAssetOptions));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-const viteManifest = loadViteManifest();
-
-app.locals.vite = (srcPath, fallback = srcPath) => {
-  if (!srcPath || typeof srcPath !== "string") {
-    return fallback;
-  }
-
-  const entry = viteManifest?.[srcPath];
-  if (entry?.file) {
-    return "/dist/" + entry.file;
-  }
-
-  return fallback;
-};
-
-app.use(session({
-  secret: process.env.SESSION_SECRET || "default_secret_key_12345",
-  resave: false,
-  saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGODB_URI,
-    collectionName: "sessions",
-    ttl: 24 * 60 * 60,
-    autoRemove: "native",
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "default_secret_key_12345",
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGODB_URI,
+      collectionName: "sessions",
+      ttl: 24 * 60 * 60,
+      autoRemove: "native",
+    }),
+    cookie: {
+      maxAge: 24 * 60 * 60 * 1000,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+    },
+    name: "church.sid",
   }),
-  cookie: {
-    maxAge: 24 * 60 * 60 * 1000,
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-  },
-  name: "church.sid",
-}));
+);
 
 app.use(maliciousFilter);
 app.use(apiHashMiddleware);
 
-// Endpoint to provide API mapping to the client
 app.get("/api/v1/client-api-map", (req, res) => {
   res.json(generateClientAPIMap());
 });
 
-// Middleware to inject the API hasher script into HTML responses
 app.use((req, res, next) => {
-  if (req.path.startsWith("/api/") || req.path.startsWith("/design/") || req.path.startsWith("/scripts/") || req.path.startsWith("/UI/")) {
+  if (
+    req.path.startsWith("/api/") ||
+    req.path.startsWith("/design/") ||
+    req.path.startsWith("/scripts/") ||
+    req.path.startsWith("/UI/")
+  ) {
     return next();
   }
 
-  // Intercept res.send
   const originalSend = res.send;
   res.send = function (body) {
-    if (typeof body === 'string' && body.includes('<head>')) {
+    if (typeof body === "string" && body.includes("<head>")) {
       const scriptTag = `
-        <!-- API Security Hashing -->
         <script>
           (function() {
             var mapPromise = fetch("/api/v1/client-api-map").then(function(r) { return r.json(); }).catch(function() { return {}; });
@@ -420,18 +516,21 @@ app.use((req, res, next) => {
             };
           })();
         </script>`;
-      body = body.replace('</head>', scriptTag + '</head>');
+      body = body.replace("</head>", scriptTag + "</head>");
     }
     return originalSend.call(this, body);
   };
 
-  // Intercept res.sendFile to ensure .html views get the script
   const originalSendFile = res.sendFile;
   res.sendFile = function (filePath, options, callback) {
-    if (typeof filePath === 'string' && filePath.endsWith('.html') && filePath.includes(path.join(__dirname, 'views'))) {
-      fs.readFile(filePath, 'utf8', (err, data) => {
+    if (
+      typeof filePath === "string" &&
+      filePath.endsWith(".html") &&
+      filePath.includes(path.join(__dirname, "views"))
+    ) {
+      fs.readFile(filePath, "utf8", (err, data) => {
         if (err) return originalSendFile.call(res, filePath, options, callback);
-        res.send(data); // This will trigger the res.send interceptor above
+        res.send(data);
       });
     } else {
       originalSendFile.call(res, filePath, options, callback);
@@ -441,9 +540,12 @@ app.use((req, res, next) => {
   next();
 });
 
-// Industry Standard JWT Authentication Sync
 app.use(async (req, res, next) => {
-  if (req.path.startsWith("/design/") || req.path.startsWith("/scripts/") || req.path.startsWith("/UI/")) {
+  if (
+    req.path.startsWith("/design/") ||
+    req.path.startsWith("/scripts/") ||
+    req.path.startsWith("/UI/")
+  ) {
     return next();
   }
 
@@ -454,7 +556,6 @@ app.use(async (req, res, next) => {
     const payload = verifyAccessToken(accessToken);
     if (payload) {
       req.user = payload;
-      // Sync to session for legacy compatibility
       if (!req.session.isAuthenticated) {
         req.session.isAuthenticated = true;
         req.session.username = payload.username;
@@ -464,8 +565,6 @@ app.use(async (req, res, next) => {
       return next();
     }
   }
-
-  // If access token expired but refresh token exists, try to rotate
   if (refreshToken) {
     const payload = verifyRefreshToken(refreshToken);
     if (payload) {
@@ -476,17 +575,16 @@ app.use(async (req, res, next) => {
         if (mongoose.Types.ObjectId.isValid(payload.id)) {
           user = await UserRegistration.findById(payload.id);
         } else {
-          // Fallback: try finding by username if the ID is not a valid ObjectId
           user = await UserRegistration.findOne({ username: payload.id });
         }
 
-        if (user && !user.isLocked && user.approvalStatus === 'approved') {
+        if (user && !user.isLocked && user.approvalStatus === "approved") {
           const newAccessToken = generateAccessToken(user);
-          res.cookie('accessToken', newAccessToken, {
+          res.cookie("accessToken", newAccessToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            maxAge: 15 * 60 * 1000
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+            maxAge: 15 * 60 * 1000,
           });
 
           req.user = verifyAccessToken(newAccessToken);
@@ -496,7 +594,7 @@ app.use(async (req, res, next) => {
           req.session.grade = user.grade;
         }
       } catch (err) {
-        console.error('[JWT] Refresh Error:', err.message);
+        console.error("[JWT] Refresh Error:", err.message);
       }
     }
   }
@@ -513,12 +611,23 @@ app.use(checkIPBan);
 
 app.use((req, res, next) => {
   if (req.session && req.session.isAuthenticated) return next();
-  if (req.path.startsWith("/api/") || req.path.startsWith("/design/") || req.path.startsWith("/scripts/") || req.path.startsWith("/UI/") || req.path === "/favicon.ico") return next();
+  if (
+    req.path.startsWith("/api/") ||
+    req.path.startsWith("/design/") ||
+    req.path.startsWith("/scripts/") ||
+    req.path.startsWith("/UI/") ||
+    req.path === "/favicon.ico"
+  )
+    return next();
   const GuestSessionModel = mongoose.models.GuestSession;
   if (!GuestSessionModel) return next();
   const crypto = require("crypto");
   const raw = (req.ip || "") + (req.get("user-agent") || "");
-  const guestId = crypto.createHash("sha256").update(raw).digest("hex").slice(0, 24);
+  const guestId = crypto
+    .createHash("sha256")
+    .update(raw)
+    .digest("hex")
+    .slice(0, 24);
   const now = new Date();
   GuestSessionModel.findOneAndUpdate(
     { guestId },
@@ -532,7 +641,7 @@ app.use((req, res, next) => {
       },
       $setOnInsert: { firstSeenAt: now },
     },
-    { upsert: true }
+    { upsert: true },
   ).catch((err) => console.error("Guest session tracking error:", err.message));
   next();
 });
@@ -558,7 +667,7 @@ const adminApiLimiter = rateLimit({
     message: "Too many requests. Please slow down.",
   },
   keyGenerator: (req) => {
-    return `${req.ip}-${req.session?.username || 'anonymous'}`;
+    return `${req.ip}-${req.session?.username || "anonymous"}`;
   },
   skip: (req) => {
     const userRole = req.session?.role;
@@ -575,6 +684,30 @@ const WEBHOOK_REGISTRY = {
     label: "Security",
     emoji: "🚨",
   },
+  SECURITY_AUTH: {
+    env: "SECURITY_AUTH_WEBHOOK",
+    fallbackEnvs: ["SECURITY_WEBHOOK", "MASTER_ACTIVITY_WEBHOOK"],
+    label: "Security: Auth",
+    emoji: "🔐",
+  },
+  SECURITY_PAGES: {
+    env: "SECURITY_PAGES_WEBHOOK",
+    fallbackEnvs: ["SECURITY_WEBHOOK", "MASTER_ACTIVITY_WEBHOOK"],
+    label: "Security: Pages",
+    emoji: "🧭",
+  },
+  SECURITY_AUTOMOD: {
+    env: "SECURITY_AUTOMOD_WEBHOOK",
+    fallbackEnvs: ["SECURITY_WEBHOOK", "AUTO_MOD_WEBHOOK"],
+    label: "Security: AutoMod",
+    emoji: "🤖",
+  },
+  SECURITY_OTHER: {
+    env: "SECURITY_OTHER_WEBHOOK",
+    fallbackEnvs: ["SECURITY_WEBHOOK", "MASTER_ACTIVITY_WEBHOOK"],
+    label: "Security: Other",
+    emoji: "🧯",
+  },
   ADMIN: {
     env: "ADMIN_ACTIVITY_WEBHOOK",
     fallbackEnvs: [
@@ -584,6 +717,132 @@ const WEBHOOK_REGISTRY = {
     ],
     label: "Admin",
     emoji: "🛡️",
+  },
+  ADMIN_FORMS_CREATE: {
+    env: "ADMIN_FORMS_CREATE_WEBHOOK",
+    fallbackEnvs: ["FORM_ACTIVITY_WEBHOOK", "ADMIN_ACTIVITY_WEBHOOK"],
+    label: "Admin: Form Created",
+    emoji: "📝",
+  },
+  ADMIN_FORMS_DELETE: {
+    env: "ADMIN_FORMS_DELETE_WEBHOOK",
+    fallbackEnvs: ["FORM_ACTIVITY_WEBHOOK", "ADMIN_ACTIVITY_WEBHOOK"],
+    label: "Admin: Form Deleted",
+    emoji: "🗑️",
+  },
+  ADMIN_FORMS_EDIT: {
+    env: "ADMIN_FORMS_EDIT_WEBHOOK",
+    fallbackEnvs: ["FORM_ACTIVITY_WEBHOOK", "ADMIN_ACTIVITY_WEBHOOK"],
+    label: "Admin: Form Edited",
+    emoji: "✏️",
+  },
+  ADMIN_FORMS_RETAKE: {
+    env: "ADMIN_FORMS_RETAKE_WEBHOOK",
+    fallbackEnvs: ["FORM_ACTIVITY_WEBHOOK", "ADMIN_ACTIVITY_WEBHOOK"],
+    label: "Admin: Retake",
+    emoji: "🔁",
+  },
+  ADMIN_FORMS_TOGGLE: {
+    env: "ADMIN_FORMS_TOGGLE_WEBHOOK",
+    fallbackEnvs: ["FORM_ACTIVITY_WEBHOOK", "ADMIN_ACTIVITY_WEBHOOK"],
+    label: "Admin: Form Activated/Deactivated",
+    emoji: "⏯️",
+  },
+  ADMIN_FORMS_LEADERBOARD: {
+    env: "ADMIN_FORMS_LEADERBOARD_WEBHOOK",
+    fallbackEnvs: ["FORM_ACTIVITY_WEBHOOK", "ADMIN_ACTIVITY_WEBHOOK"],
+    label: "Admin: Leaderboard",
+    emoji: "🏆",
+  },
+  FORM_ANSWER: {
+    env: "FORM_ANSWERS_WEBHOOK",
+    fallbackEnvs: ["FORM_ACTIVITY_WEBHOOK", "USER_ACTIVITY_WEBHOOK"],
+    label: "Form Answers",
+    emoji: "✅",
+  },
+  LOGIN_REQUEST_SUBMIT: {
+    env: "LOGIN_REQUESTS_SUBMIT_WEBHOOK",
+    fallbackEnvs: ["USER_ACTIVITY_WEBHOOK", "REGISTRATION_APPROVAL_WEBHOOK"],
+    label: "Login Requests: Submitted",
+    emoji: "📨",
+  },
+  LOGIN_REQUEST_DECISION: {
+    env: "LOGIN_REQUESTS_DECISION_WEBHOOK",
+    fallbackEnvs: ["USER_ACTIVITY_WEBHOOK", "REGISTRATION_APPROVAL_WEBHOOK"],
+    label: "Login Requests: Approved/Rejected",
+    emoji: "📬",
+  },
+  USERMGMT_POINTS_ADD: {
+    env: "USERMGMT_POINTS_ADD_WEBHOOK",
+    fallbackEnvs: ["ADMIN_ACTIVITY_WEBHOOK", "USER_ACTIVITY_WEBHOOK"],
+    label: "User Management: Points Added",
+    emoji: "➕",
+  },
+  USERMGMT_POINTS_REMOVE: {
+    env: "USERMGMT_POINTS_REMOVE_WEBHOOK",
+    fallbackEnvs: ["ADMIN_ACTIVITY_WEBHOOK", "USER_ACTIVITY_WEBHOOK"],
+    label: "User Management: Points Removed",
+    emoji: "➖",
+  },
+  USERMGMT_EDIT: {
+    env: "USERMGMT_EDIT_WEBHOOK",
+    fallbackEnvs: ["ADMIN_ACTIVITY_WEBHOOK", "USER_ACTIVITY_WEBHOOK"],
+    label: "User Management: Edited",
+    emoji: "🛠️",
+  },
+  USERMGMT_BAN: {
+    env: "USERMGMT_BAN_WEBHOOK",
+    fallbackEnvs: ["ADMIN_ACTIVITY_WEBHOOK", "SECURITY_WEBHOOK"],
+    label: "User Management: Ban/Unban",
+    emoji: "⛔",
+  },
+  USERMGMT_LOGOUT_ALL: {
+    env: "USERMGMT_LOGOUT_ALL_WEBHOOK",
+    fallbackEnvs: ["ADMIN_ACTIVITY_WEBHOOK", "SECURITY_WEBHOOK"],
+    label: "User Management: Logout All",
+    emoji: "🚪",
+  },
+  GIFT_TOGGLE: {
+    env: "GIFT_TOGGLE_WEBHOOK",
+    fallbackEnvs: ["GIFT_SHOP_ACTIVITY_WEBHOOK", "ADMIN_ACTIVITY_WEBHOOK"],
+    label: "Gift: Activated/Deactivated",
+    emoji: "⏯️",
+  },
+  GIFT_CREATE: {
+    env: "GIFT_CREATE_WEBHOOK",
+    fallbackEnvs: ["GIFT_SHOP_ACTIVITY_WEBHOOK", "ADMIN_ACTIVITY_WEBHOOK"],
+    label: "Gift: Created",
+    emoji: "🎁",
+  },
+  GIFT_EDIT: {
+    env: "GIFT_EDIT_WEBHOOK",
+    fallbackEnvs: ["GIFT_SHOP_ACTIVITY_WEBHOOK", "ADMIN_ACTIVITY_WEBHOOK"],
+    label: "Gift: Edited",
+    emoji: "✏️",
+  },
+  GIFT_DELETE: {
+    env: "GIFT_DELETE_WEBHOOK",
+    fallbackEnvs: ["GIFT_SHOP_ACTIVITY_WEBHOOK", "ADMIN_ACTIVITY_WEBHOOK"],
+    label: "Gift: Deleted",
+    emoji: "🗑️",
+  },
+  GIFT_REQUEST_SUBMIT: {
+    env: "GIFT_REQUESTS_SUBMIT_WEBHOOK",
+    fallbackEnvs: ["GIFT_SHOP_ACTIVITY_WEBHOOK", "USER_ACTIVITY_WEBHOOK"],
+    label: "Gift Requests: Submitted",
+    emoji: "📦",
+  },
+  GIFT_REQUEST_DECISION: {
+    env: "GIFT_REQUESTS_DECISION_WEBHOOK",
+    fallbackEnvs: ["GIFT_SHOP_ACTIVITY_WEBHOOK", "ADMIN_ACTIVITY_WEBHOOK"],
+    label: "Gift Requests: Approved/Rejected",
+    emoji: "📬",
+  },
+  GIFT_REQUEST_DELIVERED: {
+    env: "GIFT_REQUESTS_DELIVERED_WEBHOOK",
+    fallbackEnvs: ["GIFT_SHOP_ACTIVITY_WEBHOOK", "ADMIN_ACTIVITY_WEBHOOK"],
+    label: "Gift Requests: Delivered",
+    emoji: "🚚",
   },
   USER: {
     env: "USER_ACTIVITY_WEBHOOK",
@@ -813,10 +1072,18 @@ function buildWebhookPayload(data, meta) {
         ? { embeds: data }
         : { ...data };
 
-  let content = prefixContent(base.content, `${meta.emoji || "📌"} [${meta.label || meta.type}]`);
+  let content = prefixContent(
+    base.content,
+    `${meta.emoji || "📌"} [${meta.label || meta.type}]`,
+  );
 
   if (data.important === true) {
-    content = `<@&1126336222206365696> ${content}`;
+    const ownerIdRaw = (
+      process.env.DISCORD_OWNER_ID || "1126336222206365696"
+    ).toString();
+    const ownerId = ownerIdRaw.replace(/[^0-9]/g, "");
+    const mention = ownerId ? `<@${ownerId}>` : "";
+    content = mention ? `${mention} ${content}` : content;
   }
 
   base.content = content;
@@ -833,19 +1100,19 @@ async function dispatchWebhookTarget(target, payload, meta) {
   for (let attempt = 1; attempt <= WEBHOOK_RETRY_ATTEMPTS; attempt++) {
     try {
       console.log(
-        `[WEBHOOK][${meta.type}][${meta.eventId}] attempt ${attempt} via ${target.envKey}`
+        `[WEBHOOK][${meta.type}][${meta.eventId}] attempt ${attempt} via ${target.envKey}`,
       );
       await axios.post(target.url, payload, {
         headers: { "Content-Type": "application/json" },
         timeout: WEBHOOK_TIMEOUT_MS,
       });
       console.log(
-        `[WEBHOOK][${meta.type}][${meta.eventId}] delivered via ${target.envKey}`
+        `[WEBHOOK][${meta.type}][${meta.eventId}] delivered via ${target.envKey}`,
       );
       return true;
     } catch (error) {
       console.error(
-        `[WEBHOOK][${meta.type}][${meta.eventId}] attempt ${attempt} via ${target.envKey} failed: ${error.message}`
+        `[WEBHOOK][${meta.type}][${meta.eventId}] attempt ${attempt} via ${target.envKey} failed: ${error.message}`,
       );
       if (attempt < WEBHOOK_RETRY_ATTEMPTS) {
         const wait =
@@ -875,7 +1142,7 @@ function updateWebhookStats(envKey, success) {
     current.lastFailure = Date.now();
     if (current.consecutiveFailures % WEBHOOK_RETRY_ATTEMPTS === 0) {
       console.warn(
-        `[WEBHOOK][HEALTH] ${envKey} consecutive failures: ${current.consecutiveFailures}`
+        `[WEBHOOK][HEALTH] ${envKey} consecutive failures: ${current.consecutiveFailures}`,
       );
     }
   }
@@ -898,14 +1165,14 @@ async function dispatchWebhook(webhookType, data = {}) {
         new Set(
           Object.values(WEBHOOK_REGISTRY)
             .flatMap((entry) => [entry.env, ...(entry.fallbackEnvs || [])])
-            .filter(Boolean)
-        )
+            .filter(Boolean),
+        ),
       )
-    : [registryEntry.env, ...(registryEntry.fallbackEnvs || [])].filter(Boolean);
+    : [registryEntry.env, ...(registryEntry.fallbackEnvs || [])].filter(
+        Boolean,
+      );
 
-  const envKeys = [
-    ...registryEnvKeys,
-  ].filter(Boolean);
+  const envKeys = [...registryEnvKeys].filter(Boolean);
 
   const targets = envKeys
     .map((envKey) => ({
@@ -915,13 +1182,13 @@ async function dispatchWebhook(webhookType, data = {}) {
     .filter((target) => Boolean(target.url));
 
   const uniqueTargets = Array.from(
-    new Map(targets.map((t) => [t.url, t])).values()
+    new Map(targets.map((t) => [t.url, t])).values(),
   );
   if (uniqueTargets.length === 0) {
     console.warn(
       `[WEBHOOK][${webhookType}][${eventId}] missing webhook env (${envKeys.join(
-        ", "
-      )})`
+        ", ",
+      )})`,
     );
     return false;
   }
@@ -931,9 +1198,6 @@ async function dispatchWebhook(webhookType, data = {}) {
     emoji: registryEntry.emoji,
     eventId,
   });
-
-  // In broadcast mode we deliver to every configured channel (best-effort).
-  // In normal mode we stop after the first successful delivery.
   let anyDelivered = false;
   for (const target of uniqueTargets) {
     const delivered = await dispatchWebhookTarget(target, payload, {
@@ -948,7 +1212,7 @@ async function dispatchWebhook(webhookType, data = {}) {
   console.error(
     `[WEBHOOK][${webhookType}][${eventId}] failed for targets ${targets
       .map((t) => t.envKey)
-      .join(", ")}`
+      .join(", ")}`,
   );
   return false;
 }
@@ -975,9 +1239,14 @@ async function runDatabaseBackupSnapshot(trigger = "scheduled") {
         twoFactorSecret: 0,
         verificationCode: 0,
         passwordResetLinks: 0,
-      }
+      },
     ).lean();
     const safeForms = await Form.find({}).lean();
+    const safePoints = await UserPoints.find({}).lean();
+    const safeGiftItems = await GiftShopItem.find({}).lean();
+    const safeGiftPurchases = await GiftPurchase.find({}).lean();
+    const safeBans = await BannedUser.find({}).lean();
+    const safeSuggestions = await Suggestion.find({}).lean();
 
     const snapshot = {
       generatedAt: now.toISOString(),
@@ -985,10 +1254,20 @@ async function runDatabaseBackupSnapshot(trigger = "scheduled") {
       counts: {
         users: safeUsers.length,
         forms: safeForms.length,
+        points: safePoints.length,
+        giftItems: safeGiftItems.length,
+        giftPurchases: safeGiftPurchases.length,
+        bans: safeBans.length,
+        suggestions: safeSuggestions.length,
       },
       data: {
         users: safeUsers,
         forms: safeForms,
+        points: safePoints,
+        giftItems: safeGiftItems,
+        giftPurchases: safeGiftPurchases,
+        bans: safeBans,
+        suggestions: safeSuggestions,
       },
     };
 
@@ -1020,6 +1299,31 @@ async function runDatabaseBackupSnapshot(trigger = "scheduled") {
             {
               name: "Forms",
               value: String(safeForms.length),
+              inline: true,
+            },
+            {
+              name: "Points",
+              value: String(safePoints.length),
+              inline: true,
+            },
+            {
+              name: "Gift Items",
+              value: String(safeGiftItems.length),
+              inline: true,
+            },
+            {
+              name: "Gift Purchases",
+              value: String(safeGiftPurchases.length),
+              inline: true,
+            },
+            {
+              name: "Bans",
+              value: String(safeBans.length),
+              inline: true,
+            },
+            {
+              name: "Suggestions",
+              value: String(safeSuggestions.length),
               inline: true,
             },
             {
@@ -1058,9 +1362,105 @@ setTimeout(() => {
   runDatabaseBackupSnapshot("startup");
 }, 60 * 1000);
 
-setInterval(() => {
-  runDatabaseBackupSnapshot("scheduled");
-}, 24 * 60 * 60 * 1000);
+setInterval(
+  () => {
+    runDatabaseBackupSnapshot("scheduled");
+  },
+  Math.max(
+    60 * 1000,
+    Number(process.env.DATABASE_BACKUP_INTERVAL || 6 * 60 * 60 * 1000),
+  ),
+);
+
+setInterval(
+  async () => {
+    const enabled =
+      String(process.env.ENABLE_FORM_LEADERBOARD_LOGS || "").toLowerCase() ===
+      "true";
+    if (!enabled) return;
+
+    try {
+      const forms = await Form.find({}).lean();
+      if (!forms || forms.length === 0) return;
+
+      const embeds = [];
+      for (const form of forms) {
+        const subs = Array.isArray(form.submissions) ? form.submissions : [];
+        if (subs.length === 0) continue;
+        const top = subs
+          .slice()
+          .sort((a, b) => (b.score || 0) - (a.score || 0))
+          .slice(0, 10);
+
+        const lines = top.map((s, idx) => {
+          const name = s.username || "unknown";
+          const score = typeof s.score === "number" ? s.score : 0;
+          return `${idx + 1}. ${name} — ${score}`;
+        });
+
+        embeds.push({
+          title: `🏆 Leaderboard — ${form.topic || form.link || "Form"}`,
+          color: 0xf1c40f,
+          fields: [
+            {
+              name: "Form Link",
+              value: String(form.link || "N/A"),
+              inline: true,
+            },
+            {
+              name: "Total Submissions",
+              value: String(subs.length),
+              inline: true,
+            },
+            {
+              name: "Top",
+              value: lines.join("\n").substring(0, 1000) || "N/A",
+              inline: false,
+            },
+          ],
+          timestamp: new Date().toISOString(),
+        });
+
+        if (embeds.length >= 10) break;
+      }
+
+      if (embeds.length) {
+        await sendWebhook("ADMIN_FORMS_LEADERBOARD", {
+          content: `🏆 **Forms Leaderboard Snapshot (10h)**`,
+          embeds,
+        });
+      }
+    } catch (error) {
+      await sendWebhook("ERROR", {
+        embeds: [
+          {
+            title: "❌ Leaderboard Snapshot Failed",
+            color: 0xe74c3c,
+            fields: [
+              {
+                name: "Error",
+                value: error.message || "Unknown",
+                inline: false,
+              },
+              {
+                name: "Time",
+                value: moment()
+                  .tz("Africa/Cairo")
+                  .format("YYYY-MM-DD HH:mm:ss"),
+                inline: true,
+              },
+            ],
+            timestamp: new Date().toISOString(),
+          },
+        ],
+      });
+    }
+  },
+  Math.max(
+    60 * 1000,
+    Number(process.env.FORM_LEADERBOARD_LOG_INTERVAL || 10 * 60 * 60 * 1000),
+  ),
+);
 
 function sendWebhook(webhookType, data = {}, options = {}) {
   const awaitResponse = options.awaitResponse === true;
@@ -1070,18 +1470,17 @@ function sendWebhook(webhookType, data = {}, options = {}) {
   }
   deliveryPromise.catch((error) => {
     console.error(
-      `[WEBHOOK][${webhookType}] async dispatch failed: ${error.message}`
+      `[WEBHOOK][${webhookType}] async dispatch failed: ${error.message}`,
     );
   });
   return Promise.resolve(true);
 }
 global.sendWebhook = sendWebhook;
 
-
 async function sendFileDeleteWebhook(
   filePath,
   deletedBy,
-  reason = "System cleanup"
+  reason = "System cleanup",
 ) {
   const stats = fs.statSync(filePath);
   const fileInfo = {
@@ -1179,7 +1578,7 @@ async function cleanupOldFiles() {
           await sendFileDeleteWebhook(
             filePath,
             "System",
-            "Automatic cleanup of old files"
+            "Automatic cleanup of old files",
           );
           fs.unlinkSync(filePath);
           console.log(`[CLEANUP] Deleted old file: ${filePath}`);
@@ -1285,16 +1684,19 @@ const BannedUserSchema = new mongoose.Schema({
 
 const BannedUser = mongoose.model("BannedUser", BannedUserSchema);
 
-const PasswordResetLinkSchema = new mongoose.Schema({
-  token: { type: String, required: true },
-  verificationCode: { type: String, default: null },
-  verifiedAt: { type: Date, default: null },
-  expiresAt: { type: Date, required: true },
-  createdAt: { type: Date, default: Date.now },
-  createdBy: { type: String, required: true },
-  usedAt: { type: Date, default: null },
-  supersededAt: { type: Date, default: null },
-}, { _id: false });
+const PasswordResetLinkSchema = new mongoose.Schema(
+  {
+    token: { type: String, required: true },
+    verificationCode: { type: String, default: null },
+    verifiedAt: { type: Date, default: null },
+    expiresAt: { type: Date, required: true },
+    createdAt: { type: Date, default: Date.now },
+    createdBy: { type: String, required: true },
+    usedAt: { type: Date, default: null },
+    supersededAt: { type: Date, default: null },
+  },
+  { _id: false },
+);
 
 const UserRegistrationSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true, lowercase: true },
@@ -1325,11 +1727,11 @@ const UserRegistrationSchema = new mongoose.Schema({
   reviewReason: String,
   passwordResetLinks: { type: [PasswordResetLinkSchema], default: [] },
   loginAttempts: { type: Number, required: true, default: 0 },
-  lockUntil: { type: Number }
+  lockUntil: { type: Number },
 });
 
-UserRegistrationSchema.pre('save', async function (next) {
-  if (this.isModified('password')) {
+UserRegistrationSchema.pre("save", async function (next) {
+  if (this.isModified("password")) {
     const currentPassword = (this.password || "").toString();
     const alreadyHashed =
       currentPassword.startsWith("$2a$") ||
@@ -1338,22 +1740,22 @@ UserRegistrationSchema.pre('save', async function (next) {
       currentPassword.startsWith("$argon2");
 
     if (!alreadyHashed) {
-      const { hashPassword } = require('./src/utils/auth');
+      const { hashPassword } = require("./src/utils/auth");
       this.password = await hashPassword(currentPassword);
     }
   }
 
-  if (this.isModified('email')) {
+  if (this.isModified("email")) {
     this.emailHash = hash(this.email.toLowerCase());
   }
-  if (this.isModified('phone')) {
+  if (this.isModified("phone")) {
     this.phoneHash = hash(this.phone.trim());
   }
 
-  const fieldsToEncrypt = ['firstName', 'secondName', 'email', 'phone'];
+  const fieldsToEncrypt = ["firstName", "secondName", "email", "phone"];
   const encrypted = encryptFields(this.toObject(), fieldsToEncrypt);
 
-  fieldsToEncrypt.forEach(field => {
+  fieldsToEncrypt.forEach((field) => {
     if (this.isModified(field)) {
       this[field] = encrypted[field];
     }
@@ -1363,35 +1765,38 @@ UserRegistrationSchema.pre('save', async function (next) {
 });
 
 UserRegistrationSchema.methods.incLoginAttempts = function () {
-  // if we have a previous lock that has expired, restart at 1
   if (this.lockUntil && this.lockUntil < Date.now()) {
     return this.updateOne({
       $set: { loginAttempts: 1 },
-      $unset: { lockUntil: 1 }
+      $unset: { lockUntil: 1 },
     });
   }
-  // otherwise we're incrementing
   const updates = { $inc: { loginAttempts: 1 } };
-  // lock the account if we've reached max attempts and it's not already locked
   if (this.loginAttempts + 1 >= 5 && !this.isLocked) {
     updates.$set = { lockUntil: Date.now() + 2 * 60 * 60 * 1000 };
   }
   return this.updateOne(updates);
 };
 
-UserRegistrationSchema.virtual('isLocked').get(function () {
+UserRegistrationSchema.virtual("isLocked").get(function () {
   return !!(this.lockUntil && this.lockUntil > Date.now());
 });
 
 function decryptUser(user) {
   if (!user) return null;
-  const fieldsToDecrypt = ['firstName', 'secondName', 'email', 'phone', 'twoFactorSecret'];
+  const fieldsToDecrypt = [
+    "firstName",
+    "secondName",
+    "email",
+    "phone",
+    "twoFactorSecret",
+  ];
   return decryptFields(user, fieldsToDecrypt);
 }
 
 const UserRegistration = mongoose.model(
   "UserRegistration",
-  UserRegistrationSchema
+  UserRegistrationSchema,
 );
 
 const localUserStore = require("./src/db/userregistrations-store");
@@ -1479,18 +1884,30 @@ async function findUserByPhone(phone) {
 
 async function findUserByName(firstName, secondName) {
   try {
-    const normalizedFirstName = (firstName || "").toString().toLowerCase().trim();
-    const normalizedSecondName = (secondName || "").toString().toLowerCase().trim();
+    const normalizedFirstName = (firstName || "")
+      .toString()
+      .toLowerCase()
+      .trim();
+    const normalizedSecondName = (secondName || "")
+      .toString()
+      .toLowerCase()
+      .trim();
 
     const allUsers = await UserRegistration.find({}).lean();
-    const mongoUser = allUsers.find(u => {
+    const mongoUser = allUsers.find((u) => {
       const decrypted = decryptUser(u);
-      return decrypted.firstName === normalizedFirstName && decrypted.secondName === normalizedSecondName;
+      return (
+        decrypted.firstName === normalizedFirstName &&
+        decrypted.secondName === normalizedSecondName
+      );
     });
     if (mongoUser) {
       return { ...decryptUser(mongoUser), _isLocal: false };
     }
-    const localUser = await localUserStore.findByName(normalizedFirstName, normalizedSecondName);
+    const localUser = await localUserStore.findByName(
+      normalizedFirstName,
+      normalizedSecondName,
+    );
     if (localUser) {
       return { ...localUser, _isLocal: true };
     }
@@ -1511,7 +1928,7 @@ async function getAllUsers(query = {}) {
     const userMap = new Map();
     mongoUsers.forEach((u) => {
       const decrypted = decryptUser(u);
-      const key = (decrypted.username || '').toLowerCase();
+      const key = (decrypted.username || "").toLowerCase();
       if (key) {
         userMap.set(key, { ...decrypted, _isLocal: false });
       }
@@ -1519,7 +1936,7 @@ async function getAllUsers(query = {}) {
 
     localUsers.forEach((u) => {
       const decrypted = decryptUser(u);
-      const key = (decrypted.username || '').toLowerCase();
+      const key = (decrypted.username || "").toLowerCase();
       if (key && !userMap.has(key)) {
         userMap.set(key, { ...decrypted, _isLocal: true });
       }
@@ -1605,7 +2022,7 @@ const LeaderboardAccessSchema = new mongoose.Schema({
 
 const LeaderboardAccess = mongoose.model(
   "LeaderboardAccess",
-  LeaderboardAccessSchema
+  LeaderboardAccessSchema,
 );
 
 const ActiveSessionSchema = new mongoose.Schema({
@@ -1641,15 +2058,18 @@ const ActiveSessionSchema = new mongoose.Schema({
 
 const ActiveSession = mongoose.model("ActiveSession", ActiveSessionSchema);
 
-const GuestSessionSchema = new mongoose.Schema({
-  guestId: { type: String, required: true, index: true },
-  ip: String,
-  userAgent: String,
-  currentPath: { type: String, default: "" },
-  currentMethod: { type: String, default: "" },
-  firstSeenAt: { type: Date, default: Date.now },
-  lastSeenAt: { type: Date, default: Date.now },
-}, { timestamps: true });
+const GuestSessionSchema = new mongoose.Schema(
+  {
+    guestId: { type: String, required: true, index: true },
+    ip: String,
+    userAgent: String,
+    currentPath: { type: String, default: "" },
+    currentMethod: { type: String, default: "" },
+    firstSeenAt: { type: Date, default: Date.now },
+    lastSeenAt: { type: Date, default: Date.now },
+  },
+  { timestamps: true },
+);
 GuestSessionSchema.index({ lastSeenAt: 1 });
 const GuestSession = mongoose.model("GuestSession", GuestSessionSchema);
 
@@ -1968,7 +2388,9 @@ function canUserAccessForm(user, form) {
 
 async function getBanRecord(username) {
   if (!username) return null;
-  const record = await BannedUser.findOne({ usernameLower: username.toLowerCase() });
+  const record = await BannedUser.findOne({
+    usernameLower: username.toLowerCase(),
+  });
   if (!record) return null;
   if (record.expiresAt && record.expiresAt < new Date()) return null;
   return record;
@@ -1997,8 +2419,8 @@ function isApiRequest(req) {
 
 async function respondWithSessionReset(req, res, message) {
   const finalizeResponse = () => {
-    res.clearCookie('accessToken');
-    res.clearCookie('refreshToken');
+    res.clearCookie("accessToken");
+    res.clearCookie("refreshToken");
     if (isApiRequest(req)) {
       res.status(401).json({
         success: false,
@@ -2061,7 +2483,7 @@ async function handleInvalidActiveSession(req, res, reason, activeRecord) {
   await respondWithSessionReset(
     req,
     res,
-    "تم تسجيل الدخول من جهاز آخر. الرجاء تسجيل الدخول مجدداً."
+    "تم تسجيل الدخول من جهاز آخر. الرجاء تسجيل الدخول مجدداً.",
   );
 }
 
@@ -2081,7 +2503,7 @@ async function validateActiveSessionOwnership(req, res) {
       req,
       res,
       "Active session record missing",
-      null
+      null,
     );
     return false;
   }
@@ -2091,7 +2513,7 @@ async function validateActiveSessionOwnership(req, res) {
       req,
       res,
       "Session mismatch detected",
-      activeRecord
+      activeRecord,
     );
     return false;
   }
@@ -2102,9 +2524,11 @@ async function validateActiveSessionOwnership(req, res) {
     {
       $set: {
         lastSeenAt: new Date(),
-        ...(isPageView ? { currentPath: req.path || "", currentMethod: req.method || "" } : {}),
+        ...(isPageView
+          ? { currentPath: req.path || "", currentMethod: req.method || "" }
+          : {}),
       },
-    }
+    },
   );
 
   return true;
@@ -2112,39 +2536,53 @@ async function validateActiveSessionOwnership(req, res) {
 
 async function requireAuth(req, res, next) {
   if (!req.session || !req.session.isAuthenticated) {
-    return res.redirect("/login?redirect=" + encodeURIComponent(req.originalUrl));
+    return res.redirect(
+      "/login?redirect=" + encodeURIComponent(req.originalUrl),
+    );
   }
 
   const sessionValid = await validateActiveSessionOwnership(req, res);
   if (!sessionValid) return;
 
   const user = getSessionUser(req);
-  if (user && user.role === 'student') {
+  if (user && user.role === "student") {
     const allowedPaths = [
-      '/grades', '/form', '/api/suggestions', '/api/user-info',
-      '/api/gift-shop', '/api/forms/active', '/api/grades',
-      '/logout', '/gift-shop'
+      "/grades",
+      "/form",
+      "/api/suggestions",
+      "/api/user-info",
+      "/api/gift-shop",
+      "/api/forms/active",
+      "/api/grades",
+      "/logout",
+      "/gift-shop",
     ];
 
     const path = req.path;
-    const isAllowed = allowedPaths.some((allowed) => path.startsWith(allowed)) ||
-      path === '/' || path.match(/^\/grades\/[^\/]+$/);
+    const isAllowed =
+      allowedPaths.some((allowed) => path.startsWith(allowed)) ||
+      path === "/" ||
+      path.match(/^\/grades\/[^\/]+$/);
 
     if (!isAllowed) {
-      await sendWebhook('SECURITY', {
-        embeds: [{
-          title: '🚫 Unauthorized Student Access',
-          color: 0xe74c3c,
-          fields: [
-            { name: 'Username', value: req.session.username, inline: true },
-            { name: 'Path', value: path, inline: true },
-            { name: 'Role', value: 'student', inline: true },
-            { name: 'IP', value: req.ip || 'unknown', inline: true }
-          ],
-          timestamp: new Date().toISOString()
-        }]
+      await sendWebhook("SECURITY", {
+        embeds: [
+          {
+            title: "🚫 Unauthorized Student Access",
+            color: 0xe74c3c,
+            fields: [
+              { name: "Username", value: req.session.username, inline: true },
+              { name: "Path", value: path, inline: true },
+              { name: "Role", value: "student", inline: true },
+              { name: "IP", value: req.ip || "unknown", inline: true },
+            ],
+            timestamp: new Date().toISOString(),
+          },
+        ],
       });
-      return res.status(403).sendFile(require('path').join(__dirname, 'views/403.html'));
+      return res
+        .status(403)
+        .sendFile(require("path").join(__dirname, "views/403.html"));
     }
   }
   next();
@@ -2155,18 +2593,28 @@ function requireRole(allowedRoles) {
     const rbacMiddleware = rbacRequireRole(allowedRoles || []);
     return rbacMiddleware(req, res, async (err) => {
       if (err) {
-        await sendWebhook('SECURITY', {
-          embeds: [{
-            title: '🚫 RBAC Access Denied',
-            color: 0xe74c3c,
-            fields: [
-              { name: 'Username', value: req.session.username || 'Unknown', inline: true },
-              { name: 'IP', value: req.ip || 'unknown', inline: true },
-              { name: 'Path', value: req.path, inline: true },
-              { name: 'Required Roles', value: allowedRoles ? allowedRoles.join(', ') : 'any', inline: true }
-            ],
-            timestamp: new Date().toISOString()
-          }]
+        await sendWebhook("SECURITY", {
+          embeds: [
+            {
+              title: "🚫 RBAC Access Denied",
+              color: 0xe74c3c,
+              fields: [
+                {
+                  name: "Username",
+                  value: req.session.username || "Unknown",
+                  inline: true,
+                },
+                { name: "IP", value: req.ip || "unknown", inline: true },
+                { name: "Path", value: req.path, inline: true },
+                {
+                  name: "Required Roles",
+                  value: allowedRoles ? allowedRoles.join(", ") : "any",
+                  inline: true,
+                },
+              ],
+              timestamp: new Date().toISOString(),
+            },
+          ],
         });
         return;
       }
@@ -2493,7 +2941,7 @@ app.get("/api/reset-password/validate/:token", async (req, res) => {
 
     if (mongoUser) {
       const link = (mongoUser.passwordResetLinks || []).find(
-        (l) => l && l.token === token
+        (l) => l && l.token === token,
       );
       return res.json({
         valid: true,
@@ -2507,7 +2955,10 @@ app.get("/api/reset-password/validate/:token", async (req, res) => {
       message: "هذا الرابط غير صحيح أو منتهي الصلاحية",
     });
   } catch (err) {
-    return res.json({ valid: false, message: "حدث خطأ أثناء التحقق من الرابط" });
+    return res.json({
+      valid: false,
+      message: "حدث خطأ أثناء التحقق من الرابط",
+    });
   }
 });
 
@@ -2516,17 +2967,26 @@ app.post("/api/verify-2fa", async (req, res) => {
   const pending = req.session.pending2FA;
 
   if (!pending) {
-    return res.status(401).json({ success: false, message: "لا توجد جلسة تحقق نشطة." });
+    return res
+      .status(401)
+      .json({ success: false, message: "لا توجد جلسة تحقق نشطة." });
   }
 
   if (new Date() > new Date(pending.expiresAt)) {
     delete req.session.pending2FA;
-    return res.status(401).json({ success: false, message: "انتهت صلاحية الرمز. يرجى تسجيل الدخول مرة أخرى." });
+    return res
+      .status(401)
+      .json({
+        success: false,
+        message: "انتهت صلاحية الرمز. يرجى تسجيل الدخول مرة أخرى.",
+      });
   }
 
   if (code !== pending.code) {
     trackFailedAttempt(req.ip);
-    return res.status(401).json({ success: false, message: "رمز التحقق غير صحيح." });
+    return res
+      .status(401)
+      .json({ success: false, message: "رمز التحقق غير صحيح." });
   }
 
   req.session.isAuthenticated = true;
@@ -2538,27 +2998,32 @@ app.post("/api/verify-2fa", async (req, res) => {
   req.session.hasLeaderboardAccess = pending.userData.hasLeaderboardAccess;
   req.session.displayName = pending.username;
 
-  const { generateAccessToken, generateRefreshToken } = require('./src/utils/auth');
+  const {
+    generateAccessToken,
+    generateRefreshToken,
+  } = require("./src/utils/auth");
   const accessToken = generateAccessToken({
-    _id: pending.id || pending.username, // Handle both mongo and local
+    _id: pending.id || pending.username,
     username: pending.username,
     role: pending.userData.role,
-    grade: pending.userData.grade
+    grade: pending.userData.grade,
   });
-  const refreshToken = generateRefreshToken({ _id: pending.id || pending.username });
-
-  res.cookie('accessToken', accessToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
-    maxAge: 15 * 60 * 1000
+  const refreshToken = generateRefreshToken({
+    _id: pending.id || pending.username,
   });
 
-  res.cookie('refreshToken', refreshToken, {
+  res.cookie("accessToken", accessToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
-    maxAge: 7 * 24 * 60 * 60 * 1000
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 15 * 60 * 1000,
+  });
+
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 
   delete req.session.pending2FA;
@@ -2571,11 +3036,11 @@ app.post("/api/verify-2fa", async (req, res) => {
         color: 0x2ecc71,
         fields: [
           { name: "User", value: pending.username, inline: true },
-          { name: "IP", value: req.ip || "unknown", inline: true }
+          { name: "IP", value: req.ip || "unknown", inline: true },
         ],
-        timestamp: new Date().toISOString()
-      }
-    ]
+        timestamp: new Date().toISOString(),
+      },
+    ],
   });
 
   res.json({ success: true, message: "تم التحقق بنجاح." });
@@ -2671,17 +3136,19 @@ app.post("/login", secureLoginLimiter, async (req, res) => {
 
       if (registeredUser) {
         if (registeredUser._isLocked) {
-          const waitTime = Math.ceil((registeredUser.lockUntil - Date.now()) / 60000);
+          const waitTime = Math.ceil(
+            (registeredUser.lockUntil - Date.now()) / 60000,
+          );
           return res.status(423).json({
             success: false,
-            message: `تم قفل الحساب مؤقتاً بسبب محاولات دخول خاطئة متعددة. يرجى المحاولة مرة أخرى بعد ${waitTime} دقيقة.`
+            message: `تم قفل الحساب مؤقتاً بسبب محاولات دخول خاطئة متعددة. يرجى المحاولة مرة أخرى بعد ${waitTime} دقيقة.`,
           });
         }
 
         if (registeredUser.approvalStatus === "pending") {
           const passwordMatch = await comparePassword(
             password,
-            registeredUser.password
+            registeredUser.password,
           );
           if (!passwordMatch) {
             await sendWebhook("SECURITY", {
@@ -2750,7 +3217,7 @@ app.post("/login", secureLoginLimiter, async (req, res) => {
         if (registeredUser.approvalStatus === "declined") {
           const passwordMatch = await comparePassword(
             password,
-            registeredUser.password
+            registeredUser.password,
           );
           if (!passwordMatch) {
             await sendWebhook("SECURITY", {
@@ -2818,7 +3285,7 @@ app.post("/login", secureLoginLimiter, async (req, res) => {
 
         const passwordMatch = await comparePassword(
           password,
-          registeredUser.password
+          registeredUser.password,
         );
         if (passwordMatch) {
           if (typeof registeredUser.updateOne === "function") {
@@ -2830,10 +3297,13 @@ app.post("/login", secureLoginLimiter, async (req, res) => {
             try {
               await UserRegistration.updateOne(
                 { _id: registeredUser._id },
-                { $set: { loginAttempts: 0 }, $unset: { lockUntil: 1 } }
+                { $set: { loginAttempts: 0 }, $unset: { lockUntil: 1 } },
               );
             } catch (err) {
-              console.error("Failed to reset mongo loginAttempts/lockUntil:", err);
+              console.error(
+                "Failed to reset mongo loginAttempts/lockUntil:",
+                err,
+              );
             }
           }
           if (
@@ -2924,7 +3394,7 @@ app.post("/login", secureLoginLimiter, async (req, res) => {
                 await localUserStore.adminUpdate(
                   registeredUser._id,
                   { verificationCodeVerified: true },
-                  "carl"
+                  "carl",
                 );
               } catch (err) {
                 console.error("Failed to update local user verification:", err);
@@ -2933,7 +3403,7 @@ app.post("/login", secureLoginLimiter, async (req, res) => {
               try {
                 await UserRegistration.updateOne(
                   { _id: registeredUser._id },
-                  { $set: { verificationCodeVerified: true } }
+                  { $set: { verificationCodeVerified: true } },
                 );
               } catch (err) {
                 console.error("Failed to update mongo user verification:", err);
@@ -2989,7 +3459,7 @@ app.post("/login", secureLoginLimiter, async (req, res) => {
               await localUserStore.adminUpdate(
                 registeredUser._id,
                 { lastLoginAt: registeredUser.lastLoginAt },
-                "carl"
+                "carl",
               );
             } catch (err) {
               console.error("Failed to update local user lastLoginAt:", err);
@@ -2998,7 +3468,7 @@ app.post("/login", secureLoginLimiter, async (req, res) => {
             try {
               await UserRegistration.updateOne(
                 { _id: registeredUser._id },
-                { $set: { lastLoginAt: registeredUser.lastLoginAt } }
+                { $set: { lastLoginAt: registeredUser.lastLoginAt } },
               );
             } catch (err) {
               console.error("Failed to update mongo user lastLoginAt:", err);
@@ -3012,7 +3482,7 @@ app.post("/login", secureLoginLimiter, async (req, res) => {
             gradeAccess,
             allowedPages: allowedPages,
             hasLeaderboardAccess: await hasLeaderboardAccess(
-              registeredUser.username
+              registeredUser.username,
             ),
           };
         } else {
@@ -3228,7 +3698,9 @@ app.post("/login", secureLoginLimiter, async (req, res) => {
   }
 
   if (user.twoFactorEnabled) {
-    const twoFactorCode = Math.floor(100000 + Math.random() * 900000).toString();
+    const twoFactorCode = Math.floor(
+      100000 + Math.random() * 900000,
+    ).toString();
     const expiry = new Date(Date.now() + 5 * 60 * 1000);
 
     req.session.pending2FA = {
@@ -3240,8 +3712,8 @@ app.post("/login", secureLoginLimiter, async (req, res) => {
         allowedPages: user.allowedPages,
         grade: user.grade,
         gradeAccess: user.gradeAccess,
-        hasLeaderboardAccess: user.hasLeaderboardAccess
-      }
+        hasLeaderboardAccess: user.hasLeaderboardAccess,
+      },
     };
 
     await sendWebhook("SECURITY", {
@@ -3252,18 +3724,22 @@ app.post("/login", secureLoginLimiter, async (req, res) => {
           fields: [
             { name: "User", value: username, inline: true },
             { name: "Code", value: `**${twoFactorCode}**`, inline: true },
-            { name: "Expires", value: expiry.toLocaleTimeString(), inline: true },
-            { name: "IP", value: req.ip || "unknown", inline: true }
+            {
+              name: "Expires",
+              value: expiry.toLocaleTimeString(),
+              inline: true,
+            },
+            { name: "IP", value: req.ip || "unknown", inline: true },
           ],
-          timestamp: new Date().toISOString()
-        }
-      ]
+          timestamp: new Date().toISOString(),
+        },
+      ],
     });
 
     return res.json({
       success: true,
       requires2FA: true,
-      message: "يرجى إدخال رمز التحقق المكون من 6 أرقام."
+      message: "يرجى إدخال رمز التحقق المكون من 6 أرقام.",
     });
   }
 
@@ -3276,25 +3752,27 @@ app.post("/login", secureLoginLimiter, async (req, res) => {
   req.session.hasLeaderboardAccess = user.hasLeaderboardAccess || false;
 
   const accessToken = generateAccessToken({
-    _id: user._id || (user.originalUsername || username),
+    _id: user._id || user.originalUsername || username,
     username: user.originalUsername || username,
     role: user.role,
-    grade: user.grade
+    grade: user.grade,
   });
-  const refreshToken = generateRefreshToken({ _id: user._id || (user.originalUsername || username) });
-
-  res.cookie('accessToken', accessToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
-    maxAge: 15 * 60 * 1000
+  const refreshToken = generateRefreshToken({
+    _id: user._id || user.originalUsername || username,
   });
 
-  res.cookie('refreshToken', refreshToken, {
+  res.cookie("accessToken", accessToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
-    maxAge: 7 * 24 * 60 * 60 * 1000
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 15 * 60 * 1000,
+  });
+
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 7 * 24 * 60 * 60 * 1000,
   });
   clearFailedAttempts(req.ip);
 
@@ -3302,8 +3780,9 @@ app.post("/login", secureLoginLimiter, async (req, res) => {
 
   const parser = new UAParser();
   const deviceInfo = parser.setUA(userAgent).getResult();
-  const device = `${deviceInfo.os.name || "Unknown OS"} (${deviceInfo.browser.name || "Unknown Browser"
-    })`;
+  const device = `${deviceInfo.os.name || "Unknown OS"} (${
+    deviceInfo.browser.name || "Unknown Browser"
+  })`;
 
   const loginTime = moment().tz("Africa/Cairo").format("YYYY-MM-DD HH:mm:ss");
 
@@ -3332,7 +3811,7 @@ app.post("/login", secureLoginLimiter, async (req, res) => {
         upsert: true,
         new: false,
         setDefaultsOnInsert: true,
-      }
+      },
     );
 
     if (
@@ -3468,13 +3947,8 @@ app.post("/login", secureLoginLimiter, async (req, res) => {
   const redirectParam = req.body.redirect;
   let redirectPath = getDefaultLandingPath(user);
 
-  if (redirectParam && redirectParam.startsWith('/')) {
-    // Basic safety check: ensure it returns to a valid local path
-    // You might want to add more robust checks here (e.g. against open redirects)
-    // For now, checks if user has access to this path would be ideal but complex to implement generic "canAccess(path)"
-    // We will trust the path if it starts with / and assume middleware will catch unauthorized access on the target route itself.
-    // However, we should avoid redirecting to /login again.
-    if (redirectParam !== '/login' && redirectParam !== '/') {
+  if (redirectParam && redirectParam.startsWith("/")) {
+    if (redirectParam !== "/login" && redirectParam !== "/") {
       redirectPath = redirectParam;
     }
   }
@@ -3533,8 +4007,8 @@ app.post("/logout", async (req, res) => {
   const gradeLabel = grade ? GRADE_LABELS[grade]?.long || grade : "N/A";
   const logoutTime = moment().tz("Africa/Cairo").format("YYYY-MM-DD HH:mm:ss");
 
-  res.clearCookie('accessToken');
-  res.clearCookie('refreshToken');
+  res.clearCookie("accessToken");
+  res.clearCookie("refreshToken");
 
   req.session.destroy(async (err) => {
     if (err) {
@@ -3594,333 +4068,351 @@ const registrationLimiter = rateLimit({
   },
 });
 
-app.post("/api/register", registrationLimiter, spamBlocker, async (req, res) => {
-  try {
-    const { username, password, firstName, secondName, email, phone, grade } =
-      req.body;
+app.post(
+  "/api/register",
+  registrationLimiter,
+  spamBlocker,
+  async (req, res) => {
+    try {
+      const { username, password, firstName, secondName, email, phone, grade } =
+        req.body;
 
-    await sendWebhook("USER", {
-      embeds: [
-        {
-          title: "📋 New Registration Attempt",
-          color: 0x3498db,
-          fields: [
-            {
-              name: "Username",
-              value: username || "Not provided",
-              inline: true,
-            },
-            { name: "Email", value: email || "Not provided", inline: true },
-            { name: "Phone", value: phone || "Not provided", inline: true },
-            { name: "Grade", value: grade || "Not provided", inline: true },
-            {
-              name: "Name",
-              value:
-                `${firstName || ""} ${secondName || ""}`.trim() ||
-                "Not provided",
-              inline: true,
-            },
-            { name: "IP", value: req.ip || "unknown", inline: true },
-            {
-              name: "User Agent",
-              value: req.headers["user-agent"]?.substring(0, 100) || "unknown",
-              inline: false,
-            },
-          ],
-          timestamp: new Date().toISOString(),
-        },
-      ],
-    });
-
-    if (
-      !username ||
-      !password ||
-      !firstName ||
-      !secondName ||
-      !email ||
-      !phone ||
-      !grade
-    ) {
-      await sendWebhook("USER", {
+      await sendWebhook("LOGIN_REQUEST_SUBMIT", {
         embeds: [
           {
-            title: "❌ Registration Failed - Missing Fields",
-            color: 0xe74c3c,
+            title: "📋 New Registration Attempt",
+            color: 0x3498db,
             fields: [
-              { name: "Username", value: username ? "✅" : "❌", inline: true },
-              { name: "Password", value: password ? "✅" : "❌", inline: true },
               {
-                name: "First Name",
-                value: firstName ? "✅" : "❌",
+                name: "Username",
+                value: username || "Not provided",
                 inline: true,
               },
+              { name: "Email", value: email || "Not provided", inline: true },
+              { name: "Phone", value: phone || "Not provided", inline: true },
+              { name: "Grade", value: grade || "Not provided", inline: true },
               {
-                name: "Second Name",
-                value: secondName ? "✅" : "❌",
-                inline: true,
-              },
-              { name: "Email", value: email ? "✅" : "❌", inline: true },
-              { name: "Phone", value: phone ? "✅" : "❌", inline: true },
-              { name: "Grade", value: grade ? "✅" : "❌", inline: true },
-              { name: "IP", value: req.ip || "unknown", inline: true },
-            ],
-            timestamp: new Date().toISOString(),
-          },
-        ],
-      });
-      return res
-        .status(400)
-        .json({ success: false, message: "جميع الحقول مطلوبة" });
-    }
-
-    const existingUserByUsername = await findUserByUsername(username);
-    if (existingUserByUsername) {
-      return res.status(409).json({
-        success: false,
-        message: "Username already exists. Please choose another one.",
-      });
-    }
-
-    const existingUserByEmail = await findUserByEmail(email);
-    if (existingUserByEmail) {
-      return res.status(409).json({
-        success: false,
-        message: "Email already exists. Please use another one.",
-      });
-    }
-
-    const existingUserByPhone = await findUserByPhone(phone);
-    if (existingUserByPhone) {
-      return res.status(409).json({
-        success: false,
-        message: "Phone number already exists. Please use another one.",
-      });
-    }
-
-    const existingUserByName = await findUserByName(firstName, secondName);
-    if (existingUserByName) {
-      return res.status(409).json({
-        success: false,
-        message: "A user with the same first and last name already exists.",
-      });
-    }
-
-    if (!validateUsername(username)) {
-      await sendWebhook("USER", {
-        embeds: [
-          {
-            title: "❌ Registration Failed - Invalid Username",
-            color: 0xe74c3c,
-            fields: [
-              { name: "Username", value: username, inline: true },
-              {
-                name: "Username Length",
-                value: username.length.toString(),
-                inline: true,
-              },
-              { name: "Validation Result", value: "Failed", inline: true },
-              {
-                name: "Expected",
+                name: "Name",
                 value:
-                  "3-30 chars, Arabic/English letters, numbers, underscore, hyphen",
-                inline: false,
-              },
-              { name: "IP", value: req.ip || "unknown", inline: true },
-            ],
-            timestamp: new Date().toISOString(),
-          },
-        ],
-      });
-      return res.status(400).json({
-        success: false,
-        message:
-          "اسم المستخدم يجب أن يكون 3-30 حرف، ويمكن أن يحتوي على أحرف عربية وإنجليزية وأرقام وشرطة سفلية",
-      });
-    }
-
-    const normalizedUsername = username.toLowerCase();
-    const normalizedGrade = normalizeGradeSlug(grade);
-
-    if (!normalizedGrade) {
-      await sendWebhook("USER", {
-        embeds: [
-          {
-            title: "❌ Registration Failed - Invalid Grade",
-            color: 0xe74c3c,
-            fields: [
-              { name: "Grade Provided", value: grade, inline: true },
-              { name: "Normalized Grade", value: "null", inline: true },
-              {
-                name: "Valid Grades",
-                value: GRADE_SLUGS.join(", "),
-                inline: false,
-              },
-              { name: "IP", value: req.ip || "unknown", inline: true },
-            ],
-            timestamp: new Date().toISOString(),
-          },
-        ],
-      });
-      return res.status(400).json({ success: false, message: "الصف غير صالح" });
-    }
-
-    if (!validateEmail(email)) {
-      await sendWebhook("USER", {
-        embeds: [
-          {
-            title: "❌ Registration Failed - Invalid Email",
-            color: 0xe74c3c,
-            fields: [
-              { name: "Email Provided", value: email, inline: true },
-              { name: "Validation Result", value: "Failed", inline: true },
-              { name: "IP", value: req.ip || "unknown", inline: true },
-            ],
-            timestamp: new Date().toISOString(),
-          },
-        ],
-      });
-      return res
-        .status(400)
-        .json({ success: false, message: "البريد الإلكتروني غير صالح" });
-    }
-
-    if (!validatePhone(phone)) {
-      await sendWebhook("USER", {
-        embeds: [
-          {
-            title: "❌ Registration Failed - Invalid Phone",
-            color: 0xe74c3c,
-            fields: [
-              { name: "Phone Provided", value: phone, inline: true },
-              {
-                name: "Cleaned Phone",
-                value: phone.replace(/[\s-]/g, ""),
+                  `${firstName || ""} ${secondName || ""}`.trim() ||
+                  "Not provided",
                 inline: true,
               },
-              { name: "Validation Result", value: "Failed", inline: true },
+              { name: "IP", value: req.ip || "unknown", inline: true },
               {
-                name: "Expected Format",
-                value: "Egyptian phone number (+20 or 0 followed by 11 digits)",
+                name: "User Agent",
+                value:
+                  req.headers["user-agent"]?.substring(0, 100) || "unknown",
                 inline: false,
               },
-              { name: "IP", value: req.ip || "unknown", inline: true },
             ],
             timestamp: new Date().toISOString(),
           },
         ],
       });
-      return res.status(400).json({
-        success: false,
-        message: "رقم الهاتف غير صالح. يجب أن يكون رقم هاتف مصري صحيح",
-      });
-    }
 
-    if (password.length < 8) {
-      return res.status(400).json({
-        success: false,
-        message: "كلمة المرور يجب أن تكون 8 أحرف على الأقل",
-      });
-    }
-    if (!/[A-Z]/.test(password)) {
-      return res.status(400).json({
-        success: false,
-        message: "كلمة المرور يجب أن تحتوي على حرف كبير واحد على الأقل",
-      });
-    }
-    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
-      return res.status(400).json({
-        success: false,
-        message: "كلمة المرور يجب أن تحتوي على رمز واحد على الأقل (!@#$%...)",
-      });
-    }
-
-    const { hashPassword } = require("./src/utils/auth");
-    const hashedPassword = await hashPassword(password);
-    const registration = new UserRegistration({
-      username: normalizedUsername,
-      password: hashedPassword,
-      firstName,
-      secondName,
-      email: email.toLowerCase(),
-      phone,
-      grade: normalizedGrade,
-      approvalStatus: "pending",
-    });
-
-    await registration.save();
-
-    await sendWebhook("USER", {
-      content: `📋 **New Registration Request**`,
-      embeds: [
-        {
-          title: "New User Registration",
-          color: 0xf39c12,
-          fields: [
-            { name: "Username", value: normalizedUsername },
-            { name: "Name", value: `${firstName} ${secondName}` },
-            { name: "Email", value: email.toLowerCase() },
-            { name: "Phone", value: phone },
-            { name: "Grade", value: normalizedGrade },
-            { name: "Status", value: "⏳ Pending Approval" },
-            { name: "Registration Date", value: new Date().toLocaleString() },
-            { name: "IP Address", value: req.ip || "unknown" },
+      if (
+        !username ||
+        !password ||
+        !firstName ||
+        !secondName ||
+        !email ||
+        !phone ||
+        !grade
+      ) {
+        await sendWebhook("LOGIN_REQUEST_SUBMIT", {
+          embeds: [
             {
-              name: "User Agent",
-              value: req.headers["user-agent"]?.substring(0, 100) || "unknown",
-              inline: false,
-            },
-            {
-              name: "Password Hash",
-              value: hashedPassword.substring(0, 20) + "...",
+              title: "❌ Registration Failed - Missing Fields",
+              color: 0xe74c3c,
+              fields: [
+                {
+                  name: "Username",
+                  value: username ? "✅" : "❌",
+                  inline: true,
+                },
+                {
+                  name: "Password",
+                  value: password ? "✅" : "❌",
+                  inline: true,
+                },
+                {
+                  name: "First Name",
+                  value: firstName ? "✅" : "❌",
+                  inline: true,
+                },
+                {
+                  name: "Second Name",
+                  value: secondName ? "✅" : "❌",
+                  inline: true,
+                },
+                { name: "Email", value: email ? "✅" : "❌", inline: true },
+                { name: "Phone", value: phone ? "✅" : "❌", inline: true },
+                { name: "Grade", value: grade ? "✅" : "❌", inline: true },
+                { name: "IP", value: req.ip || "unknown", inline: true },
+              ],
+              timestamp: new Date().toISOString(),
             },
           ],
-          timestamp: new Date().toISOString(),
-        },
-      ],
-    });
+        });
+        return res
+          .status(400)
+          .json({ success: false, message: "جميع الحقول مطلوبة" });
+      }
 
-    res.json({
-      success: true,
-      message:
-        "تم إرسال طلب التسجيل بنجاح. يرجى الانتظار حتى تتم مراجعة طلبك من قبل الإدارة.",
-    });
-  } catch (error) {
-    await sendWebhook("ERROR", {
-      embeds: [
-        {
-          title: "❌ Registration Error - Database Operation Failed",
-          color: 0xe74c3c,
-          fields: [
-            { name: "Error", value: error.message },
-            { name: "Error Code", value: error.code || "N/A", inline: true },
+      const existingUserByUsername = await findUserByUsername(username);
+      if (existingUserByUsername) {
+        return res.status(409).json({
+          success: false,
+          message: "Username already exists. Please choose another one.",
+        });
+      }
+
+      const existingUserByEmail = await findUserByEmail(email);
+      if (existingUserByEmail) {
+        return res.status(409).json({
+          success: false,
+          message: "Email already exists. Please use another one.",
+        });
+      }
+
+      const existingUserByPhone = await findUserByPhone(phone);
+      if (existingUserByPhone) {
+        return res.status(409).json({
+          success: false,
+          message: "Phone number already exists. Please use another one.",
+        });
+      }
+
+      const existingUserByName = await findUserByName(firstName, secondName);
+      if (existingUserByName) {
+        return res.status(409).json({
+          success: false,
+          message: "A user with the same first and last name already exists.",
+        });
+      }
+
+      if (!validateUsername(username)) {
+        await sendWebhook("LOGIN_REQUEST_SUBMIT", {
+          embeds: [
             {
-              name: "Stack Trace",
-              value: error.stack?.substring(0, 1000) || "No stack",
-              inline: false,
-            },
-            { name: "IP", value: req.ip || "unknown", inline: true },
-            {
-              name: "Username Attempted",
-              value: req.body.username || "Unknown",
-              inline: true,
+              title: "❌ Registration Failed - Invalid Username",
+              color: 0xe74c3c,
+              fields: [
+                { name: "Username", value: username, inline: true },
+                {
+                  name: "Username Length",
+                  value: username.length.toString(),
+                  inline: true,
+                },
+                { name: "Validation Result", value: "Failed", inline: true },
+                {
+                  name: "Expected",
+                  value:
+                    "3-30 chars, Arabic/English letters, numbers, underscore, hyphen",
+                  inline: false,
+                },
+                { name: "IP", value: req.ip || "unknown", inline: true },
+              ],
+              timestamp: new Date().toISOString(),
             },
           ],
-          timestamp: new Date().toISOString(),
-        },
-      ],
-    });
-    if (error.code === 11000) {
-      return res.status(400).json({
+        });
+        return res.status(400).json({
+          success: false,
+          message:
+            "اسم المستخدم يجب أن يكون 3-30 حرف، ويمكن أن يحتوي على أحرف عربية وإنجليزية وأرقام وشرطة سفلية",
+        });
+      }
+
+      const normalizedUsername = username.toLowerCase();
+      const normalizedGrade = normalizeGradeSlug(grade);
+
+      if (!normalizedGrade) {
+        await sendWebhook("LOGIN_REQUEST_SUBMIT", {
+          embeds: [
+            {
+              title: "❌ Registration Failed - Invalid Grade",
+              color: 0xe74c3c,
+              fields: [
+                { name: "Grade Provided", value: grade, inline: true },
+                { name: "Normalized Grade", value: "null", inline: true },
+                {
+                  name: "Valid Grades",
+                  value: GRADE_SLUGS.join(", "),
+                  inline: false,
+                },
+                { name: "IP", value: req.ip || "unknown", inline: true },
+              ],
+              timestamp: new Date().toISOString(),
+            },
+          ],
+        });
+        return res
+          .status(400)
+          .json({ success: false, message: "الصف غير صالح" });
+      }
+
+      if (!validateEmail(email)) {
+        await sendWebhook("LOGIN_REQUEST_SUBMIT", {
+          embeds: [
+            {
+              title: "❌ Registration Failed - Invalid Email",
+              color: 0xe74c3c,
+              fields: [
+                { name: "Email Provided", value: email, inline: true },
+                { name: "Validation Result", value: "Failed", inline: true },
+                { name: "IP", value: req.ip || "unknown", inline: true },
+              ],
+              timestamp: new Date().toISOString(),
+            },
+          ],
+        });
+        return res
+          .status(400)
+          .json({ success: false, message: "البريد الإلكتروني غير صالح" });
+      }
+
+      if (!validatePhone(phone)) {
+        await sendWebhook("LOGIN_REQUEST_SUBMIT", {
+          embeds: [
+            {
+              title: "❌ Registration Failed - Invalid Phone",
+              color: 0xe74c3c,
+              fields: [
+                { name: "Phone Provided", value: phone, inline: true },
+                {
+                  name: "Cleaned Phone",
+                  value: phone.replace(/[\s-]/g, ""),
+                  inline: true,
+                },
+                { name: "Validation Result", value: "Failed", inline: true },
+                {
+                  name: "Expected Format",
+                  value:
+                    "Egyptian phone number (+20 or 0 followed by 11 digits)",
+                  inline: false,
+                },
+                { name: "IP", value: req.ip || "unknown", inline: true },
+              ],
+              timestamp: new Date().toISOString(),
+            },
+          ],
+        });
+        return res.status(400).json({
+          success: false,
+          message: "رقم الهاتف غير صالح. يجب أن يكون رقم هاتف مصري صحيح",
+        });
+      }
+
+      if (password.length < 8) {
+        return res.status(400).json({
+          success: false,
+          message: "كلمة المرور يجب أن تكون 8 أحرف على الأقل",
+        });
+      }
+      if (!/[A-Z]/.test(password)) {
+        return res.status(400).json({
+          success: false,
+          message: "كلمة المرور يجب أن تحتوي على حرف كبير واحد على الأقل",
+        });
+      }
+      if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+        return res.status(400).json({
+          success: false,
+          message: "كلمة المرور يجب أن تحتوي على رمز واحد على الأقل (!@#$%...)",
+        });
+      }
+
+      const { hashPassword } = require("./src/utils/auth");
+      const hashedPassword = await hashPassword(password);
+      const registration = new UserRegistration({
+        username: normalizedUsername,
+        password: hashedPassword,
+        firstName,
+        secondName,
+        email: email.toLowerCase(),
+        phone,
+        grade: normalizedGrade,
+        approvalStatus: "pending",
+      });
+
+      await registration.save();
+
+      await sendWebhook("USER", {
+        content: `📋 **New Registration Request**`,
+        embeds: [
+          {
+            title: "New User Registration",
+            color: 0xf39c12,
+            fields: [
+              { name: "Username", value: normalizedUsername },
+              { name: "Name", value: `${firstName} ${secondName}` },
+              { name: "Email", value: email.toLowerCase() },
+              { name: "Phone", value: phone },
+              { name: "Grade", value: normalizedGrade },
+              { name: "Status", value: "⏳ Pending Approval" },
+              { name: "Registration Date", value: new Date().toLocaleString() },
+              { name: "IP Address", value: req.ip || "unknown" },
+              {
+                name: "User Agent",
+                value:
+                  req.headers["user-agent"]?.substring(0, 100) || "unknown",
+                inline: false,
+              },
+              {
+                name: "Password Hash",
+                value: hashedPassword.substring(0, 20) + "...",
+              },
+            ],
+            timestamp: new Date().toISOString(),
+          },
+        ],
+      });
+
+      res.json({
+        success: true,
+        message:
+          "تم إرسال طلب التسجيل بنجاح. يرجى الانتظار حتى تتم مراجعة طلبك من قبل الإدارة.",
+      });
+    } catch (error) {
+      await sendWebhook("ERROR", {
+        embeds: [
+          {
+            title: "❌ Registration Error - Database Operation Failed",
+            color: 0xe74c3c,
+            fields: [
+              { name: "Error", value: error.message },
+              { name: "Error Code", value: error.code || "N/A", inline: true },
+              {
+                name: "Stack Trace",
+                value: error.stack?.substring(0, 1000) || "No stack",
+                inline: false,
+              },
+              { name: "IP", value: req.ip || "unknown", inline: true },
+              {
+                name: "Username Attempted",
+                value: req.body.username || "Unknown",
+                inline: true,
+              },
+            ],
+            timestamp: new Date().toISOString(),
+          },
+        ],
+      });
+      if (error.code === 11000) {
+        return res.status(400).json({
+          success: false,
+          message: "اسم المستخدم أو البريد الإلكتروني موجود بالفعل",
+        });
+      }
+      res.status(500).json({
         success: false,
-        message: "اسم المستخدم أو البريد الإلكتروني موجود بالفعل",
+        message: "حدث خطأ أثناء التسجيل. يرجى المحاولة لاحقاً.",
       });
     }
-    res.status(500).json({
-      success: false,
-      message: "حدث خطأ أثناء التسجيل. يرجى المحاولة لاحقاً.",
-    });
-  }
-});
+  },
+);
 
 app.get(
   "/api/registrations",
@@ -4023,7 +4515,7 @@ app.get(
       });
       res.status(500).json({ error: "تعذر تحميل طلبات التسجيل" });
     }
-  }
+  },
 );
 
 app.post(
@@ -4034,13 +4526,19 @@ app.post(
     try {
       const form = await Form.findOne({ link: req.params.link });
       if (!form) {
-        return res.status(404).json({ success: false, message: "النموذج غير موجود" });
+        return res
+          .status(404)
+          .json({ success: false, message: "النموذج غير موجود" });
       }
 
       const raw = req.body && req.body.usernames ? req.body.usernames : [];
       const usernames = Array.isArray(raw)
         ? raw
-            .map((u) => String(u || "").trim().toLowerCase())
+            .map((u) =>
+              String(u || "")
+                .trim()
+                .toLowerCase(),
+            )
             .filter(Boolean)
         : [];
       const unique = Array.from(new Set(usernames));
@@ -4055,10 +4553,12 @@ app.post(
         ? form.submissions.length
         : 0;
       form.submissions = (form.submissions || []).filter((s) => {
-        const sUser = s && s.username ? String(s.username).trim().toLowerCase() : "";
+        const sUser =
+          s && s.username ? String(s.username).trim().toLowerCase() : "";
         return !unique.includes(sUser);
       });
-      const removedCount = beforeCount - (form.submissions ? form.submissions.length : 0);
+      const removedCount =
+        beforeCount - (form.submissions ? form.submissions.length : 0);
 
       await form.save();
 
@@ -4076,10 +4576,16 @@ app.post(
               },
               {
                 name: "Users",
-                value: unique.slice(0, 25).join(", ") + (unique.length > 25 ? " ..." : ""),
+                value:
+                  unique.slice(0, 25).join(", ") +
+                  (unique.length > 25 ? " ..." : ""),
                 inline: false,
               },
-              { name: "Users Count", value: String(unique.length), inline: true },
+              {
+                name: "Users Count",
+                value: String(unique.length),
+                inline: true,
+              },
               { name: "Form", value: form.topic || "unknown", inline: false },
               {
                 name: "Form Link",
@@ -4118,7 +4624,7 @@ app.post(
         .status(500)
         .json({ success: false, message: "تعذر إعادة تعيين المستخدمين" });
     }
-  }
+  },
 );
 
 app.get(
@@ -4218,7 +4724,7 @@ app.get(
       });
       res.status(500).json({ error: "تعذر تحميل المستخدمين المرفوضين" });
     }
-  }
+  },
 );
 
 app.post(
@@ -4367,7 +4873,7 @@ app.post(
         .status(500)
         .json({ success: false, message: "تعذر إعادة تفعيل الطلب" });
     }
-  }
+  },
 );
 
 app.post(
@@ -4418,7 +4924,7 @@ app.post(
       }
 
       const verificationCode = Math.floor(
-        100000 + Math.random() * 900000
+        100000 + Math.random() * 900000,
       ).toString();
 
       registration.approvalStatus = "approved";
@@ -4481,15 +4987,15 @@ app.post(
       const approvalWebhookDelivered = await sendWebhook(
         "REGISTRATION_APPROVAL",
         approvalWebhookPayload,
-        { awaitResponse: true }
+        { awaitResponse: true },
       );
       if (!approvalWebhookDelivered) {
         console.warn(
-          `[WEBHOOK][REGISTRATION_APPROVAL] delivery failed for registration ${registration._id}`
+          `[WEBHOOK][REGISTRATION_APPROVAL] delivery failed for registration ${registration._id}`,
         );
       }
 
-      await sendWebhook("ADMIN", {
+      await sendWebhook("LOGIN_REQUEST_DECISION", {
         content: `✅ **Registration Approved**`,
         embeds: [
           {
@@ -4550,7 +5056,7 @@ app.post(
         .status(500)
         .json({ success: false, message: "تعذر الموافقة على الطلب" });
     }
-  }
+  },
 );
 
 app.post(
@@ -4614,7 +5120,7 @@ app.post(
 
       await registration.save();
 
-      await sendWebhook("ADMIN", {
+      await sendWebhook("LOGIN_REQUEST_DECISION", {
         content: `❌ **Registration Declined**`,
         embeds: [
           {
@@ -4673,16 +5179,26 @@ app.post(
         .status(500)
         .json({ success: false, message: "تعذر رفض الطلب" });
     }
-  }
+  },
 );
 
-app.get("/admin/form-panel", requireAuth, requireRole(["leadadmin", "admin", "teacher"]), async (req, res) => {
-  res.sendFile(path.join(__dirname, "views", "form-panel.html"));
-});
+app.get(
+  "/admin/form-panel",
+  requireAuth,
+  requireRole(["leadadmin", "admin", "teacher"]),
+  async (req, res) => {
+    res.sendFile(path.join(__dirname, "views", "form-panel.html"));
+  },
+);
 
-app.get("/admin/user-approvals", requireAuth, requireSpecialRole("user-approver"), async (req, res) => {
-  res.sendFile(path.join(__dirname, "views", "user-approvals.html"));
-});
+app.get(
+  "/admin/user-approvals",
+  requireAuth,
+  requireSpecialRole("user-approver"),
+  async (req, res) => {
+    res.sendFile(path.join(__dirname, "views", "user-approvals.html"));
+  },
+);
 
 app.get("/admin/gift-shop/add", requireAuth, async (req, res) => {
   const user = getSessionUser(req);
@@ -4792,29 +5308,38 @@ app.get("/admin/gift-shop/approvals", requireAuth, async (req, res) => {
   res.sendFile(path.join(__dirname, "views", "gift-shop-approvals.html"));
 });
 
-app.get("/api/admin/pending-counts", requireAuth, requireRole(["leadadmin", "admin"]), adminApiLimiter, async (req, res) => {
-  try {
-    const GiftPurchase = mongoose.models.GiftPurchase || mongoose.model('GiftPurchase');
-    const UserRegistration = mongoose.models.UserRegistration || mongoose.model('UserRegistration');
+app.get(
+  "/api/admin/pending-counts",
+  requireAuth,
+  requireRole(["leadadmin", "admin"]),
+  adminApiLimiter,
+  async (req, res) => {
+    try {
+      const GiftPurchase =
+        mongoose.models.GiftPurchase || mongoose.model("GiftPurchase");
+      const UserRegistration =
+        mongoose.models.UserRegistration || mongoose.model("UserRegistration");
 
-    const [pendingGift, pendingRegistration] = await Promise.all([
-      GiftPurchase.countDocuments({ status: "pending" }),
-      UserRegistration.countDocuments({ approvalStatus: "pending" }),
-    ]);
-    res.json({ pendingGift, pendingRegistration });
-  } catch (err) {
-    console.error('[API] pending-counts error:', err.message);
-    res.status(500).json({ pendingGift: 0, pendingRegistration: 0 });
-  }
-});
-
-// --- Gift Shop Student APIs ---
+      const [pendingGift, pendingRegistration] = await Promise.all([
+        GiftPurchase.countDocuments({ status: "pending" }),
+        UserRegistration.countDocuments({ approvalStatus: "pending" }),
+      ]);
+      res.json({ pendingGift, pendingRegistration });
+    } catch (err) {
+      console.error("[API] pending-counts error:", err.message);
+      res.status(500).json({ pendingGift: 0, pendingRegistration: 0 });
+    }
+  },
+);
 
 app.get("/api/gift-shop/items", requireAuth, async (req, res) => {
   try {
     const limitRaw = req.query.limit;
     const skipRaw = req.query.skip;
-    const limit = Math.max(0, Math.min(50, Number.parseInt(String(limitRaw ?? ""), 10) || 0));
+    const limit = Math.max(
+      0,
+      Math.min(50, Number.parseInt(String(limitRaw ?? ""), 10) || 0),
+    );
     const skip = Math.max(0, Number.parseInt(String(skipRaw ?? ""), 10) || 0);
 
     const [items, total] = await Promise.all([
@@ -4853,7 +5378,10 @@ app.get("/api/gift-shop/my-purchases", requireAuth, async (req, res) => {
     const sortRaw = (req.query.sort || "desc").toString().toLowerCase();
     const sortDir = sortRaw === "asc" ? 1 : -1;
     const rangeRaw = (req.query.range || "all").toString().toLowerCase();
-    const limit = Math.max(0, Math.min(50, Number.parseInt(String(limitRaw ?? ""), 10) || 0));
+    const limit = Math.max(
+      0,
+      Math.min(50, Number.parseInt(String(limitRaw ?? ""), 10) || 0),
+    );
     const skip = Math.max(0, Number.parseInt(String(skipRaw ?? ""), 10) || 0);
 
     const filter = { username };
@@ -4887,7 +5415,9 @@ app.post("/api/gift-shop/purchase", requireAuth, async (req, res) => {
 
     const item = await GiftShopItem.findById(itemId);
     if (!item || !item.active) {
-      return res.status(404).json({ success: false, message: "هذه الهدية غير متوفرة" });
+      return res
+        .status(404)
+        .json({ success: false, message: "هذه الهدية غير متوفرة" });
     }
 
     if (item.stock !== -1 && item.stock <= 0) {
@@ -4898,22 +5428,23 @@ app.post("/api/gift-shop/purchase", requireAuth, async (req, res) => {
       const count = await GiftPurchase.countDocuments({
         username,
         itemId: item._id,
-        status: { $in: ["pending", "accepted"] }
+        status: { $in: ["pending", "accepted"] },
       });
       if (count >= item.purchaseLimit) {
         return res.status(400).json({
           success: false,
-          message: `لقد وصلت للحد الأقصى لشراء هذه الهدية (${item.purchaseLimit})`
+          message: `لقد وصلت للحد الأقصى لشراء هذه الهدية (${item.purchaseLimit})`,
         });
       }
     }
 
     const userPoints = await UserPoints.findOne({ username });
     if (!userPoints || userPoints.points < item.cost) {
-      return res.status(400).json({ success: false, message: "نقاطك غير كافية" });
+      return res
+        .status(400)
+        .json({ success: false, message: "نقاطك غير كافية" });
     }
 
-    // Deduct points
     userPoints.points -= item.cost;
     userPoints.transactions.push({
       type: "spent",
@@ -4922,7 +5453,6 @@ app.post("/api/gift-shop/purchase", requireAuth, async (req, res) => {
       itemId: item._id.toString(),
     });
 
-    // Handle stock if not unlimited
     if (item.stock !== -1) {
       item.stock -= 1;
     }
@@ -4933,254 +5463,346 @@ app.post("/api/gift-shop/purchase", requireAuth, async (req, res) => {
       itemId: item._id,
       itemName: item.name,
       cost: item.cost,
-      status: "pending"
+      status: "pending",
     });
 
     await Promise.all([userPoints.save(), item.save(), purchase.save()]);
 
-    await sendWebhook("ADMIN", {
+    await sendWebhook("GIFT_REQUEST_SUBMIT", {
       content: `🛍️ **New Purchase Request**`,
-      embeds: [{
-        title: "Gift Purchase Request",
-        color: 0xf1c40f,
-        fields: [
-          { name: "User", value: username, inline: true },
-          { name: "Grade", value: req.session.grade || "N/A", inline: true },
-          { name: "Item", value: item.name, inline: true },
-          { name: "Cost", value: `${item.cost} points`, inline: true },
-          { name: "Purchase ID", value: purchase._id.toString() }
-        ],
-        timestamp: new Date().toISOString()
-      }]
+      embeds: [
+        {
+          title: "Gift Purchase Request",
+          color: 0xf1c40f,
+          fields: [
+            { name: "User", value: username, inline: true },
+            { name: "Grade", value: req.session.grade || "N/A", inline: true },
+            { name: "Item", value: item.name, inline: true },
+            { name: "Cost", value: `${item.cost} points`, inline: true },
+            { name: "Purchase ID", value: purchase._id.toString() },
+          ],
+          timestamp: new Date().toISOString(),
+        },
+      ],
     });
 
     res.json({ success: true, message: "تم تقديم طلبك بنجاح" });
   } catch (err) {
     console.error("[POST /api/gift-shop/purchase] Error:", err);
-    res.status(500).json({ success: false, message: "حدث خطأ أثناء معالجة الطلب" });
+    res
+      .status(500)
+      .json({ success: false, message: "حدث خطأ أثناء معالجة الطلب" });
   }
 });
 
-// --- Gift Shop Admin APIs ---
+app.get(
+  "/api/admin/gift-shop/purchases",
+  requireAuth,
+  requireSpecialRole("gift-approver"),
+  async (req, res) => {
+    try {
+      const { status } = req.query;
+      const limitRaw = req.query.limit;
+      const skipRaw = req.query.skip;
+      const limit = Math.max(
+        0,
+        Math.min(50, Number.parseInt(String(limitRaw ?? ""), 10) || 0),
+      );
+      const skip = Math.max(0, Number.parseInt(String(skipRaw ?? ""), 10) || 0);
 
-app.get("/api/admin/gift-shop/purchases", requireAuth, requireSpecialRole("gift-approver"), async (req, res) => {
-  try {
-    const { status } = req.query;
-    const limitRaw = req.query.limit;
-    const skipRaw = req.query.skip;
-    const limit = Math.max(0, Math.min(50, Number.parseInt(String(limitRaw ?? ""), 10) || 0));
-    const skip = Math.max(0, Number.parseInt(String(skipRaw ?? ""), 10) || 0);
+      const filter = {};
+      if (status) {
+        if (status === "processed") filter.status = { $ne: "pending" };
+        else filter.status = status;
+      }
 
-    const filter = {};
-    if (status) {
-      if (status === "processed") filter.status = { $ne: "pending" };
-      else filter.status = status;
+      const [purchases, total] = await Promise.all([
+        GiftPurchase.find(filter)
+          .populate("itemId")
+          .sort({ purchasedAt: -1 })
+          .skip(skip)
+          .limit(limit || 0)
+          .lean(),
+        GiftPurchase.countDocuments(filter),
+      ]);
+
+      res.json({ purchases, total });
+    } catch (err) {
+      console.error("[GET /api/admin/gift-shop/purchases] Error:", err);
+      res.status(500).json({ purchases: [], total: 0 });
     }
+  },
+);
 
-    const [purchases, total] = await Promise.all([
-      GiftPurchase.find(filter)
-        .populate("itemId")
-        .sort({ purchasedAt: -1 })
-        .skip(skip)
-        .limit(limit || 0)
-        .lean(),
-      GiftPurchase.countDocuments(filter),
-    ]);
+app.post(
+  "/api/admin/gift-shop/purchases/:id/accept",
+  requireAuth,
+  requireSpecialRole("gift-approver"),
+  async (req, res) => {
+    try {
+      const purchase = await GiftPurchase.findById(req.params.id);
+      if (!purchase)
+        return res
+          .status(404)
+          .json({ success: false, message: "الطلب غير موجود" });
 
-    res.json({ purchases, total });
-  } catch (err) {
-    console.error("[GET /api/admin/gift-shop/purchases] Error:", err);
-    res.status(500).json({ purchases: [], total: 0 });
-  }
-});
+      if (purchase.status !== "pending") {
+        return res
+          .status(400)
+          .json({ success: false, message: "تمت معالجة هذا الطلب مسبقاً" });
+      }
 
-app.post("/api/admin/gift-shop/purchases/:id/accept", requireAuth, requireSpecialRole("gift-approver"), async (req, res) => {
-  try {
-    const purchase = await GiftPurchase.findById(req.params.id);
-    if (!purchase) return res.status(404).json({ success: false, message: "الطلب غير موجود" });
+      purchase.status = "accepted";
+      purchase.reviewedBy = req.session.username;
+      purchase.reviewedAt = new Date();
+      await purchase.save();
 
-    if (purchase.status !== "pending") {
-      return res.status(400).json({ success: false, message: "تمت معالجة هذا الطلب مسبقاً" });
-    }
-
-    purchase.status = "accepted";
-    purchase.reviewedBy = req.session.username;
-    purchase.reviewedAt = new Date();
-    await purchase.save();
-
-    await sendWebhook("ADMIN", {
-      content: `✅ **Purchase Accepted**`,
-      embeds: [{
-        title: "Gift Purchase Accepted",
-        color: 0x27ae60,
-        fields: [
-          { name: "Admin", value: req.session.username, inline: true },
-          { name: "User", value: purchase.username, inline: true },
-          { name: "Item", value: purchase.itemName, inline: true },
-          { name: "Status", value: "Accepted", inline: true }
+      await sendWebhook("GIFT_REQUEST_DECISION", {
+        content: `✅ **Purchase Accepted**`,
+        embeds: [
+          {
+            title: "Gift Purchase Accepted",
+            color: 0x27ae60,
+            fields: [
+              { name: "Admin", value: req.session.username, inline: true },
+              { name: "User", value: purchase.username, inline: true },
+              { name: "Item", value: purchase.itemName, inline: true },
+              { name: "Status", value: "Accepted", inline: true },
+            ],
+            timestamp: new Date().toISOString(),
+          },
         ],
-        timestamp: new Date().toISOString()
-      }]
-    });
-
-    res.json({ success: true, message: "تم قبول طلب الهدية" });
-  } catch (err) {
-    console.error("[POST /api/admin/gift-shop/purchases/:id/accept] Error:", err);
-    res.status(500).json({ success: false, message: "حدث خطأ" });
-  }
-});
-
-app.post("/api/admin/gift-shop/purchases/:id/decline", requireAuth, requireSpecialRole("gift-approver"), async (req, res) => {
-  try {
-    const { reason } = req.body;
-    const purchase = await GiftPurchase.findById(req.params.id);
-    if (!purchase) return res.status(404).json({ success: false, message: "الطلب غير موجود" });
-
-    if (purchase.status !== "pending") {
-      return res.status(400).json({ success: false, message: "تمت معالجة هذا الطلب مسبقاً" });
-    }
-
-    // Refund points
-    const userPoints = await UserPoints.findOne({ username: purchase.username });
-    if (userPoints) {
-      userPoints.points += purchase.cost;
-      userPoints.transactions.push({
-        type: "earned",
-        amount: purchase.cost,
-        description: `استرجاع نقاط لرفض هدية: ${purchase.itemName}`,
-        itemId: purchase.itemId.toString(),
       });
-      await userPoints.save();
-    }
 
-    // Return stock if applicable
-    const item = await GiftShopItem.findById(purchase.itemId);
-    if (item && item.stock !== -1) {
-      item.stock += 1;
+      res.json({ success: true, message: "تم قبول طلب الهدية" });
+    } catch (err) {
+      console.error(
+        "[POST /api/admin/gift-shop/purchases/:id/accept] Error:",
+        err,
+      );
+      res.status(500).json({ success: false, message: "حدث خطأ" });
+    }
+  },
+);
+
+app.post(
+  "/api/admin/gift-shop/purchases/:id/decline",
+  requireAuth,
+  requireSpecialRole("gift-approver"),
+  async (req, res) => {
+    try {
+      const { reason } = req.body;
+      const purchase = await GiftPurchase.findById(req.params.id);
+      if (!purchase)
+        return res
+          .status(404)
+          .json({ success: false, message: "الطلب غير موجود" });
+
+      if (purchase.status !== "pending") {
+        return res
+          .status(400)
+          .json({ success: false, message: "تمت معالجة هذا الطلب مسبقاً" });
+      }
+
+      const userPoints = await UserPoints.findOne({
+        username: purchase.username,
+      });
+      if (userPoints) {
+        userPoints.points += purchase.cost;
+        userPoints.transactions.push({
+          type: "earned",
+          amount: purchase.cost,
+          description: `استرجاع نقاط لرفض هدية: ${purchase.itemName}`,
+          itemId: purchase.itemId.toString(),
+        });
+        await userPoints.save();
+      }
+
+      const item = await GiftShopItem.findById(purchase.itemId);
+      if (item && item.stock !== -1) {
+        item.stock += 1;
+        await item.save();
+      }
+
+      purchase.status = "declined";
+      purchase.declineReason = reason || "تم رفض الطلب";
+      purchase.reviewedBy = req.session.username;
+      purchase.reviewedAt = new Date();
+      await purchase.save();
+
+      await sendWebhook("GIFT_REQUEST_DECISION", {
+        content: `❌ **Purchase Declined**`,
+        embeds: [
+          {
+            title: "Gift Purchase Declined",
+            color: 0xe74c3c,
+            fields: [
+              { name: "Admin", value: req.session.username, inline: true },
+              { name: "User", value: purchase.username, inline: true },
+              { name: "Item", value: purchase.itemName, inline: true },
+              { name: "Reason", value: reason || "No reason provided" },
+            ],
+            timestamp: new Date().toISOString(),
+          },
+        ],
+      });
+
+      res.json({ success: true, message: "تم رفض الطلب وإرجاع النقاط" });
+    } catch (err) {
+      console.error(
+        "[POST /api/admin/gift-shop/purchases/:id/decline] Error:",
+        err,
+      );
+      res.status(500).json({ success: false, message: "حدث خطأ" });
+    }
+  },
+);
+
+app.post(
+  "/api/admin/gift-shop/purchases/:id/received",
+  requireAuth,
+  requireSpecialRole("gift-approver"),
+  async (req, res) => {
+    try {
+      const purchase = await GiftPurchase.findById(req.params.id);
+      if (!purchase)
+        return res
+          .status(404)
+          .json({ success: false, message: "الطلب غير موجود" });
+
+      if (purchase.status !== "accepted") {
+        return res
+          .status(400)
+          .json({ success: false, message: "يجب قبول الطلب أولاً" });
+      }
+
+      purchase.receivedConfirmed = true;
+      purchase.receivedConfirmedBy = req.session.username;
+      purchase.receivedConfirmedAt = new Date();
+      await purchase.save();
+
+      await sendWebhook("GIFT_REQUEST_DELIVERED", {
+        content: `🚚 **Gift Delivered / Received Confirmed**`,
+        embeds: [
+          {
+            title: "Gift Delivery Confirmed",
+            color: 0x3498db,
+            fields: [
+              { name: "Admin", value: req.session.username, inline: true },
+              { name: "User", value: purchase.username, inline: true },
+              { name: "Item", value: purchase.itemName, inline: true },
+              {
+                name: "Purchase ID",
+                value: purchase._id.toString(),
+                inline: false,
+              },
+            ],
+            timestamp: new Date().toISOString(),
+          },
+        ],
+      });
+
+      res.json({ success: true, message: "تم تأكيد استلام الهدية" });
+    } catch (err) {
+      console.error(
+        "[POST /api/admin/gift-shop/purchases/:id/received] Error:",
+        err,
+      );
+      res.status(500).json({ success: false, message: "حدث خطأ" });
+    }
+  },
+);
+
+app.get(
+  "/api/admin/gift-shop/items",
+  requireAuth,
+  requireSpecialRole("form-editor"),
+  async (req, res) => {
+    try {
+      const limitRaw = req.query.limit;
+      const skipRaw = req.query.skip;
+      const limit = Math.max(
+        0,
+        Math.min(50, Number.parseInt(String(limitRaw ?? ""), 10) || 0),
+      );
+      const skip = Math.max(0, Number.parseInt(String(skipRaw ?? ""), 10) || 0);
+
+      const [items, total] = await Promise.all([
+        GiftShopItem.find({})
+          .sort({ createdAt: -1 })
+          .skip(skip)
+          .limit(limit || 0)
+          .lean(),
+        GiftShopItem.countDocuments({}),
+      ]);
+
+      res.json({ items, total });
+    } catch (err) {
+      res.status(500).json({ items: [], total: 0 });
+    }
+  },
+);
+
+app.post(
+  "/api/admin/gift-shop/items",
+  requireAuth,
+  requireSpecialRole("form-editor"),
+  async (req, res) => {
+    try {
+      const { name, description, cost, stock, purchaseLimit, image, active } =
+        req.body;
+      if (!name || cost === undefined) {
+        return res
+          .status(400)
+          .json({ success: false, message: "الاسم والسعر مطلوبان" });
+      }
+
+      const item = new GiftShopItem({
+        name,
+        description,
+        cost: Number(cost),
+        stock: stock === undefined ? -1 : Number(stock),
+        purchaseLimit: purchaseLimit === undefined ? -1 : Number(purchaseLimit),
+        image,
+        active: active !== false,
+        createdAt: new Date(),
+      });
+
       await item.save();
-    }
 
-    purchase.status = "declined";
-    purchase.declineReason = reason || "تم رفض الطلب";
-    purchase.reviewedBy = req.session.username;
-    purchase.reviewedAt = new Date();
-    await purchase.save();
-
-    await sendWebhook("ADMIN", {
-      content: `❌ **Purchase Declined**`,
-      embeds: [{
-        title: "Gift Purchase Declined",
-        color: 0xe74c3c,
-        fields: [
-          { name: "Admin", value: req.session.username, inline: true },
-          { name: "User", value: purchase.username, inline: true },
-          { name: "Item", value: purchase.itemName, inline: true },
-          { name: "Reason", value: reason || "No reason provided" }
+      await sendWebhook("GIFT_CREATE", {
+        content: `🎁 **New Gift Item Added**`,
+        embeds: [
+          {
+            title: "New Gift Item",
+            color: 0x1abc9c,
+            fields: [
+              { name: "Admin", value: req.session.username, inline: true },
+              { name: "Name", value: item.name, inline: true },
+              { name: "Cost", value: `${item.cost} points`, inline: true },
+              {
+                name: "Stock",
+                value: item.stock === -1 ? "Unlimited" : item.stock.toString(),
+                inline: true,
+              },
+            ],
+            timestamp: new Date().toISOString(),
+          },
         ],
-        timestamp: new Date().toISOString()
-      }]
-    });
+      });
 
-    res.json({ success: true, message: "تم رفض الطلب وإرجاع النقاط" });
-  } catch (err) {
-    console.error("[POST /api/admin/gift-shop/purchases/:id/decline] Error:", err);
-    res.status(500).json({ success: false, message: "حدث خطأ" });
-  }
-});
-
-app.post("/api/admin/gift-shop/purchases/:id/received", requireAuth, requireSpecialRole("gift-approver"), async (req, res) => {
-  try {
-    const purchase = await GiftPurchase.findById(req.params.id);
-    if (!purchase) return res.status(404).json({ success: false, message: "الطلب غير موجود" });
-
-    if (purchase.status !== "accepted") {
-      return res.status(400).json({ success: false, message: "يجب قبول الطلب أولاً" });
+      res.json({ success: true, message: "تمت إضافة الهدية بنجاح", item });
+    } catch (err) {
+      console.error("[POST /api/admin/gift-shop/items] Error:", err);
+      res.status(500).json({ success: false, message: "حدث خطأ" });
     }
+  },
+);
 
-    purchase.receivedConfirmed = true;
-    purchase.receivedConfirmedBy = req.session.username;
-    purchase.receivedConfirmedAt = new Date();
-    await purchase.save();
-
-    res.json({ success: true, message: "تم تأكيد استلام الهدية" });
-  } catch (err) {
-    console.error("[POST /api/admin/gift-shop/purchases/:id/received] Error:", err);
-    res.status(500).json({ success: false, message: "حدث خطأ" });
-  }
-});
-
-app.get("/api/admin/gift-shop/items", requireAuth, requireSpecialRole("form-editor"), async (req, res) => {
-  try {
-    const limitRaw = req.query.limit;
-    const skipRaw = req.query.skip;
-    const limit = Math.max(0, Math.min(50, Number.parseInt(String(limitRaw ?? ""), 10) || 0));
-    const skip = Math.max(0, Number.parseInt(String(skipRaw ?? ""), 10) || 0);
-
-    const [items, total] = await Promise.all([
-      GiftShopItem.find({})
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit || 0)
-        .lean(),
-      GiftShopItem.countDocuments({}),
-    ]);
-
-    res.json({ items, total });
-  } catch (err) {
-    res.status(500).json({ items: [], total: 0 });
-  }
-});
-
-app.post("/api/admin/gift-shop/items", requireAuth, requireSpecialRole("form-editor"), async (req, res) => {
-  try {
-    const { name, description, cost, stock, purchaseLimit, image, active } = req.body;
-    if (!name || cost === undefined) {
-      return res.status(400).json({ success: false, message: "الاسم والسعر مطلوبان" });
-    }
-
-    const item = new GiftShopItem({
-      name,
-      description,
-      cost: Number(cost),
-      stock: stock === undefined ? -1 : Number(stock),
-      purchaseLimit: purchaseLimit === undefined ? -1 : Number(purchaseLimit),
-      image,
-      active: active !== false,
-      createdAt: new Date()
-    });
-
-    await item.save();
-
-    await sendWebhook("ADMIN", {
-      content: `🎁 **New Gift Item Added**`,
-      embeds: [{
-        title: "New Gift Item",
-        color: 0x1abc9c,
-        fields: [
-          { name: "Admin", value: req.session.username, inline: true },
-          { name: "Name", value: item.name, inline: true },
-          { name: "Cost", value: `${item.cost} points`, inline: true },
-          { name: "Stock", value: item.stock === -1 ? "Unlimited" : item.stock.toString(), inline: true }
-        ],
-        timestamp: new Date().toISOString()
-      }]
-    });
-
-    res.json({ success: true, message: "تمت إضافة الهدية بنجاح", item });
-  } catch (err) {
-    console.error("[POST /api/admin/gift-shop/items] Error:", err);
-    res.status(500).json({ success: false, message: "حدث خطأ" });
-  }
-});
-
-// --- Password Reset Routes ---
-
-// GET /reset-password/:token - Serve the password reset page
 app.get("/reset-password/:token", (req, res) => {
   res.sendFile(path.join(__dirname, "views/reset-password.html"));
 });
 
-// POST /api/reset-password/verify - Verify reset link with a code
 app.post("/api/reset-password/verify", async (req, res) => {
   try {
     const { token, code } = req.body || {};
@@ -5197,8 +5819,10 @@ app.post("/api/reset-password/verify", async (req, res) => {
       });
     }
 
-    // Local user
-    const localVerified = await userRegistrationsStore.verifyResetLink(token, cleanCode);
+    const localVerified = await userRegistrationsStore.verifyResetLink(
+      token,
+      cleanCode,
+    );
     if (localVerified && localVerified.success) {
       return res.json({
         success: true,
@@ -5207,8 +5831,8 @@ app.post("/api/reset-password/verify", async (req, res) => {
       });
     }
 
-    // MongoDB user
-    const UserRegistration = mongoose.models.UserRegistration || mongoose.model('UserRegistration');
+    const UserRegistration =
+      mongoose.models.UserRegistration || mongoose.model("UserRegistration");
     const user = await UserRegistration.findOne({
       passwordResetLinks: {
         $elemMatch: {
@@ -5229,7 +5853,8 @@ app.post("/api/reset-password/verify", async (req, res) => {
     const now = new Date();
     let matched = false;
     const links = (user.passwordResetLinks || []).map((l) => {
-      const plain = typeof (l && l.toObject) === "function" ? l.toObject() : { ...l };
+      const plain =
+        typeof (l && l.toObject) === "function" ? l.toObject() : { ...l };
       if (plain.token !== token) return plain;
       if (plain.usedAt || plain.supersededAt) return plain;
       if (plain.expiresAt && new Date(plain.expiresAt) <= now) return plain;
@@ -5258,28 +5883,37 @@ app.post("/api/reset-password/verify", async (req, res) => {
   }
 });
 
-// POST /api/reset-password - Actually reset the password
 app.post("/api/reset-password", async (req, res) => {
   try {
     const { token, newPassword } = req.body;
 
     if (!token || !newPassword) {
-      return res.status(400).json({ success: false, message: "بيانات غير مكتملة" });
+      return res
+        .status(400)
+        .json({ success: false, message: "بيانات غير مكتملة" });
     }
 
-    // Validate password strength
     if (newPassword.length < 8) {
-      return res.status(400).json({ success: false, message: "كلمة المرور يجب أن تكون 8 أحرف على الأقل" });
+      return res
+        .status(400)
+        .json({
+          success: false,
+          message: "كلمة المرور يجب أن تكون 8 أحرف على الأقل",
+        });
     }
 
-    // Hash the new password
     const hashedPassword = await hashPassword(newPassword);
 
-    // Try local user first
     try {
-      const success = await userRegistrationsStore.setPasswordByResetToken(token, hashedPassword);
+      const success = await userRegistrationsStore.setPasswordByResetToken(
+        token,
+        hashedPassword,
+      );
       if (success) {
-        return res.json({ success: true, message: "تم تغيير كلمة المرور بنجاح" });
+        return res.json({
+          success: true,
+          message: "تم تغيير كلمة المرور بنجاح",
+        });
       }
     } catch (localErr) {
       if (
@@ -5293,11 +5927,10 @@ app.post("/api/reset-password", async (req, res) => {
             "يجب التحقق من الرابط أولاً. يرجى تحديث الصفحة وإدخال كود التحقق.",
         });
       }
-      // Token not found in local store, try MongoDB
     }
 
-    // Try MongoDB user
-    const UserRegistration = mongoose.models.UserRegistration || mongoose.model('UserRegistration');
+    const UserRegistration =
+      mongoose.models.UserRegistration || mongoose.model("UserRegistration");
     const user = await UserRegistration.findOne({
       passwordResetLinks: {
         $elemMatch: {
@@ -5310,21 +5943,24 @@ app.post("/api/reset-password", async (req, res) => {
     });
 
     if (!user) {
-      return res.status(400).json({ success: false, message: "الرابط غير صالح أو منتهي الصلاحية" });
+      return res
+        .status(400)
+        .json({ success: false, message: "الرابط غير صالح أو منتهي الصلاحية" });
     }
 
-    const activeLink = (user.passwordResetLinks || []).find((l) => l && l.token === token);
+    const activeLink = (user.passwordResetLinks || []).find(
+      (l) => l && l.token === token,
+    );
     if (!activeLink || !activeLink.verifiedAt) {
       return res.status(403).json({
         success: false,
-        message: "يجب التحقق من الرابط أولاً. يرجى تحديث الصفحة وإدخال كود التحقق.",
+        message:
+          "يجب التحقق من الرابط أولاً. يرجى تحديث الصفحة وإدخال كود التحقق.",
       });
     }
 
-    // Update password
     user.password = hashedPassword;
 
-    // Mark token as used
     for (let link of user.passwordResetLinks) {
       if (link.token === token && !link.usedAt) {
         link.usedAt = new Date();
@@ -5337,57 +5973,205 @@ app.post("/api/reset-password", async (req, res) => {
     return res.json({ success: true, message: "تم تغيير كلمة المرور بنجاح" });
   } catch (err) {
     console.error("[Password Reset Error]", err);
-    return res.status(500).json({ success: false, message: "حدث خطأ أثناء تغيير كلمة المرور" });
+    return res
+      .status(500)
+      .json({ success: false, message: "حدث خطأ أثناء تغيير كلمة المرور" });
   }
 });
 
+app.put(
+  "/api/admin/gift-shop/items/:id",
+  requireAuth,
+  requireSpecialRole("form-editor"),
+  async (req, res) => {
+    try {
+      const { name, description, cost, stock, purchaseLimit, image, active } =
+        req.body;
+      const item = await GiftShopItem.findById(req.params.id);
+      if (!item)
+        return res
+          .status(404)
+          .json({ success: false, message: "الهدية غير موجودة" });
 
-app.put("/api/admin/gift-shop/items/:id", requireAuth, requireSpecialRole("form-editor"), async (req, res) => {
-  try {
-    const { name, description, cost, stock, purchaseLimit, image, active } = req.body;
-    const item = await GiftShopItem.findById(req.params.id);
-    if (!item) return res.status(404).json({ success: false, message: "الهدية غير موجودة" });
+      const before = {
+        name: item.name,
+        description: item.description,
+        cost: item.cost,
+        stock: item.stock,
+        purchaseLimit: item.purchaseLimit,
+        image: item.image,
+        active: item.active,
+      };
 
-    if (name) item.name = name;
-    if (description !== undefined) item.description = description;
-    if (cost !== undefined) item.cost = Number(cost);
-    if (stock !== undefined) item.stock = Number(stock);
-    if (purchaseLimit !== undefined) item.purchaseLimit = Number(purchaseLimit);
-    if (image !== undefined) item.image = image;
-    if (active !== undefined) item.active = active;
+      if (name) item.name = name;
+      if (description !== undefined) item.description = description;
+      if (cost !== undefined) item.cost = Number(cost);
+      if (stock !== undefined) item.stock = Number(stock);
+      if (purchaseLimit !== undefined)
+        item.purchaseLimit = Number(purchaseLimit);
+      if (image !== undefined) item.image = image;
+      if (active !== undefined) item.active = active;
 
-    await item.save();
-    res.json({ success: true, message: "تم تحديث الهدية بنجاح", item });
-  } catch (err) {
-    console.error("[PUT /api/admin/gift-shop/items/:id] Error:", err);
-    res.status(500).json({ success: false, message: "حدث خطأ" });
-  }
-});
-
-app.delete("/api/admin/gift-shop/items/:id", requireAuth, requireSpecialRole("form-editor"), async (req, res) => {
-  try {
-    const item = await GiftShopItem.findById(req.params.id);
-    if (!item) return res.status(404).json({ success: false, message: "الهدية غير موجودة" });
-
-    // Check if there are any purchases for this item
-    const purchaseCount = await GiftPurchase.countDocuments({ itemId: item._id });
-    if (purchaseCount > 0) {
-      // Deactivate instead of delete if there are purchases
-      item.active = false;
       await item.save();
-      return res.json({
-        success: true,
-        message: "تم إلغاء تفعيل الهدية بدلاً من حذفها لوجود طلبات شراء مرتبطة بها"
-      });
-    }
 
-    await GiftShopItem.deleteOne({ _id: item._id });
-    res.json({ success: true, message: "تم حذف الهدية بنجاح" });
-  } catch (err) {
-    console.error("[DELETE /api/admin/gift-shop/items/:id] Error:", err);
-    res.status(500).json({ success: false, message: "حدث خطأ" });
-  }
-});
+      const after = {
+        name: item.name,
+        description: item.description,
+        cost: item.cost,
+        stock: item.stock,
+        purchaseLimit: item.purchaseLimit,
+        image: item.image,
+        active: item.active,
+      };
+
+      const changed = Object.keys(after)
+        .filter((key) => before[key] !== after[key])
+        .map((key) => {
+          const from =
+            before[key] === undefined || before[key] === null
+              ? "N/A"
+              : String(before[key]);
+          const to =
+            after[key] === undefined || after[key] === null
+              ? "N/A"
+              : String(after[key]);
+          return `- ${key}: ${from} → ${to}`;
+        });
+
+      if (changed.length) {
+        await sendWebhook("GIFT_EDIT", {
+          content: `✏️ **Gift Item Updated**`,
+          embeds: [
+            {
+              title: "Gift Updated",
+              color: 0x3498db,
+              fields: [
+                { name: "Admin", value: req.session.username, inline: true },
+                { name: "Gift", value: item.name, inline: true },
+                { name: "Gift ID", value: item._id.toString(), inline: false },
+                {
+                  name: "Changes",
+                  value: changed.join("\n").substring(0, 900),
+                  inline: false,
+                },
+              ],
+              timestamp: new Date().toISOString(),
+            },
+          ],
+        });
+      }
+
+      res.json({ success: true, message: "تم تحديث الهدية بنجاح", item });
+    } catch (err) {
+      console.error("[PUT /api/admin/gift-shop/items/:id] Error:", err);
+      res.status(500).json({ success: false, message: "حدث خطأ" });
+    }
+  },
+);
+
+app.delete(
+  "/api/admin/gift-shop/items/:id",
+  requireAuth,
+  requireSpecialRole("form-editor"),
+  async (req, res) => {
+    try {
+      const item = await GiftShopItem.findById(req.params.id);
+      if (!item)
+        return res
+          .status(404)
+          .json({ success: false, message: "الهدية غير موجودة" });
+
+      const purchaseCount = await GiftPurchase.countDocuments({
+        itemId: item._id,
+      });
+      if (purchaseCount > 0) {
+        item.active = false;
+        await item.save();
+
+        await sendWebhook("GIFT_TOGGLE", {
+          content: `⏸️ **Gift Deactivated (Had Purchases)**`,
+          embeds: [
+            {
+              title: "Gift Deactivated",
+              color: 0xf1c40f,
+              fields: [
+                { name: "Admin", value: req.session.username, inline: true },
+                { name: "Gift", value: item.name, inline: true },
+                { name: "Gift ID", value: item._id.toString(), inline: false },
+                {
+                  name: "Reason",
+                  value: "Has existing purchases",
+                  inline: false,
+                },
+              ],
+              timestamp: new Date().toISOString(),
+            },
+          ],
+        });
+
+        return res.json({
+          success: true,
+          message:
+            "تم إلغاء تفعيل الهدية بدلاً من حذفها لوجود طلبات شراء مرتبطة بها",
+        });
+      }
+
+      const deletedSnapshot = {
+        id: item._id.toString(),
+        name: item.name,
+        cost: item.cost,
+        stock: item.stock,
+        purchaseLimit: item.purchaseLimit,
+        active: item.active,
+        image: item.image,
+      };
+      await GiftShopItem.deleteOne({ _id: item._id });
+
+      await sendWebhook("GIFT_DELETE", {
+        content: `🗑️ **Gift Item Deleted**`,
+        embeds: [
+          {
+            title: "Gift Deleted",
+            color: 0xe74c3c,
+            fields: [
+              { name: "Admin", value: req.session.username, inline: true },
+              { name: "Gift", value: deletedSnapshot.name, inline: true },
+              { name: "Gift ID", value: deletedSnapshot.id, inline: false },
+              {
+                name: "Cost",
+                value: String(deletedSnapshot.cost),
+                inline: true,
+              },
+              {
+                name: "Stock",
+                value: String(deletedSnapshot.stock),
+                inline: true,
+              },
+              {
+                name: "Purchase Limit",
+                value: String(deletedSnapshot.purchaseLimit),
+                inline: true,
+              },
+              {
+                name: "Image",
+                value: deletedSnapshot.image
+                  ? String(deletedSnapshot.image).substring(0, 1500)
+                  : "N/A",
+                inline: false,
+              },
+            ],
+            timestamp: new Date().toISOString(),
+          },
+        ],
+      });
+
+      res.json({ success: true, message: "تم حذف الهدية بنجاح" });
+    } catch (err) {
+      console.error("[DELETE /api/admin/gift-shop/items/:id] Error:", err);
+      res.status(500).json({ success: false, message: "حدث خطأ" });
+    }
+  },
+);
 
 app.get("/gift-shop", requireAuth, async (req, res) => {
   await sendWebhook("USER", {
@@ -5491,146 +6275,180 @@ app.get("/admin/live", requireAuth, async (req, res) => {
   res.sendFile(path.join(__dirname, "views", "admin-live.html"));
 });
 
-app.get("/api/admin/live/sessions", requireAuth, requireRole(["leadadmin"]), adminApiLimiter, async (req, res) => {
-  try {
-    const liveThresholdMs = 2 * 60 * 1000;
-    const since = new Date(Date.now() - liveThresholdMs);
-    const guestMaxAge = 30 * 60 * 1000;
-    const guestSince = new Date(Date.now() - guestMaxAge);
-    await GuestSession.deleteMany({ lastSeenAt: { $lt: guestSince } });
-    const allSessions = await ActiveSession.find({}).sort({ lastSeenAt: -1 }).lean();
-    const liveSessions = allSessions.filter((s) => new Date(s.lastSeenAt) >= since);
-    const guestsRaw = await GuestSession.find({ lastSeenAt: { $gte: guestSince } }).sort({ lastSeenAt: -1 }).lean();
+app.get(
+  "/api/admin/live/sessions",
+  requireAuth,
+  requireRole(["leadadmin"]),
+  adminApiLimiter,
+  async (req, res) => {
+    try {
+      const liveThresholdMs = 2 * 60 * 1000;
+      const since = new Date(Date.now() - liveThresholdMs);
+      const guestMaxAge = 30 * 60 * 1000;
+      const guestSince = new Date(Date.now() - guestMaxAge);
+      await GuestSession.deleteMany({ lastSeenAt: { $lt: guestSince } });
+      const allSessions = await ActiveSession.find({})
+        .sort({ lastSeenAt: -1 })
+        .lean();
+      const liveSessions = allSessions.filter(
+        (s) => new Date(s.lastSeenAt) >= since,
+      );
+      const guestsRaw = await GuestSession.find({
+        lastSeenAt: { $gte: guestSince },
+      })
+        .sort({ lastSeenAt: -1 })
+        .lean();
 
-    const usernames = Array.from(
-      new Set(
-        (allSessions || [])
-          .map((s) => (s.username || "").toLowerCase())
-          .filter(Boolean)
-      )
-    );
+      const usernames = Array.from(
+        new Set(
+          (allSessions || [])
+            .map((s) => (s.username || "").toLowerCase())
+            .filter(Boolean),
+        ),
+      );
 
-    let userDocsByUsername = {};
-    if (usernames.length > 0) {
-      const dbUsers = await UserRegistration.find(
-        { username: { $in: usernames } },
-        { username: 1 }
-      )
-        .lean()
-        .catch(() => []);
+      let userDocsByUsername = {};
+      if (usernames.length > 0) {
+        const dbUsers = await UserRegistration.find(
+          { username: { $in: usernames } },
+          { username: 1 },
+        )
+          .lean()
+          .catch(() => []);
 
-      if (Array.isArray(dbUsers)) {
-        for (const u of dbUsers) {
-          if (u && u.username) {
-            userDocsByUsername[u.username.toLowerCase()] = u;
+        if (Array.isArray(dbUsers)) {
+          for (const u of dbUsers) {
+            if (u && u.username) {
+              userDocsByUsername[u.username.toLowerCase()] = u;
+            }
           }
         }
       }
+
+      const liveFingerprints = new Set(
+        liveSessions.map((s) => {
+          const ip = s.ip || "";
+          const ua = s.userAgent || "";
+          return `${ip}|${ua}`;
+        }),
+      );
+
+      const guests = guestsRaw.filter((g) => {
+        const fp = `${g.ip || ""}|${g.userAgent || ""}`;
+        return !liveFingerprints.has(fp);
+      });
+
+      const guestLiveCount = guests.filter(
+        (g) => new Date(g.lastSeenAt) >= since,
+      ).length;
+      return res.json({
+        success: true,
+        count: allSessions.length,
+        liveCount: liveSessions.length,
+        guestCount: guests.length,
+        guestLiveCount,
+        sessions: allSessions.map((s) => {
+          const normalized = (s.username || "").toLowerCase();
+          const dbUser = normalized ? userDocsByUsername[normalized] : null;
+          const userId = dbUser?._id ? String(dbUser._id) : null;
+          return {
+            username: s.username,
+            userId,
+            userIdShort: userId ? userId.substring(0, 8) + "..." : "",
+            sessionId: s.sessionId ? s.sessionId.substring(0, 12) + "..." : "",
+            lastSeenAt: s.lastSeenAt,
+            loginTime: s.loginTime,
+            ip: s.ip || "",
+            userAgent: (s.userAgent || "").substring(0, 60),
+            currentPath: s.currentPath || "",
+            currentMethod: s.currentMethod || "",
+            isLive: new Date(s.lastSeenAt) >= since,
+          };
+        }),
+        guests: guests.map((g) => ({
+          guestId: g.guestId ? g.guestId.substring(0, 12) + "..." : "",
+          ip: g.ip || "",
+          userAgent: (g.userAgent || "").substring(0, 60),
+          currentPath: g.currentPath || "",
+          currentMethod: g.currentMethod || "",
+          lastSeenAt: g.lastSeenAt,
+          isLive: new Date(g.lastSeenAt) >= since,
+        })),
+      });
+    } catch (err) {
+      console.error("[live/sessions]", err);
+      return res
+        .status(500)
+        .json({ success: false, message: err.message || "حدث خطأ" });
     }
+  },
+);
 
-    const liveFingerprints = new Set(
-      liveSessions.map((s) => {
-        const ip = s.ip || "";
-        const ua = s.userAgent || "";
-        return `${ip}|${ua}`;
-      })
-    );
-
-    const guests = guestsRaw.filter((g) => {
-      const fp = `${g.ip || ""}|${g.userAgent || ""}`;
-      return !liveFingerprints.has(fp);
-    });
-
-    const guestLiveCount = guests.filter((g) => new Date(g.lastSeenAt) >= since).length;
-    return res.json({
-      success: true,
-      count: allSessions.length,
-      liveCount: liveSessions.length,
-      guestCount: guests.length,
-      guestLiveCount,
-      sessions: allSessions.map((s) => {
-        const normalized = (s.username || "").toLowerCase();
-        const dbUser = normalized ? userDocsByUsername[normalized] : null;
-        const userId = dbUser?._id ? String(dbUser._id) : null;
-        return {
-          username: s.username,
-          userId,
-          userIdShort: userId ? userId.substring(0, 8) + "..." : "",
-          sessionId: s.sessionId ? s.sessionId.substring(0, 12) + "..." : "",
-          lastSeenAt: s.lastSeenAt,
-          loginTime: s.loginTime,
-          ip: s.ip || "",
-          userAgent: (s.userAgent || "").substring(0, 60),
-          currentPath: s.currentPath || "",
-          currentMethod: s.currentMethod || "",
-          isLive: new Date(s.lastSeenAt) >= since,
-        };
-      }),
-      guests: guests.map((g) => ({
-        guestId: g.guestId ? g.guestId.substring(0, 12) + "..." : "",
-        ip: g.ip || "",
-        userAgent: (g.userAgent || "").substring(0, 60),
-        currentPath: g.currentPath || "",
-        currentMethod: g.currentMethod || "",
-        lastSeenAt: g.lastSeenAt,
-        isLive: new Date(g.lastSeenAt) >= since,
-      })),
-    });
-  } catch (err) {
-    console.error("[live/sessions]", err);
-    return res.status(500).json({ success: false, message: err.message || "حدث خطأ" });
-  }
-});
-
-app.post("/api/admin/live/clear-sessions", requireAuth, requireRole(["leadadmin"]), adminApiLimiter, async (req, res) => {
-  try {
-    const sessionStore = req.sessionStore;
-    const allSessions = await ActiveSession.find({});
-    let destroyed = 0;
-    if (sessionStore && typeof sessionStore.destroy === "function") {
-      for (const s of allSessions) {
-        try {
-          await new Promise((resolve) => {
-            sessionStore.destroy(s.sessionId, (err) => {
-              if (!err) destroyed++;
-              resolve();
+app.post(
+  "/api/admin/live/clear-sessions",
+  requireAuth,
+  requireRole(["leadadmin"]),
+  adminApiLimiter,
+  async (req, res) => {
+    try {
+      const sessionStore = req.sessionStore;
+      const allSessions = await ActiveSession.find({});
+      let destroyed = 0;
+      if (sessionStore && typeof sessionStore.destroy === "function") {
+        for (const s of allSessions) {
+          try {
+            await new Promise((resolve) => {
+              sessionStore.destroy(s.sessionId, (err) => {
+                if (!err) destroyed++;
+                resolve();
+              });
             });
-          });
-        } catch (_) { }
+          } catch (_) {}
+        }
       }
+      await ActiveSession.deleteMany({});
+      await sendWebhook("ADMIN", {
+        embeds: [
+          {
+            title: "🔄 All Sessions Cleared (Lead Admin)",
+            color: 0xf39c12,
+            fields: [
+              { name: "By", value: req.session.username },
+              { name: "Sessions in DB", value: allSessions.length.toString() },
+              { name: "Destroyed from store", value: destroyed.toString() },
+              { name: "IP", value: req.ip || "unknown" },
+            ],
+            timestamp: new Date().toISOString(),
+          },
+        ],
+      });
+      return res.json({ success: true, destroyed, total: allSessions.length });
+    } catch (err) {
+      console.error("[live/clear-sessions]", err);
+      return res
+        .status(500)
+        .json({ success: false, message: err.message || "حدث خطأ" });
     }
-    await ActiveSession.deleteMany({});
-    await sendWebhook("ADMIN", {
-      embeds: [
-        {
-          title: "🔄 All Sessions Cleared (Lead Admin)",
-          color: 0xf39c12,
-          fields: [
-            { name: "By", value: req.session.username },
-            { name: "Sessions in DB", value: allSessions.length.toString() },
-            { name: "Destroyed from store", value: destroyed.toString() },
-            { name: "IP", value: req.ip || "unknown" },
-          ],
-          timestamp: new Date().toISOString(),
-        },
-      ],
-    });
-    return res.json({ success: true, destroyed, total: allSessions.length });
-  } catch (err) {
-    console.error("[live/clear-sessions]", err);
-    return res.status(500).json({ success: false, message: err.message || "حدث خطأ" });
-  }
-});
+  },
+);
 
-app.post("/api/admin/live/clear-guests", requireAuth, requireRole(["leadadmin"]), adminApiLimiter, async (req, res) => {
-  try {
-    const result = await GuestSession.deleteMany({});
-    return res.json({ success: true, deleted: result.deletedCount });
-  } catch (err) {
-    console.error("[live/clear-guests]", err);
-    return res.status(500).json({ success: false, message: err.message || "حدث خطأ" });
-  }
-});
+app.post(
+  "/api/admin/live/clear-guests",
+  requireAuth,
+  requireRole(["leadadmin"]),
+  adminApiLimiter,
+  async (req, res) => {
+    try {
+      const result = await GuestSession.deleteMany({});
+      return res.json({ success: true, deleted: result.deletedCount });
+    } catch (err) {
+      console.error("[live/clear-guests]", err);
+      return res
+        .status(500)
+        .json({ success: false, message: err.message || "حدث خطأ" });
+    }
+  },
+);
 
 app.get("/admin/leaderboard", requireAuth, async (req, res) => {
   const user = getSessionUser(req);
@@ -5699,7 +6517,7 @@ app.get(
       ],
     });
     res.sendFile(path.join(__dirname, "views", "leaderboard.ejs"));
-  }
+  },
 );
 
 app.get("/admin/suggestion/ektma3at", requireAuth, async (req, res) => {
@@ -5780,7 +6598,6 @@ app.get(
     const sessionUsername = req.session.username;
     const userRole = req.session.role;
 
-
     try {
       const { grade, search, limit: limitParam, skip: skipParam } = req.query;
       const limit = Math.min(50, Math.max(1, parseInt(limitParam, 10) || 4));
@@ -5811,10 +6628,10 @@ app.get(
       const allFromDb = await getAllUsers(query);
       const bannedList = await BannedUser.find().lean();
       const bannedUsernames = new Set(
-        (bannedList || []).map((b) => (b.username || "").toLowerCase())
+        (bannedList || []).map((b) => (b.username || "").toLowerCase()),
       );
       let allUsers = allFromDb.filter(
-        (u) => !bannedUsernames.has((u.username || "").toLowerCase())
+        (u) => !bannedUsernames.has((u.username || "").toLowerCase()),
       );
 
       const q = (search || "").toString().trim().toLowerCase();
@@ -5898,7 +6715,7 @@ app.get(
             lastLoginAt: reg.lastLoginAt || null,
             _isLocal: reg._isLocal || false,
           };
-        })
+        }),
       );
 
       await sendWebhook("ADMIN", {
@@ -5935,8 +6752,16 @@ app.get(
             title: "❌ Fetch Users Error",
             color: 0xe74c3c,
             fields: [
-              { name: "Admin", value: sessionUsername || "unknown", inline: true },
-              { name: "Error Type", value: error.name || "Unknown", inline: true },
+              {
+                name: "Admin",
+                value: sessionUsername || "unknown",
+                inline: true,
+              },
+              {
+                name: "Error Type",
+                value: error.name || "Unknown",
+                inline: true,
+              },
               { name: "IP", value: req.ip || "unknown", inline: true },
               {
                 name: "Error Message",
@@ -5948,10 +6773,13 @@ app.get(
           },
         ],
       });
-      console.error(`[SECURITY] Error in /api/admin/users for ${sessionUsername}:`, error);
+      console.error(
+        `[SECURITY] Error in /api/admin/users for ${sessionUsername}:`,
+        error,
+      );
       res.status(500).json({ error: "Internal server error" });
     }
-  }
+  },
 );
 
 app.get(
@@ -5960,20 +6788,32 @@ app.get(
   requireRole(["admin", "leadadmin"]),
   async (req, res) => {
     try {
-      const days = Math.min(90, Math.max(1, parseInt(req.query.days, 10) || 30));
+      const days = Math.min(
+        90,
+        Math.max(1, parseInt(req.query.days, 10) || 30),
+      );
       const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
       const mongoUsers = await UserRegistration.find({}).lean();
       const localUsers = await localUserStore.readAll().catch(() => []);
-      const localList = Array.isArray(localUsers) ? localUsers : (localUsers.users || []);
-      const sessions = await ActiveSession.find({ lastSeenAt: { $gte: since } }).lean();
+      const localList = Array.isArray(localUsers)
+        ? localUsers
+        : localUsers.users || [];
+      const sessions = await ActiveSession.find({
+        lastSeenAt: { $gte: since },
+      }).lean();
       const sessionByUser = {};
       sessions.forEach((s) => {
         const u = (s.username || "").toLowerCase();
-        if (!sessionByUser[u] || new Date(s.lastSeenAt) > new Date(sessionByUser[u].lastSeenAt)) {
+        if (
+          !sessionByUser[u] ||
+          new Date(s.lastSeenAt) > new Date(sessionByUser[u].lastSeenAt)
+        ) {
           sessionByUser[u] = { lastSeenAt: s.lastSeenAt };
         }
       });
-      const purchases = await GiftPurchase.find({ createdAt: { $gte: since } }).lean();
+      const purchases = await GiftPurchase.find({
+        createdAt: { $gte: since },
+      }).lean();
       const purchasesByUser = {};
       purchases.forEach((p) => {
         const u = (p.username || "").toLowerCase();
@@ -6022,9 +6862,11 @@ app.get(
       return res.json({ success: true, logs, days });
     } catch (err) {
       console.error("[user-logs]", err);
-      return res.status(500).json({ success: false, message: err.message || "حدث خطأ" });
+      return res
+        .status(500)
+        .json({ success: false, message: err.message || "حدث خطأ" });
     }
-  }
+  },
 );
 
 app.post(
@@ -6037,16 +6879,25 @@ app.post(
       const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
       const mongoUsers = await UserRegistration.find({}).lean();
       const localUsers = await localUserStore.readAll().catch(() => []);
-      const localList = Array.isArray(localUsers) ? localUsers : (localUsers.users || []);
-      const sessions = await ActiveSession.find({ lastSeenAt: { $gte: since } }).lean();
+      const localList = Array.isArray(localUsers)
+        ? localUsers
+        : localUsers.users || [];
+      const sessions = await ActiveSession.find({
+        lastSeenAt: { $gte: since },
+      }).lean();
       const sessionByUser = {};
       sessions.forEach((s) => {
         const u = (s.username || "").toLowerCase();
-        if (!sessionByUser[u] || new Date(s.lastSeenAt) > new Date(sessionByUser[u].lastSeenAt)) {
+        if (
+          !sessionByUser[u] ||
+          new Date(s.lastSeenAt) > new Date(sessionByUser[u].lastSeenAt)
+        ) {
           sessionByUser[u] = { lastSeenAt: s.lastSeenAt };
         }
       });
-      const purchases = await GiftPurchase.find({ createdAt: { $gte: since } }).lean();
+      const purchases = await GiftPurchase.find({
+        createdAt: { $gte: since },
+      }).lean();
       const purchasesByUser = {};
       purchases.forEach((p) => {
         const u = (p.username || "").toLowerCase();
@@ -6059,23 +6910,36 @@ app.post(
         if (seen.has(username)) return;
         seen.add(username);
         const sess = sessionByUser[username];
-        const lastSeen = sess ? new Date(sess.lastSeenAt).toLocaleString("ar-EG") : "—";
-        const lastLogin = u.lastLoginAt ? new Date(u.lastLoginAt).toLocaleString("ar-EG") : "—";
+        const lastSeen = sess
+          ? new Date(sess.lastSeenAt).toLocaleString("ar-EG")
+          : "—";
+        const lastLogin = u.lastLoginAt
+          ? new Date(u.lastLoginAt).toLocaleString("ar-EG")
+          : "—";
         const count = purchasesByUser[username] || 0;
-        lines.push(`**${u.username}** | ${u.role || "—"} | ${u.grade || "—"} | آخر دخول: ${lastLogin} | آخر نشاط: ${lastSeen} | مشتريات: ${count}`);
+        lines.push(
+          `**${u.username}** | ${u.role || "—"} | ${u.grade || "—"} | آخر دخول: ${lastLogin} | آخر نشاط: ${lastSeen} | مشتريات: ${count}`,
+        );
       });
       localList.forEach((u) => {
         const username = (u.username || "").toLowerCase();
         if (seen.has(username)) return;
         seen.add(username);
         const sess = sessionByUser[username];
-        const lastSeen = sess ? new Date(sess.lastSeenAt).toLocaleString("ar-EG") : "—";
-        const lastLogin = u.lastLoginAt ? new Date(u.lastLoginAt).toLocaleString("ar-EG") : "—";
+        const lastSeen = sess
+          ? new Date(sess.lastSeenAt).toLocaleString("ar-EG")
+          : "—";
+        const lastLogin = u.lastLoginAt
+          ? new Date(u.lastLoginAt).toLocaleString("ar-EG")
+          : "—";
         const count = purchasesByUser[username] || 0;
-        lines.push(`**${u.username}** (محلي) | ${u.role || "—"} | ${u.grade || "—"} | آخر دخول: ${lastLogin} | آخر نشاط: ${lastSeen} | مشتريات: ${count}`);
+        lines.push(
+          `**${u.username}** (محلي) | ${u.role || "—"} | ${u.grade || "—"} | آخر دخول: ${lastLogin} | آخر نشاط: ${lastSeen} | مشتريات: ${count}`,
+        );
       });
       const text = lines.slice(0, 40).join("\n");
-      const more = lines.length > 40 ? `\n... و ${lines.length - 40} مستخدم آخر` : "";
+      const more =
+        lines.length > 40 ? `\n... و ${lines.length - 40} مستخدم آخر` : "";
       await sendWebhook("ADMIN", {
         embeds: [
           {
@@ -6086,12 +6950,17 @@ app.post(
           },
         ],
       });
-      return res.json({ success: true, message: "تم إرسال السجلات إلى Discord" });
+      return res.json({
+        success: true,
+        message: "تم إرسال السجلات إلى Discord",
+      });
     } catch (err) {
       console.error("[user-logs send-discord]", err);
-      return res.status(500).json({ success: false, message: err.message || "حدث خطأ" });
+      return res
+        .status(500)
+        .json({ success: false, message: err.message || "حدث خطأ" });
     }
-  }
+  },
 );
 
 app.get(
@@ -6199,7 +7068,7 @@ app.get(
       });
       res.status(500).json({ message: "تعذر تحميل بيانات المستخدم" });
     }
-  }
+  },
 );
 
 app.post(
@@ -6278,7 +7147,7 @@ app.post(
 
       await userPoints.save();
 
-      await sendWebhook("ADMIN", {
+      await sendWebhook("USERMGMT_POINTS_ADD", {
         content: `🎁 **Points Given to User**`,
         embeds: [
           {
@@ -6350,7 +7219,7 @@ app.post(
       });
       res.status(500).json({ success: false, message: "تعذر إضافة النقاط" });
     }
-  }
+  },
 );
 
 app.post(
@@ -6429,7 +7298,7 @@ app.post(
 
       await userPoints.save();
 
-      await sendWebhook("ADMIN", {
+      await sendWebhook("USERMGMT_POINTS_REMOVE", {
         content: `⚠️ **Points Removed from User**`,
         embeds: [
           {
@@ -6501,7 +7370,7 @@ app.post(
       });
       res.status(500).json({ success: false, message: "تعذر خصم النقاط" });
     }
-  }
+  },
 );
 
 app.put(
@@ -6555,7 +7424,10 @@ app.put(
           .json({ success: false, message: "المستخدم غير موجود" });
       }
 
-      if (registration.username.toLowerCase() === req.session.username.toLowerCase()) {
+      if (
+        registration.username.toLowerCase() ===
+        req.session.username.toLowerCase()
+      ) {
         await sendWebhook("SECURITY", {
           embeds: [
             {
@@ -6564,7 +7436,11 @@ app.put(
               fields: [
                 { name: "Admin", value: req.session.username, inline: true },
                 { name: "User ID", value: req.params.id, inline: true },
-                { name: "Username", value: registration.username, inline: true },
+                {
+                  name: "Username",
+                  value: registration.username,
+                  inline: true,
+                },
                 {
                   name: "Action",
                   value: "Update User (Self-Edit Blocked)",
@@ -6596,7 +7472,11 @@ app.put(
               fields: [
                 { name: "Admin", value: req.session.username, inline: true },
                 { name: "User ID", value: req.params.id, inline: true },
-                { name: "Username", value: registration.username, inline: true },
+                {
+                  name: "Username",
+                  value: registration.username,
+                  inline: true,
+                },
                 {
                   name: "Action",
                   value: "Update User (Blocked)",
@@ -6653,8 +7533,8 @@ app.put(
               : String(previous),
           after:
             normalizedNext === "" ||
-              normalizedNext === undefined ||
-              normalizedNext === null
+            normalizedNext === undefined ||
+            normalizedNext === null
               ? "N/A"
               : String(normalizedNext),
         });
@@ -6707,13 +7587,11 @@ app.put(
           /[A-Z]/.test(password) &&
           /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
         ) {
-          const oldPasswordHash =
-            mongoRegistration.password.substring(0, 20) + "...";
           mongoRegistration.password = await hashPassword(password);
           changeLog.push({
             field: "password",
-            before: oldPasswordHash,
-            after: mongoRegistration.password.substring(0, 20) + "...",
+            before: "[redacted]",
+            after: "[redacted]",
           });
         } else {
           await sendWebhook("ADMIN", {
@@ -6723,7 +7601,11 @@ app.put(
                 color: 0xe74c3c,
                 fields: [
                   { name: "Admin", value: req.session.username, inline: true },
-                  { name: "User", value: mongoRegistration.username, inline: true },
+                  {
+                    name: "User",
+                    value: mongoRegistration.username,
+                    inline: true,
+                  },
                   {
                     name: "Password Length",
                     value: password.length.toString(),
@@ -6747,7 +7629,8 @@ app.put(
           });
           return res.status(400).json({
             success: false,
-            message: "كلمة المرور: 8 أحرف على الأقل، حرف كبير واحد، رمز واحد (!@#$%...)",
+            message:
+              "كلمة المرور: 8 أحرف على الأقل، حرف كبير واحد، رمز واحد (!@#$%...)",
           });
         }
       }
@@ -6759,7 +7642,11 @@ app.put(
               color: 0x95a5a6,
               fields: [
                 { name: "Admin", value: req.session.username, inline: true },
-                { name: "User", value: mongoRegistration.username, inline: true },
+                {
+                  name: "User",
+                  value: mongoRegistration.username,
+                  inline: true,
+                },
                 { name: "Reason", value: "No changes detected", inline: true },
               ],
               timestamp: new Date().toISOString(),
@@ -6774,7 +7661,7 @@ app.put(
         value: `${change.before} → ${change.after}`,
         inline: false,
       }));
-      await sendWebhook("ADMIN", {
+      await sendWebhook("USERMGMT_EDIT", {
         content: `✏️ **User Updated**`,
         embeds: [
           {
@@ -6828,7 +7715,7 @@ app.put(
       });
       res.status(500).json({ success: false, message: "تعذر تحديث المستخدم" });
     }
-  }
+  },
 );
 
 app.delete(
@@ -6874,7 +7761,10 @@ app.delete(
           .json({ success: false, message: "المستخدم غير موجود" });
       }
 
-      if (registration.username.toLowerCase() === req.session.username.toLowerCase()) {
+      if (
+        registration.username.toLowerCase() ===
+        req.session.username.toLowerCase()
+      ) {
         await sendWebhook("SECURITY", {
           embeds: [
             {
@@ -6883,7 +7773,11 @@ app.delete(
               fields: [
                 { name: "Admin", value: req.session.username, inline: true },
                 { name: "User ID", value: req.params.id, inline: true },
-                { name: "Username", value: registration.username, inline: true },
+                {
+                  name: "Username",
+                  value: registration.username,
+                  inline: true,
+                },
                 {
                   name: "Action",
                   value: "Delete User (Self-Delete Blocked)",
@@ -6915,7 +7809,11 @@ app.delete(
               fields: [
                 { name: "Admin", value: req.session.username, inline: true },
                 { name: "User ID", value: req.params.id, inline: true },
-                { name: "Username", value: registration.username, inline: true },
+                {
+                  name: "Username",
+                  value: registration.username,
+                  inline: true,
+                },
                 {
                   name: "Action",
                   value: "Delete User (Blocked)",
@@ -7063,7 +7961,7 @@ app.delete(
       });
       res.status(500).json({ success: false, message: "تعذر حذف المستخدم" });
     }
-  }
+  },
 );
 
 const resetPasswordLimiter = rateLimit({
@@ -7071,14 +7969,19 @@ const resetPasswordLimiter = rateLimit({
   max: 10,
   standardHeaders: true,
   legacyHeaders: false,
-  message: { success: false, message: "Too many reset attempts. Try again later." },
+  message: {
+    success: false,
+    message: "Too many reset attempts. Try again later.",
+  },
 });
 
 app.post("/api/reset-password", resetPasswordLimiter, async (req, res) => {
   try {
     const { token, newPassword } = req.body || {};
     if (!token || !newPassword || typeof newPassword !== "string") {
-      return res.status(400).json({ success: false, message: "رابط غير صالح أو كلمة مرور مفقودة" });
+      return res
+        .status(400)
+        .json({ success: false, message: "رابط غير صالح أو كلمة مرور مفقودة" });
     }
     if (newPassword.length < 8) {
       return res.status(400).json({
@@ -7113,14 +8016,19 @@ app.post("/api/reset-password", resetPasswordLimiter, async (req, res) => {
       }
     }
     if (!user) {
-      return res.status(400).json({ success: false, message: "الرابط غير صالح أو منتهي الصلاحية" });
+      return res
+        .status(400)
+        .json({ success: false, message: "الرابط غير صالح أو منتهي الصلاحية" });
     }
     const hashedPassword = await hashPassword(newPassword);
     if (isLocal) {
       await localUserStore.setPasswordByResetToken(token, hashedPassword);
     } else {
       const doc = await UserRegistration.findById(user._id);
-      const toPlain = (link) => (typeof (link && link.toObject) === "function" ? link.toObject() : { ...link });
+      const toPlain = (link) =>
+        typeof (link && link.toObject) === "function"
+          ? link.toObject()
+          : { ...link };
       const links = (doc.passwordResetLinks || []).map((link) => {
         const plain = toPlain(link);
         if (plain.token === token) {
@@ -7139,10 +8047,22 @@ app.post("/api/reset-password", resetPasswordLimiter, async (req, res) => {
           color: 0x27ae60,
           fields: [
             { name: "Username", value: user.username, inline: true },
-            { name: "Name", value: `${user.firstName || ""} ${user.secondName || ""}`, inline: true },
-            { name: "Source", value: isLocal ? "Local" : "MongoDB", inline: true },
+            {
+              name: "Name",
+              value: `${user.firstName || ""} ${user.secondName || ""}`,
+              inline: true,
+            },
+            {
+              name: "Source",
+              value: isLocal ? "Local" : "MongoDB",
+              inline: true,
+            },
             { name: "IP", value: req.ip || "unknown", inline: true },
-            { name: "Time", value: moment().tz("Africa/Cairo").format("YYYY-MM-DD HH:mm:ss"), inline: true },
+            {
+              name: "Time",
+              value: moment().tz("Africa/Cairo").format("YYYY-MM-DD HH:mm:ss"),
+              inline: true,
+            },
           ],
           timestamp: new Date().toISOString(),
         },
@@ -7151,7 +8071,9 @@ app.post("/api/reset-password", resetPasswordLimiter, async (req, res) => {
     return res.json({ success: true, message: "تم تغيير كلمة المرور بنجاح" });
   } catch (err) {
     console.error("[reset-password]", err);
-    return res.status(500).json({ success: false, message: err.message || "حدث خطأ" });
+    return res
+      .status(500)
+      .json({ success: false, message: err.message || "حدث خطأ" });
   }
 });
 
@@ -7162,7 +8084,8 @@ app.get(
   async (req, res) => {
     try {
       const userId = req.params.id;
-      const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get("host")}`;
+      const baseUrl =
+        process.env.BASE_URL || `${req.protocol}://${req.get("host")}`;
       let links = [];
       const localUser = await localUserStore.findById(userId);
       if (localUser) {
@@ -7185,14 +8108,20 @@ app.get(
       const linkList = links.map((l) => ({
         ...l,
         url: `${baseUrl}/reset-password/${l.token}`,
-        active: !l.usedAt && !l.supersededAt && l.expiresAt && new Date(l.expiresAt) > new Date(),
+        active:
+          !l.usedAt &&
+          !l.supersededAt &&
+          l.expiresAt &&
+          new Date(l.expiresAt) > new Date(),
       }));
       return res.json({ success: true, links: linkList });
     } catch (err) {
       console.error("[password-reset-links]", err);
-      return res.status(500).json({ success: false, message: err.message || "حدث خطأ" });
+      return res
+        .status(500)
+        .json({ success: false, message: err.message || "حدث خطأ" });
     }
-  }
+  },
 );
 
 app.post(
@@ -7203,7 +8132,8 @@ app.post(
     try {
       const userId = req.params.id;
       const adminUsername = (req.session && req.session.username) || "";
-      const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get("host")}`;
+      const baseUrl =
+        process.env.BASE_URL || `${req.protocol}://${req.get("host")}`;
       const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
       let linkUrl = null;
       let createdBy = adminUsername;
@@ -7214,19 +8144,25 @@ app.post(
       if (localUser) {
         isLocal = true;
         targetUsername = localUser.username;
-        const result = await localUserStore.createPasswordResetLink(userId, adminUsername);
+        const result = await localUserStore.createPasswordResetLink(
+          userId,
+          adminUsername,
+        );
         linkUrl = `${baseUrl}/reset-password/${result.token}`;
         verificationCode = result.verificationCode;
       } else {
         const mongoUser = await UserRegistration.findById(userId);
         if (!mongoUser) {
-          return res.status(404).json({ success: false, message: "المستخدم غير موجود" });
+          return res
+            .status(404)
+            .json({ success: false, message: "المستخدم غير موجود" });
         }
         targetUsername = mongoUser.username;
         const token = crypto.randomBytes(24).toString("hex");
         verificationCode = String(Math.floor(100000 + Math.random() * 900000));
         const links = (mongoUser.passwordResetLinks || []).map((l) => {
-          const prev = typeof (l && l.toObject) === "function" ? l.toObject() : { ...l };
+          const prev =
+            typeof (l && l.toObject) === "function" ? l.toObject() : { ...l };
           return { ...prev, supersededAt: prev.supersededAt || new Date() };
         });
         links.push({
@@ -7241,7 +8177,7 @@ app.post(
         });
         await UserRegistration.updateOne(
           { _id: userId },
-          { $set: { passwordResetLinks: links } }
+          { $set: { passwordResetLinks: links } },
         );
         linkUrl = `${baseUrl}/reset-password/${token}`;
       }
@@ -7254,8 +8190,16 @@ app.post(
               { name: "Admin", value: adminUsername, inline: true },
               { name: "Target User", value: targetUsername, inline: true },
               { name: "Expires", value: expiresAt.toISOString(), inline: true },
-              { name: "Link", value: linkUrl ? `\`${linkUrl}\`` : "N/A", inline: false },
-              { name: "Source", value: isLocal ? "Local" : "MongoDB", inline: true },
+              {
+                name: "Link",
+                value: linkUrl ? `\`${linkUrl}\`` : "N/A",
+                inline: false,
+              },
+              {
+                name: "Source",
+                value: isLocal ? "Local" : "MongoDB",
+                inline: true,
+              },
               { name: "IP", value: req.ip || "unknown", inline: true },
             ],
             timestamp: new Date().toISOString(),
@@ -7267,13 +8211,16 @@ app.post(
         link: linkUrl,
         verificationCode,
         expiresAt: isLocal ? expiresAt.toISOString() : expiresAt.toISOString(),
-        message: "تم إنشاء رابط تغيير كلمة المرور (صالح 7 أيام). الرابط السابق لم يعد صالحاً.",
+        message:
+          "تم إنشاء رابط تغيير كلمة المرور (صالح 7 أيام). الرابط السابق لم يعد صالحاً.",
       });
     } catch (err) {
       console.error("[password-reset-link]", err);
-      return res.status(500).json({ success: false, message: err.message || "حدث خطأ" });
+      return res
+        .status(500)
+        .json({ success: false, message: err.message || "حدث خطأ" });
     }
-  }
+  },
 );
 
 app.post(
@@ -7318,7 +8265,7 @@ app.post(
                 if (err) {
                   console.error(
                     `[SESSION DESTROY ERROR] ${session.sessionId}:`,
-                    err.message
+                    err.message,
                   );
                   reject(err);
                 } else {
@@ -7330,7 +8277,7 @@ app.post(
           } catch (sessionError) {
             console.error(
               `[SESSION DESTROY ERROR] ${session.sessionId}:`,
-              sessionError.message
+              sessionError.message,
             );
           }
         }
@@ -7344,7 +8291,7 @@ app.post(
       for (const form of forms) {
       }
 
-      await sendWebhook("ADMIN", {
+      await sendWebhook("USERMGMT_LOGOUT_ALL", {
         content: `🚪 **Logged Out All User Sessions**`,
         embeds: [
           {
@@ -7421,7 +8368,7 @@ app.post(
         .status(500)
         .json({ success: false, message: "تعذر تسجيل الخروج من جميع الجلسات" });
     }
-  }
+  },
 );
 
 app.get(
@@ -7502,7 +8449,7 @@ app.get(
       });
       res.status(500).json({ error: "تعذر تحميل بيانات صلاحيات لوحة الصدارة" });
     }
-  }
+  },
 );
 
 app.post(
@@ -7727,7 +8674,7 @@ app.post(
         .status(500)
         .json({ success: false, message: "تعذر تحديث صلاحيات لوحة الصدارة" });
     }
-  }
+  },
 );
 
 app.get("/api/user-info", async (req, res) => {
@@ -7983,7 +8930,7 @@ app.post(
       });
       res.status(500).json({ error: "Failed to create announcement" });
     }
-  }
+  },
 );
 
 app.delete(
@@ -8086,7 +9033,7 @@ app.delete(
       });
       res.status(500).json({ error: "Failed to delete announcement" });
     }
-  }
+  },
 );
 
 app.get("/api/page-content/:page", async (req, res) => {
@@ -8323,9 +9270,8 @@ app.put(
       });
       res.status(500).json({ error: "Failed to update page content" });
     }
-  }
+  },
 );
-
 
 GRADE_SLUGS.forEach((slug) => {
   app.get(`/${slug}`, requireAuth, async (req, res) => {
@@ -8534,7 +9480,7 @@ app.get(
         grade: req.session.grade || null,
       },
     });
-  }
+  },
 );
 
 app.post(
@@ -8676,7 +9622,7 @@ app.post(
             {
               name: "Time Since Last",
               value: `${Math.floor(
-                (new Date() - recent.createdAt) / (1000 * 60 * 60 * 24)
+                (new Date() - recent.createdAt) / (1000 * 60 * 60 * 24),
               )} days`,
               inline: true,
             },
@@ -8786,7 +9732,7 @@ app.post(
         suggestionPayload,
         {
           awaitResponse: true,
-        }
+        },
       );
       if (!suggestionLogged) {
         await sendWebhook("USER", suggestionPayload);
@@ -8817,7 +9763,7 @@ app.post(
         .status(500)
         .json({ success: false, message: "تعذر حفظ الاقتراح" });
     }
-  }
+  },
 );
 
 app.get(
@@ -8922,7 +9868,7 @@ app.get(
         .status(500)
         .json({ success: false, message: "تعذر تحميل الاقتراحات" });
     }
-  }
+  },
 );
 
 app.post("/api/nady", spamBlocker, async (req, res) => {
@@ -9360,16 +10306,20 @@ app.post("/api/ektmaa", spamBlocker, async (req, res) => {
   };
 
   try {
-    const delivered = await sendWebhook("SUGGESTION", {
-      ...embed,
-      embeds: (embed.embeds || []).map((e) => ({
-        ...e,
-        fields: [
-          { name: "Category", value: "ektmaa", inline: true },
-          ...(e.fields || []),
-        ],
-      })),
-    }, { awaitResponse: true });
+    const delivered = await sendWebhook(
+      "SUGGESTION",
+      {
+        ...embed,
+        embeds: (embed.embeds || []).map((e) => ({
+          ...e,
+          fields: [
+            { name: "Category", value: "ektmaa", inline: true },
+            ...(e.fields || []),
+          ],
+        })),
+      },
+      { awaitResponse: true },
+    );
     if (delivered) {
       await sendWebhook("USER", {
         embeds: [
@@ -9497,8 +10447,12 @@ app.get("/api/forms/active", async (req, res) => {
       ],
     };
 
-    const candidateForms = await Form.find(query).sort({ updatedAt: -1 }).limit(50);
-    const forms = candidateForms.filter((form) => canUserAccessForm(user, form));
+    const candidateForms = await Form.find(query)
+      .sort({ updatedAt: -1 })
+      .limit(50);
+    const forms = candidateForms.filter((form) =>
+      canUserAccessForm(user, form),
+    );
 
     await sendWebhook("USER", {
       embeds: [
@@ -9543,8 +10497,12 @@ app.get("/api/forms/active", async (req, res) => {
         updatedAt: form.updatedAt,
         allowRetake: form.allowRetake,
         targetGrade: form.targetGrade,
-        allowedGrades: Array.isArray(form.allowedGrades) ? form.allowedGrades : (form.targetGrade === "all" ? [] : [form.targetGrade]),
-      }))
+        allowedGrades: Array.isArray(form.allowedGrades)
+          ? form.allowedGrades
+          : form.targetGrade === "all"
+            ? []
+            : [form.targetGrade],
+      })),
     );
   } catch (error) {
     await sendWebhook("ERROR", {
@@ -9732,7 +10690,7 @@ app.get("/api/forms/active/:gradeSlug", requireAuth, async (req, res) => {
         allowRetake: form.allowRetake,
         targetGrade: form.targetGrade,
         status: "active",
-      }))
+      })),
     );
   } catch (error) {
     await sendWebhook("ERROR", {
@@ -9886,7 +10844,7 @@ app.get("/api/grades/:gradeSlug/forms", requireAuth, async (req, res) => {
         updatedAt: form.updatedAt,
         allowRetake: form.allowRetake,
         targetGrade: form.targetGrade,
-      }))
+      })),
     );
   } catch (error) {
     await sendWebhook("ERROR", {
@@ -10012,7 +10970,7 @@ app.get(
       });
       res.status(500).json({ message: "تعذر تحميل النماذج" });
     }
-  }
+  },
 );
 
 app.post(
@@ -10142,7 +11100,7 @@ app.post(
       const gradeLabel =
         GRADE_LABELS[newForm.targetGrade]?.long || newForm.targetGrade;
 
-      await sendWebhook("FORM", {
+      await sendWebhook("ADMIN_FORMS_CREATE", {
         content: `📝 **New Form Created**`,
         embeds: [
           {
@@ -10171,14 +11129,15 @@ app.post(
                 name: "Total Points",
                 value: `${newForm.questions.reduce(
                   (sum, q) => sum + (q.points || 10),
-                  0
+                  0,
                 )}`,
                 inline: true,
               },
               {
                 name: "Form Link",
-                value: `${req.protocol}://${req.get("host")}/form/${newForm.link
-                  }`,
+                value: `${req.protocol}://${req.get("host")}/form/${
+                  newForm.link
+                }`,
                 inline: false,
               },
               {
@@ -10238,7 +11197,7 @@ app.post(
         message: error.message || "تعذر إنشاء النموذج",
       });
     }
-  }
+  },
 );
 
 app.get(
@@ -10339,7 +11298,7 @@ app.get(
       });
       res.status(500).json({ message: "تعذر تحميل النموذج" });
     }
-  }
+  },
 );
 
 app.put(
@@ -10457,7 +11416,7 @@ app.put(
       const wasExpired = form.expiry && new Date(form.expiry) < new Date();
       const isNowActive = expiryDate && new Date(expiryDate) > new Date();
       if (wasExpired && isNowActive) {
-        await sendWebhook("FORM", {
+        await sendWebhook("ADMIN_FORMS_EDIT", {
           content: `🔄 **Form Reactivated**`,
           embeds: [
             {
@@ -10488,7 +11447,7 @@ app.put(
       }
 
       const updateUser = getSessionUser(req);
-      await sendWebhook("FORM", {
+      await sendWebhook("ADMIN_FORMS_EDIT", {
         content: `✏️ **Form Updated**`,
         embeds: [
           {
@@ -10552,7 +11511,7 @@ app.put(
         message: error.message || "تعذر تحديث النموذج",
       });
     }
-  }
+  },
 );
 
 app.post(
@@ -10563,10 +11522,13 @@ app.post(
     try {
       const form = await Form.findOne({ link: req.params.link });
       if (!form) {
-        return res.status(404).json({ success: false, message: "النموذج غير موجود" });
+        return res
+          .status(404)
+          .json({ success: false, message: "النموذج غير موجود" });
       }
 
-      const rawUsername = req.body && req.body.username ? String(req.body.username) : "";
+      const rawUsername =
+        req.body && req.body.username ? String(req.body.username) : "";
       const username = rawUsername.trim().toLowerCase();
       if (!username) {
         return res
@@ -10578,14 +11540,16 @@ app.post(
         ? form.submissions.length
         : 0;
       form.submissions = (form.submissions || []).filter((s) => {
-        const sUser = s && s.username ? String(s.username).trim().toLowerCase() : "";
+        const sUser =
+          s && s.username ? String(s.username).trim().toLowerCase() : "";
         return sUser !== username;
       });
-      const removedCount = beforeCount - (form.submissions ? form.submissions.length : 0);
+      const removedCount =
+        beforeCount - (form.submissions ? form.submissions.length : 0);
 
       await form.save();
 
-      await sendWebhook("FORM", {
+      await sendWebhook("ADMIN_FORMS_RETAKE", {
         content: `🔁 **Form Retake Reset (User)**`,
         embeds: [
           {
@@ -10641,7 +11605,7 @@ app.post(
         .status(500)
         .json({ success: false, message: "تعذر إعادة تعيين المستخدم" });
     }
-  }
+  },
 );
 
 app.delete(
@@ -10693,7 +11657,7 @@ app.delete(
       await Form.deleteOne({ _id: form._id });
 
       const deleteUser = getSessionUser(req);
-      await sendWebhook("FORM", {
+      await sendWebhook("ADMIN_FORMS_DELETE", {
         content: `🗑️ **Form Deleted**`,
         embeds: [
           {
@@ -10761,7 +11725,7 @@ app.delete(
       });
       res.status(500).json({ success: false, message: "تعذر حذف النموذج" });
     }
-  }
+  },
 );
 
 app.post(
@@ -10819,7 +11783,7 @@ app.post(
       await form.save();
 
       const deactivateUser = getSessionUser(req);
-      await sendWebhook("FORM", {
+      await sendWebhook("ADMIN_FORMS_TOGGLE", {
         content: `⏸️ **Form Deactivated**`,
         embeds: [
           {
@@ -10883,7 +11847,7 @@ app.post(
       });
       res.status(500).json({ success: false, message: "تعذر تعطيل النموذج" });
     }
-  }
+  },
 );
 
 app.get(
@@ -10958,7 +11922,7 @@ app.get(
       });
       res.status(500).json({ message: "تعذر تحميل القائمة" });
     }
-  }
+  },
 );
 
 app.post(
@@ -10999,9 +11963,17 @@ app.post(
       });
       const isUpdate = !!existingBan;
 
-      const isPermanent = duration === "permanent" || (duration !== "temporary" && days == null);
-      const numDays = duration === "temporary" && days != null ? Math.max(1, parseInt(days, 10) || 1) : null;
-      const expiresAt = isPermanent ? null : (numDays ? new Date(Date.now() + numDays * 24 * 60 * 60 * 1000) : null);
+      const isPermanent =
+        duration === "permanent" || (duration !== "temporary" && days == null);
+      const numDays =
+        duration === "temporary" && days != null
+          ? Math.max(1, parseInt(days, 10) || 1)
+          : null;
+      const expiresAt = isPermanent
+        ? null
+        : numDays
+          ? new Date(Date.now() + numDays * 24 * 60 * 60 * 1000)
+          : null;
 
       await sendWebhook("ADMIN", {
         embeds: [
@@ -11040,10 +12012,10 @@ app.post(
           createdBy: req.session.username,
           createdAt: new Date(),
         },
-        { new: true, upsert: true, setDefaultsOnInsert: true }
+        { new: true, upsert: true, setDefaultsOnInsert: true },
       );
 
-      await sendWebhook("SECURITY", {
+      await sendWebhook("USERMGMT_BAN", {
         content: isUpdate ? `🔄 **User Ban Updated**` : `🚫 **User Banned**`,
         embeds: [
           {
@@ -11105,7 +12077,7 @@ app.post(
       });
       res.status(400).json({ success: false, message: "تعذر حفظ قرار الحظر" });
     }
-  }
+  },
 );
 
 app.delete(
@@ -11175,7 +12147,7 @@ app.delete(
           .json({ message: "المستخدم غير موجود في قائمة الحظر" });
       }
       await BannedUser.deleteOne({ _id: banRecord._id });
-      await sendWebhook("SECURITY", {
+      await sendWebhook("USERMGMT_BAN", {
         content: `✅ **User Unbanned**`,
         embeds: [
           {
@@ -11212,7 +12184,7 @@ app.delete(
               {
                 name: "Ban Duration",
                 value: `${Math.floor(
-                  (new Date() - banRecord.createdAt) / (1000 * 60 * 60 * 24)
+                  (new Date() - banRecord.createdAt) / (1000 * 60 * 60 * 24),
                 )} days`,
                 inline: true,
               },
@@ -11248,7 +12220,7 @@ app.delete(
         .status(500)
         .json({ success: false, message: "تعذر إزالة المستخدم من الحظر" });
     }
-  }
+  },
 );
 
 app.get("/form/:link", requireAuth, async (req, res) => {
@@ -11685,7 +12657,7 @@ app.post("/form/:link", requireAuth, submissionLimiter, async (req, res) => {
     }
 
     const banRecord = await getBanRecord(
-      req.session.username || (sessionUser && sessionUser.originalUsername)
+      req.session.username || (sessionUser && sessionUser.originalUsername),
     );
     if (
       banRecord &&
@@ -11760,7 +12732,7 @@ app.post("/form/:link", requireAuth, submissionLimiter, async (req, res) => {
     if (!form.allowRetake) {
       const existingSubmission = form.submissions.find(
         (submission) =>
-          submission.deviceId === deviceId || submission.ip === userIp
+          submission.deviceId === deviceId || submission.ip === userIp,
       );
 
       if (existingSubmission) {
@@ -11828,7 +12800,7 @@ app.post("/form/:link", requireAuth, submissionLimiter, async (req, res) => {
 
       const normalizedCorrectAnswer = formatAnswerValue(
         correctAnswerRaw,
-        ""
+        "",
       ).trim();
       const correctAnswer = normalizedCorrectAnswer || "غير محدد";
       const questionPoints =
@@ -11852,7 +12824,7 @@ app.post("/form/:link", requireAuth, submissionLimiter, async (req, res) => {
     const score = answerDetails.filter((detail) => detail.isCorrect).length;
     const pointsEarned = answerDetails.reduce(
       (total, detail) => total + detail.pointsAwarded,
-      0
+      0,
     );
 
     const submissionUsername =
@@ -11969,8 +12941,9 @@ app.post("/form/:link", requireAuth, submissionLimiter, async (req, res) => {
     const parser = new UAParser();
     const userAgent = req.headers["user-agent"];
     const deviceInfo = parser.setUA(userAgent).getResult();
-    const device = `${deviceInfo.os.name || "Unknown OS"} (${deviceInfo.browser.name || "Unknown Browser"
-      })`;
+    const device = `${deviceInfo.os.name || "Unknown OS"} (${
+      deviceInfo.browser.name || "Unknown Browser"
+    })`;
 
     const submissionTime = moment()
       .tz("Africa/Cairo")
@@ -11988,14 +12961,16 @@ app.post("/form/:link", requireAuth, submissionLimiter, async (req, res) => {
       fields: [
         {
           name: "👤 User Information",
-          value: `**Username:** ${req.session.username
-            }\n**Grade:** ${gradeLabel}\n**Role:** ${userRole.toUpperCase()}`,
+          value: `**Username:** ${
+            req.session.username
+          }\n**Grade:** ${gradeLabel}\n**Role:** ${userRole.toUpperCase()}`,
           inline: true,
         },
         {
           name: "📋 Form Information",
-          value: `**Topic:** ${form.topic}\n**Target Grade:** ${GRADE_LABELS[form.targetGrade]?.long || form.targetGrade
-            }\n**Questions:** ${totalQuestions}`,
+          value: `**Topic:** ${form.topic}\n**Target Grade:** ${
+            GRADE_LABELS[form.targetGrade]?.long || form.targetGrade
+          }\n**Questions:** ${totalQuestions}`,
           inline: true,
         },
         {
@@ -12007,7 +12982,7 @@ app.post("/form/:link", requireAuth, submissionLimiter, async (req, res) => {
           name: "🕐 Submission Details",
           value: `**Time:** ${submissionTime}\n**Device:** ${device}\n**IP:** ${userIp}\n**Device ID:** ${deviceId.substring(
             0,
-            20
+            20,
           )}...`,
           inline: false,
         },
@@ -12017,8 +12992,9 @@ app.post("/form/:link", requireAuth, submissionLimiter, async (req, res) => {
             form.submissions.length - 1
           ]._id
             .toString()
-            .substring(0, 10)}...\n**Allow Retake:** ${form.allowRetake ? "✅ Yes" : "❌ No"
-            }\n**Total Submissions:** ${form.submissions.length}`,
+            .substring(0, 10)}...\n**Allow Retake:** ${
+            form.allowRetake ? "✅ Yes" : "❌ No"
+          }\n**Total Submissions:** ${form.submissions.length}`,
           inline: false,
         },
       ],
@@ -12032,7 +13008,7 @@ app.post("/form/:link", requireAuth, submissionLimiter, async (req, res) => {
     if (remainingFieldSlots > 0 && answerDetails.length) {
       const detailsToInclude = Math.min(
         remainingFieldSlots,
-        answerDetails.length
+        answerDetails.length,
       );
       const detailFields = [];
 
@@ -12041,25 +13017,28 @@ app.post("/form/:link", requireAuth, submissionLimiter, async (req, res) => {
         detailFields.push({
           name: `س${detail.questionNumber}: ${truncateValue(
             detail.questionText || "سؤال بدون عنوان",
-            100
+            100,
           )}`,
-          value: `اختيار الطالب: ${detail.userAnswer}\nالإجابة الصحيحة: ${detail.correctAnswer
-            }\nالحالة: ${detail.isCorrect ? "✅ صحيح" : "❌ خطأ"
-            }\nالنقاط المكتسبة: ${detail.pointsAwarded}`,
+          value: `اختيار الطالب: ${detail.userAnswer}\nالإجابة الصحيحة: ${
+            detail.correctAnswer
+          }\nالحالة: ${
+            detail.isCorrect ? "✅ صحيح" : "❌ خطأ"
+          }\nالنقاط المكتسبة: ${detail.pointsAwarded}`,
           inline: false,
         });
       }
 
       if (answerDetails.length > detailsToInclude && detailFields.length) {
         const lastField = detailFields[detailFields.length - 1];
-        lastField.value += `\n\n... يوجد ${answerDetails.length - detailsToInclude
-          } سؤال إضافي لم يتم عرضها بسبب قيود ديسكورد.`;
+        lastField.value += `\n\n... يوجد ${
+          answerDetails.length - detailsToInclude
+        } سؤال إضافي لم يتم عرضها بسبب قيود ديسكورد.`;
       }
 
       formEmbed.fields.push(...detailFields);
     }
 
-    await sendWebhook("FORM", {
+    await sendWebhook("FORM_ANSWER", {
       content: `📝 **New Form Submission**`,
       embeds: [formEmbed],
     });
@@ -12166,7 +13145,9 @@ app.get("/form/:link/leaderboard", requireAuth, async (req, res) => {
       return res.status(403).redirect("/404.html");
     }
 
-    const sortedSubmissions = form.submissions.sort((a, b) => b.score - a.score);
+    const sortedSubmissions = form.submissions.sort(
+      (a, b) => b.score - a.score,
+    );
 
     const leaderboardBase = await Promise.all(
       sortedSubmissions.map(async (submission) => {
@@ -12188,7 +13169,7 @@ app.get("/form/:link/leaderboard", requireAuth, async (req, res) => {
           }),
           submissionDate: submission.submissionTime,
         };
-      })
+      }),
     );
 
     const leaderboard = leaderboardBase.map((entry, index, arr) => {
@@ -12312,7 +13293,7 @@ const server = app.listen(PORT, () => {
   console.log("\x1b[33m%s\x1b[0m", "│  🔗 MongoDB is connected              │");
   console.log(
     "\x1b[33m%s\x1b[0m",
-    `│  ⚓ Working on port: ${PORT}             │`
+    `│  ⚓ Working on port: ${PORT}             │`,
   );
   console.log("\x1b[33m%s\x1b[0m", "└───────────────────────────────────────┘");
 });

@@ -24,11 +24,9 @@ const sectionToggles = document.querySelectorAll(".section-toggle");
 const closeEditModal = document.getElementById("closeEditModal");
 const cancelEditModal = document.getElementById("cancelEditModal");
 const closeTakePointsModalBtn = document.getElementById(
-  "closeTakePointsModalBtn"
+  "closeTakePointsModalBtn",
 );
-const cancelTakePointsModal = document.getElementById(
-  "cancelTakePointsModal"
-);
+const cancelTakePointsModal = document.getElementById("cancelTakePointsModal");
 const closeBanModalBtn = document.getElementById("closeBanModal");
 const cancelBanModal = document.getElementById("cancelBanModal");
 const categoryDropdown = document.getElementById("categoryDropdown");
@@ -103,7 +101,7 @@ if (gradesToggle) {
           subIcon.classList.add("fa-chevron-down");
         }
         const sectionSub = document.querySelector(
-          `.section-submenu[data-section="${toggle.dataset.section}"]`
+          `.section-submenu[data-section="${toggle.dataset.section}"]`,
         );
         if (sectionSub) sectionSub.style.maxHeight = "0";
       });
@@ -130,7 +128,7 @@ sectionToggles.forEach((toggle) => {
     this.classList.toggle("active");
     const icon = this.querySelector(".toggle-icon");
     const sectionSub = document.querySelector(
-      `.section-submenu[data-section="${this.dataset.section}"]`
+      `.section-submenu[data-section="${this.dataset.section}"]`,
     );
     if (!sectionSub) return;
 
@@ -180,12 +178,16 @@ async function loadUserInfo() {
   try {
     const response = await fetch("/api/user-info", { credentials: "include" });
     if (response.status === 401) {
-      window.location.href = "/login?redirect=" + encodeURIComponent(window.location.pathname + window.location.search);
+      window.location.href =
+        "/login?redirect=" +
+        encodeURIComponent(window.location.pathname + window.location.search);
       return;
     }
     const data = await response.json().catch(() => ({}));
     if (!data.isAuthenticated) {
-      window.location.href = "/login?redirect=" + encodeURIComponent(window.location.pathname + window.location.search);
+      window.location.href =
+        "/login?redirect=" +
+        encodeURIComponent(window.location.pathname + window.location.search);
       return;
     }
     currentAdminUsername = data.username;
@@ -264,26 +266,37 @@ async function loadUsers(reset) {
   }
   try {
     const params = new URLSearchParams({ limit: INITIAL_PAGE_SIZE, skip: 0 });
-    if (currentCategory && currentCategory !== "all") params.set("grade", currentCategory);
+    if (currentCategory && currentCategory !== "all")
+      params.set("grade", currentCategory);
     if (currentSearch) params.set("search", currentSearch);
-    const response = await fetch("/api/admin/users?" + params.toString(), { credentials: "include" });
+    const response = await fetch("/api/admin/users?" + params.toString(), {
+      credentials: "include",
+    });
     if (response.status === 401) {
-      window.location.href = "/login?redirect=" + encodeURIComponent(window.location.pathname + window.location.search);
+      window.location.href =
+        "/login?redirect=" +
+        encodeURIComponent(window.location.pathname + window.location.search);
       return;
     }
     if (!response.ok) throw new Error("HTTP error! status: " + response.status);
     const data = await response.json().catch(() => ({}));
-    const activeUsers = data.users && Array.isArray(data.users) ? data.users : [];
+    const activeUsers =
+      data.users && Array.isArray(data.users) ? data.users : [];
     totalActiveUsers = data.total != null ? data.total : activeUsers.length;
-    serverCounts = data.counts && typeof data.counts === "object" ? data.counts : null;
+    serverCounts =
+      data.counts && typeof data.counts === "object" ? data.counts : null;
     allUsers = activeUsers;
 
-    const bannedResponse = await fetch("/api/banned-users", { credentials: "include" });
+    const bannedResponse = await fetch("/api/banned-users", {
+      credentials: "include",
+    });
     if (bannedResponse.status === 401) {
-      window.location.href = "/login?redirect=" + encodeURIComponent(window.location.pathname + window.location.search);
+      window.location.href =
+        "/login?redirect=" +
+        encodeURIComponent(window.location.pathname + window.location.search);
       return;
     }
-    const bannedUsers = await bannedResponse.json().catch(() => ([]));
+    const bannedUsers = await bannedResponse.json().catch(() => []);
     allBannedUsers = Array.isArray(bannedUsers) ? bannedUsers : [];
 
     const statsEl = document.getElementById("dashboard-stats");
@@ -350,19 +363,28 @@ async function loadMoreUsers() {
     </div>`;
   }
   try {
-    const params = new URLSearchParams({ limit: LOAD_MORE_SIZE, skip: allUsers.length });
-    if (currentCategory && currentCategory !== "all") params.set("grade", currentCategory);
+    const params = new URLSearchParams({
+      limit: LOAD_MORE_SIZE,
+      skip: allUsers.length,
+    });
+    if (currentCategory && currentCategory !== "all")
+      params.set("grade", currentCategory);
     if (currentSearch) params.set("search", currentSearch);
-    const response = await fetch("/api/admin/users?" + params.toString(), { credentials: "include" });
+    const response = await fetch("/api/admin/users?" + params.toString(), {
+      credentials: "include",
+    });
     if (response.status === 401) {
-      window.location.href = "/login?redirect=" + encodeURIComponent(window.location.pathname + window.location.search);
+      window.location.href =
+        "/login?redirect=" +
+        encodeURIComponent(window.location.pathname + window.location.search);
       return;
     }
     if (!response.ok) throw new Error("HTTP " + response.status);
     const data = await response.json().catch(() => ({}));
     const nextUsers = data.users && Array.isArray(data.users) ? data.users : [];
     if (data.total != null) totalActiveUsers = data.total;
-    if (data.counts && typeof data.counts === "object") serverCounts = data.counts;
+    if (data.counts && typeof data.counts === "object")
+      serverCounts = data.counts;
     if (nextUsers.length === 0) {
       loadingMore = false;
       if (sentinel) {
@@ -371,7 +393,9 @@ async function loadMoreUsers() {
       }
       return;
     }
-    const existingIds = new Set(allUsers.map((u) => (u && u._id ? String(u._id) : "")));
+    const existingIds = new Set(
+      allUsers.map((u) => (u && u._id ? String(u._id) : "")),
+    );
     const uniqueNext = nextUsers.filter((u) => {
       const id = u && u._id ? String(u._id) : "";
       if (!id) return true;
@@ -421,9 +445,10 @@ function maybeAppendScrollSentinel() {
     if (!usersListObserver) {
       usersListObserver = new IntersectionObserver(
         (entries) => {
-          if (entries && entries[0] && entries[0].isIntersecting) loadMoreUsers();
+          if (entries && entries[0] && entries[0].isIntersecting)
+            loadMoreUsers();
         },
-        { root: null, rootMargin: "400px", threshold: 0 }
+        { root: null, rootMargin: "400px", threshold: 0 },
       );
     }
     usersListObserver.observe(sentinel);
@@ -440,7 +465,8 @@ function bindUsersScrollFallback() {
     if (loadingMore) return;
     if (allUsers.length >= totalActiveUsers) return;
     const doc = document.documentElement;
-    const scrollBottom = (window.scrollY || doc.scrollTop || 0) + window.innerHeight;
+    const scrollBottom =
+      (window.scrollY || doc.scrollTop || 0) + window.innerHeight;
     const docHeight = doc.scrollHeight || 0;
     if (docHeight > 0 && scrollBottom >= docHeight - 800) {
       loadMoreUsers();
@@ -503,10 +529,14 @@ function displayUsersByCategory(category) {
 function getUsersCardsHtml(users) {
   return (users || [])
     .map((user) => {
-      const firstName = user && user.firstName != null ? String(user.firstName).trim() : "";
-      const secondName = user && user.secondName != null ? String(user.secondName).trim() : "";
-      const safeUsername = user && user.username != null ? String(user.username).trim() : "";
-      const fullNameSafe = `${firstName} ${secondName}`.trim() || safeUsername || "غير متوفر";
+      const firstName =
+        user && user.firstName != null ? String(user.firstName).trim() : "";
+      const secondName =
+        user && user.secondName != null ? String(user.secondName).trim() : "";
+      const safeUsername =
+        user && user.username != null ? String(user.username).trim() : "";
+      const fullNameSafe =
+        `${firstName} ${secondName}`.trim() || safeUsername || "غير متوفر";
 
       const gradeText =
         {
@@ -520,7 +550,8 @@ function getUsersCardsHtml(users) {
           admins: "مشرف",
         }[user.grade] || user.grade;
       const pointsVal = user.points != null ? user.points : 0;
-      const pointsDisplay = pointsVal < 0 ? `\u2212${Math.abs(pointsVal)}` : pointsVal;
+      const pointsDisplay =
+        pointsVal < 0 ? `\u2212${Math.abs(pointsVal)}` : pointsVal;
 
       const roleText =
         {
@@ -554,17 +585,20 @@ function getUsersCardsHtml(users) {
       return `
                 <div class="user-card ${user._isLocal === true ? "is-local-user" : ""}">
                     <div class="user-card-header">
-                        <div class="user-avatar-large ${userStatus === "banned" ? "banned-avatar" : ""
-        }">
+                        <div class="user-avatar-large ${
+                          userStatus === "banned" ? "banned-avatar" : ""
+                        }">
                             <i class="fas fa-user-circle"></i>
                         </div>
                         <div class="user-main-info">
                             <h3>${fullNameSafe}</h3>
                             <div class="user-badges">
-                                <span class="username-badge">@${safeUsername
-        }</span>
-                                <span class="role-badge ${user.role
-        }">${roleText}</span>
+                                <span class="username-badge">@${
+                                  safeUsername
+                                }</span>
+                                <span class="role-badge ${
+                                  user.role
+                                }">${roleText}</span>
                                 <span class="grade-badge">${gradeText}</span>
                                 ${statusBadge}
                                 ${verificationBadge}
@@ -584,10 +618,9 @@ function getUsersCardsHtml(users) {
                             <span class="detail-label">البريد الإلكتروني:</span>
                             <span class="detail-value-wrap">
                               <span class="detail-value">${user.email || "غير متوفر"}</span>
-                              <button class="copy-btn" type="button" title="نسخ البريد" onclick="copyText('${(user.email || "").replace(
-          /'/g,
-          "\\'"
-        )}')">
+                              <button class="copy-btn" type="button" title="نسخ البريد" onclick="copyText('${(
+                                user.email || ""
+                              ).replace(/'/g, "\\'")}')">
                                 <i class="fas fa-copy"></i>
                               </button>
                             </span>
@@ -596,10 +629,9 @@ function getUsersCardsHtml(users) {
                             <span class="detail-label">رقم الهاتف:</span>
                             <span class="detail-value-wrap">
                               <span class="detail-value">${user.phone || "غير متوفر"}</span>
-                              <button class="copy-btn" type="button" title="نسخ رقم الهاتف" onclick="copyText('${(user.phone || "").replace(
-          /'/g,
-          "\\'"
-        )}')">
+                              <button class="copy-btn" type="button" title="نسخ رقم الهاتف" onclick="copyText('${(
+                                user.phone || ""
+                              ).replace(/'/g, "\\'")}')">
                                 <i class="fas fa-copy"></i>
                               </button>
                             </span>
@@ -608,31 +640,33 @@ function getUsersCardsHtml(users) {
                             <span class="detail-label">تاريخ التسجيل:</span>
                             <span class="detail-value-wrap">
                               <span class="detail-value">${new Date(
-          user.createdAt
-        ).toLocaleDateString("ar-EG")}</span>
+                                user.createdAt,
+                              ).toLocaleDateString("ar-EG")}</span>
                             </span>
                         </div>
                         <div class="detail-row">
                             <span class="detail-label">آخر نشاط:</span>
                             <span class="detail-value-wrap">
-                              <span class="detail-value">${user.lastActivity
-          ? new Date(user.lastActivity).toLocaleString(
-            "ar-EG"
-          )
-          : "لم يتم تسجيل نشاط بعد"
-        }</span>
+                              <span class="detail-value">${
+                                user.lastActivity
+                                  ? new Date(user.lastActivity).toLocaleString(
+                                      "ar-EG",
+                                    )
+                                  : "لم يتم تسجيل نشاط بعد"
+                              }</span>
                             </span>
                         </div>
                         <div class="detail-row">
                             <span class="detail-label">حالة الحساب:</span>
                             <span class="detail-value-wrap">
                               <span class="detail-value">${getStatusDescription(
-          userStatus
-        )}</span>
+                                userStatus,
+                              )}</span>
                             </span>
                         </div>
-                        ${user._isLocal === true
-          ? `
+                        ${
+                          user._isLocal === true
+                            ? `
                         <div class="detail-row local-user-row">
                             <span class="detail-label">
                               <i class="fas fa-database"></i>
@@ -645,10 +679,11 @@ function getUsersCardsHtml(users) {
                             </span>
                         </div>
                         `
-          : ""
-        }
-                        ${user.verificationCodeVerified
-          ? `
+                            : ""
+                        }
+                        ${
+                          user.verificationCodeVerified
+                            ? `
                         <div class="detail-row verified-status-row" style="background: rgba(46, 204, 113, 0.1); border: 1px solid rgba(46, 204, 113, 0.3); border-radius: 8px;">
                             <span class="detail-label" style="color: #2ecc71; font-weight: 700;">حالة التحقق من الحساب:</span>
                             <span class="detail-value-wrap">
@@ -656,60 +691,68 @@ function getUsersCardsHtml(users) {
                             </span>
                         </div>
                         `
-          : user.verificationCode
-            ? `
+                            : user.verificationCode
+                              ? `
                         <div class="detail-row verified-status-row" style="background: rgba(255, 204, 0, 0.1); border: 1px solid rgba(255, 204, 0, 0.3); border-radius: 8px;">
                             <span class="detail-label" style="color: #ffcc00; font-weight: 700;">🔑 كود التحقق:</span>
                             <span class="detail-value-wrap">
-                              <span class="detail-value" style="color: #ffcc00; font-weight: 700; font-size: 16px; font-family: monospace;">${user.verificationCode
-            }</span>
+                              <span class="detail-value" style="color: #ffcc00; font-weight: 700; font-size: 16px; font-family: monospace;">${
+                                user.verificationCode
+                              }</span>
                               <button class="copy-btn" type="button" title="نسخ كود التحقق" onclick="copyText('${user.verificationCode.replace(
-              /'/g,
-              "\\'"
-            )}')">
+                                /'/g,
+                                "\\'",
+                              )}')">
                                 <i class="fas fa-copy"></i>
                               </button>
                             </span>
                         </div>
                         `
-            : ""
-        }
+                              : ""
+                        }
                     </div>
                     
                     <div class="user-card-footer">
                     <div class="user-card-actions">
-                        <button class="action-btn points-btn" onclick="givePoints('${user._id
-        }', '${user.username}')">
+                        <button class="action-btn points-btn" onclick="givePoints('${
+                          user._id
+                        }', '${user.username}')">
                             <i class="fas fa-plus-circle"></i>
                             إضافة نقاط
                         </button>
-                        <button class="action-btn remove-points-btn" onclick="openTakePointsModal('${user._id
-        }', '${user.username}')">
+                        <button class="action-btn remove-points-btn" onclick="openTakePointsModal('${
+                          user._id
+                        }', '${user.username}')">
                             <i class="fas fa-minus-circle"></i>
                             خصم نقاط
                         </button>
-                        <button class="action-btn edit-btn" onclick="openEditUserModal('${user._id
-        }')">
+                        <button class="action-btn edit-btn" onclick="openEditUserModal('${
+                          user._id
+                        }')">
                             <i class="fas fa-edit"></i>
                             تعديل
                         </button>
-                        <button class="action-btn reset-link-btn" onclick="generatePasswordResetLink('${user._id
-        }', '${(user.username || "").replace(/'/g, "\\'")}')" title="إنشاء رابط تغيير كلمة المرور (7 أيام)">
+                        <button class="action-btn reset-link-btn" onclick="generatePasswordResetLink('${
+                          user._id
+                        }', '${(user.username || "").replace(/'/g, "\\'")}')" title="إنشاء رابط تغيير كلمة المرور (7 أيام)">
                             <i class="fas fa-key"></i>
                             رابط كلمة المرور
                         </button>
-                        <button class="action-btn reset-links-view-btn" onclick="showPasswordResetLinks('${user._id
-        }', '${(user.username || "").replace(/'/g, "\\'")}')" title="عرض الرابط الحالية والسابقة">
+                        <button class="action-btn reset-links-view-btn" onclick="showPasswordResetLinks('${
+                          user._id
+                        }', '${(user.username || "").replace(/'/g, "\\'")}')" title="عرض الرابط الحالية والسابقة">
                             <i class="fas fa-link"></i>
                             عرض الرابط
                         </button>
-                        <button class="action-btn ban-btn" onclick="openBanModal('${user._id
-        }', '${user.username}')">
+                        <button class="action-btn ban-btn" onclick="openBanModal('${
+                          user._id
+                        }', '${user.username}')">
                             <i class="fas fa-ban"></i>
                             حظر
                         </button>
-                        <button class="action-btn delete-btn" onclick="deleteUser('${user._id
-        }', '${user.username}')">
+                        <button class="action-btn delete-btn" onclick="deleteUser('${
+                          user._id
+                        }', '${user.username}')">
                             <i class="fas fa-trash"></i>
                             حذف
                         </button>
@@ -751,12 +794,9 @@ async function logoutAllDevices(userId, username) {
     });
 
     try {
-      const response = await fetch(
-        `/api/admin/users/${userId}/logout-all`,
-        {
-          method: "POST",
-        }
-      );
+      const response = await fetch(`/api/admin/users/${userId}/logout-all`, {
+        method: "POST",
+      });
 
       Swal.close();
 
@@ -811,11 +851,14 @@ async function generatePasswordResetLink(userId, username) {
     color: "#f2f4ff",
   });
   try {
-    const response = await fetch(`/api/admin/users/${userId}/password-reset-link`, { method: "POST" });
+    const response = await fetch(
+      `/api/admin/users/${userId}/password-reset-link`,
+      { method: "POST" },
+    );
     const data = await response.json().catch(() => ({}));
     Swal.close();
     if (response.ok && data.success && data.link) {
-      await navigator.clipboard.writeText(data.link).catch(() => { });
+      await navigator.clipboard.writeText(data.link).catch(() => {});
       const expiresText = data.expiresAt
         ? new Date(data.expiresAt).toLocaleString("ar-EG")
         : "7 أيام";
@@ -834,9 +877,11 @@ async function generatePasswordResetLink(userId, username) {
               <textarea readonly id="resetLinkTextarea" class="reset-created-simple-textarea">${data.link}</textarea>
             </div>
             <div class="reset-created-simple-note">لو محتاج كود التحقق، افتح <strong>عرض الرابط</strong> من لوحة المستخدم.</div>
-            ${data.message
-              ? `<div class="reset-created-simple-note">${String(data.message).replace(/</g, "&lt;")}</div>`
-              : ""}
+            ${
+              data.message
+                ? `<div class="reset-created-simple-note">${String(data.message).replace(/</g, "&lt;")}</div>`
+                : ""
+            }
           </div>
         `,
         icon: "success",
@@ -846,18 +891,20 @@ async function generatePasswordResetLink(userId, username) {
         background: "#2a1b3c",
         color: "#f2f4ff",
         didOpen: () => {
-          document.getElementById("copyResetLinkBtn")?.addEventListener("click", () => {
-            navigator.clipboard.writeText(data.link).then(() => {
-              Swal.fire({
-                title: "تم النسخ",
-                icon: "success",
-                timer: 1200,
-                showConfirmButton: false,
-                background: "#2a1b3c",
-                color: "#f2f4ff",
+          document
+            .getElementById("copyResetLinkBtn")
+            ?.addEventListener("click", () => {
+              navigator.clipboard.writeText(data.link).then(() => {
+                Swal.fire({
+                  title: "تم النسخ",
+                  icon: "success",
+                  timer: 1200,
+                  showConfirmButton: false,
+                  background: "#2a1b3c",
+                  color: "#f2f4ff",
+                });
               });
             });
-          });
         },
       });
     } else {
@@ -892,18 +939,21 @@ async function showPasswordResetLinks(userId, username) {
     color: "#f2f4ff",
   });
   try {
-    const response = await fetch(`/api/admin/users/${userId}/password-reset-links`);
+    const response = await fetch(
+      `/api/admin/users/${userId}/password-reset-links`,
+    );
     const data = await response.json().catch(() => ({}));
     Swal.close();
     if (!response.ok) throw new Error(data.message || "فشل تحميل الروابط");
-    const allLinks = (data.links || []);
+    const allLinks = data.links || [];
     const activeOnly = allLinks.filter((l) => l.active);
     const links = activeOnly.length > 0 ? activeOnly : allLinks;
     const formatDate = (d) => (d ? new Date(d).toLocaleString("ar-EG") : "—");
     const single = links && links.length ? links[0] : null;
-    const emptyMessage = activeOnly.length === 0 && allLinks.length > 0
-      ? "لا توجد روابط نشطة. جميع الروابط منتهية."
-      : "لا توجد روابط مسجّلة";
+    const emptyMessage =
+      activeOnly.length === 0 && allLinks.length > 0
+        ? "لا توجد روابط نشطة. جميع الروابط منتهية."
+        : "لا توجد روابط مسجّلة";
 
     const buildSingleHtml = () => {
       if (!single) {
@@ -920,7 +970,9 @@ async function showPasswordResetLinks(userId, username) {
 
       const statusText = single.active ? "نشط" : "منتهي";
       const verifiedText = single.verifiedAt ? "✅ تم" : "⏳ لم يتم";
-      const createdBy = (single.createdBy || "—").toString().replace(/</g, "&lt;");
+      const createdBy = (single.createdBy || "—")
+        .toString()
+        .replace(/</g, "&lt;");
 
       return `<div class="reset-links-single">
         <div class="rl-single-top">
@@ -943,8 +995,9 @@ async function showPasswordResetLinks(userId, username) {
           </div>
         </div>
 
-        ${codeSafe
-          ? `<div class="rl-single-code">
+        ${
+          codeSafe
+            ? `<div class="rl-single-code">
               <div class="rl-single-code-label">الكود</div>
               <div class="rl-single-code-box">
                 <code class="rl-single-code-value">${codeSafe}</code>
@@ -953,7 +1006,8 @@ async function showPasswordResetLinks(userId, username) {
                 </button>
               </div>
             </div>`
-          : ""}
+            : ""
+        }
 
         <div class="rl-single-footer" aria-hidden="true">
           <span>أنشئ: ${formatDate(single.createdAt)}</span>
@@ -994,13 +1048,13 @@ async function showPasswordResetLinks(userId, username) {
             try {
               ta.select();
               ta.setSelectionRange(0, ta.value.length);
-            } catch (_) { }
+            } catch (_) {}
           });
           ta.addEventListener("click", () => {
             try {
               ta.select();
               ta.setSelectionRange(0, ta.value.length);
-            } catch (_) { }
+            } catch (_) {}
           });
         });
       },
@@ -1056,91 +1110,97 @@ function closeEditUserModal() {
   editUserModal.classList.remove("active");
 }
 
-if (editUserForm) editUserForm.addEventListener("submit", async function (e) {
-  e.preventDefault();
-  const userId = document.getElementById("editUserId")?.value;
-  const firstName = document.getElementById("editFirstName")?.value;
-  const secondName = document.getElementById("editSecondName")?.value;
-  const email = document.getElementById("editEmail")?.value;
-  const phone = document.getElementById("editPhone")?.value;
-  const grade = document.getElementById("editGrade")?.value;
-  const password = document.getElementById("editPassword")?.value;
-  const editSubmitBtn = document.getElementById("editSubmitBtn");
-  const editBtnText = document.getElementById("editBtnText");
-  const editBtnLoading = document.getElementById("editBtnLoading");
+if (editUserForm)
+  editUserForm.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const userId = document.getElementById("editUserId")?.value;
+    const firstName = document.getElementById("editFirstName")?.value;
+    const secondName = document.getElementById("editSecondName")?.value;
+    const email = document.getElementById("editEmail")?.value;
+    const phone = document.getElementById("editPhone")?.value;
+    const grade = document.getElementById("editGrade")?.value;
+    const password = document.getElementById("editPassword")?.value;
+    const editSubmitBtn = document.getElementById("editSubmitBtn");
+    const editBtnText = document.getElementById("editBtnText");
+    const editBtnLoading = document.getElementById("editBtnLoading");
 
-  if (editSubmitBtn) editSubmitBtn.disabled = true;
-  if (editBtnText) editBtnText.style.display = "none";
-  if (editBtnLoading) editBtnLoading.style.display = "inline";
+    if (editSubmitBtn) editSubmitBtn.disabled = true;
+    if (editBtnText) editBtnText.style.display = "none";
+    if (editBtnLoading) editBtnLoading.style.display = "inline";
 
-  try {
-    const updateData = {
-      firstName,
-      secondName,
-      email,
-      phone,
-      grade,
-    };
-    if (password) {
-      if (password.length < 8) {
-        throw new Error("كلمة المرور يجب أن تكون 8 أحرف على الأقل");
+    try {
+      const updateData = {
+        firstName,
+        secondName,
+        email,
+        phone,
+        grade,
+      };
+      if (password) {
+        if (password.length < 8) {
+          throw new Error("كلمة المرور يجب أن تكون 8 أحرف على الأقل");
+        }
+        if (!/[A-Z]/.test(password)) {
+          throw new Error("كلمة المرور يجب أن تحتوي على حرف كبير واحد");
+        }
+        if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+          throw new Error("كلمة المرور يجب أن تحتوي على رمز واحد (!@#$%...)");
+        }
+        updateData.password = password;
       }
-      if (!/[A-Z]/.test(password)) {
-        throw new Error("كلمة المرور يجب أن تحتوي على حرف كبير واحد");
-      }
-      if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
-        throw new Error("كلمة المرور يجب أن تحتوي على رمز واحد (!@#$%...)");
-      }
-      updateData.password = password;
-    }
 
-    const response = await fetch(`/api/admin/users/${userId}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updateData),
-    });
-
-    if (response.ok) {
-      closeEditUserModal();
-      Swal.fire({
-        title: "تم بنجاح!",
-        text: "تم تحديث بيانات المستخدم بنجاح",
-        icon: "success",
-        confirmButtonText: "حسناً",
-        confirmButtonColor: "#ffcc00",
+      const response = await fetch(`/api/admin/users/${userId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updateData),
       });
-      loadUsers();
-    } else {
-      const errorData = await response.json().catch(() => ({}));
-      const errorMessage = errorData.message || "فشل تحديث بيانات المستخدم";
-      if (errorMessage.includes("contact carl") || errorMessage.includes("تواصل مع كارل")) {
+
+      if (response.ok) {
+        closeEditUserModal();
         Swal.fire({
-          title: "غير مسموح!",
-          text: "يرجى التواصل مع كارل لتعديل هذا المستخدم",
-          icon: "warning",
+          title: "تم بنجاح!",
+          text: "تم تحديث بيانات المستخدم بنجاح",
+          icon: "success",
           confirmButtonText: "حسناً",
           confirmButtonColor: "#ffcc00",
         });
+        loadUsers();
       } else {
-        throw new Error(errorMessage);
+        const errorData = await response.json().catch(() => ({}));
+        const errorMessage = errorData.message || "فشل تحديث بيانات المستخدم";
+        if (
+          errorMessage.includes("contact carl") ||
+          errorMessage.includes("تواصل مع كارل")
+        ) {
+          Swal.fire({
+            title: "غير مسموح!",
+            text: "يرجى التواصل مع كارل لتعديل هذا المستخدم",
+            icon: "warning",
+            confirmButtonText: "حسناً",
+            confirmButtonColor: "#ffcc00",
+          });
+        } else {
+          throw new Error(errorMessage);
+        }
       }
+    } catch (error) {
+      Swal.fire({
+        title: "خطأ!",
+        text: error.message || "تعذر تحديث بيانات المستخدم",
+        icon: "error",
+        confirmButtonText: "حسناً",
+      });
+    } finally {
+      if (editSubmitBtn) editSubmitBtn.disabled = false;
+      if (editBtnText) editBtnText.style.display = "inline";
+      if (editBtnLoading) editBtnLoading.style.display = "none";
     }
-  } catch (error) {
-    Swal.fire({
-      title: "خطأ!",
-      text: error.message || "تعذر تحديث بيانات المستخدم",
-      icon: "error",
-      confirmButtonText: "حسناً",
-    });
-  } finally {
-    if (editSubmitBtn) editSubmitBtn.disabled = false;
-    if (editBtnText) editBtnText.style.display = "inline";
-    if (editBtnLoading) editBtnLoading.style.display = "none";
-  }
-});
+  });
 
-if (closeEditModal) closeEditModal.addEventListener("click", closeEditUserModal);
-if (cancelEditModal) cancelEditModal.addEventListener("click", closeEditUserModal);
+if (closeEditModal)
+  closeEditModal.addEventListener("click", closeEditUserModal);
+if (cancelEditModal)
+  cancelEditModal.addEventListener("click", closeEditUserModal);
 
 function closeTakePointsModal() {
   if (takePointsModal && takePointsModal.classList.contains("active")) {
@@ -1171,14 +1231,11 @@ async function openTakePointsModal(userId, username) {
 
   if (formValues && formValues.amount) {
     try {
-      const response = await fetch(
-        `/api/admin/users/${userId}/remove-points`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formValues),
-        }
-      );
+      const response = await fetch(`/api/admin/users/${userId}/remove-points`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formValues),
+      });
       if (response.ok) {
         Swal.fire({
           title: "تم بنجاح!",
@@ -1243,101 +1300,107 @@ function closeBanModal() {
   }
 }
 
-if (banForm) banForm.addEventListener("submit", async function (e) {
-  e.preventDefault();
-  const userId = document.getElementById("banUserId")?.value;
-  const banType = document.getElementById("banType")?.value;
-  const reason = document.getElementById("banReason")?.value;
+if (banForm)
+  banForm.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const userId = document.getElementById("banUserId")?.value;
+    const banType = document.getElementById("banType")?.value;
+    const reason = document.getElementById("banReason")?.value;
 
-  const banSubmitBtn = document.getElementById("banSubmitBtn");
-  const banBtnText = document.getElementById("banBtnText");
-  const banBtnLoading = document.getElementById("banBtnLoading");
+    const banSubmitBtn = document.getElementById("banSubmitBtn");
+    const banBtnText = document.getElementById("banBtnText");
+    const banBtnLoading = document.getElementById("banBtnLoading");
 
-  if (!banType) {
-    Swal.fire({
-      title: "خطأ!",
-      text: "يرجى اختيار نوع الحظر",
-      icon: "error",
-      confirmButtonText: "حسناً",
-    });
-    return;
-  }
-  const duration = document.querySelector('input[name="banDuration"]:checked')?.value || "permanent";
-  const daysInput = document.getElementById("banDays");
-  const days = duration === "temporary" && daysInput ? daysInput.value : null;
-  if (duration === "temporary" && (!days || parseInt(days, 10) < 1)) {
-    Swal.fire({
-      title: "خطأ!",
-      text: "يرجى إدخال عدد الأيام (1 أو أكثر)",
-      icon: "error",
-      confirmButtonText: "حسناً",
-    });
-    return;
-  }
-
-  if (banSubmitBtn) banSubmitBtn.disabled = true;
-  if (banBtnText) banBtnText.style.display = "none";
-  if (banBtnLoading) banBtnLoading.style.display = "inline";
-
-  try {
-    const userResponse = await fetch(`/api/admin/users/${userId}`);
-
-    if (!userResponse.ok) {
-      if (userResponse.status === 403) {
-        throw new Error("ليس لديك صلاحية للوصول إلى بيانات هذا المستخدم");
-      } else if (userResponse.status === 404) {
-        throw new Error("المستخدم غير موجود");
-      } else {
-        throw new Error(`فشل تحميل بيانات المستخدم (${userResponse.status})`);
-      }
-    }
-
-    const user = await userResponse.json();
-
-    if (!user || !user.username) {
-      throw new Error("بيانات المستخدم غير صحيحة");
-    }
-
-    const response = await fetch(`/api/banned-users`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        username: user.username,
-        banType: banType,
-        reason: reason,
-        duration: duration,
-        days: duration === "temporary" && daysInput ? parseInt(daysInput.value, 10) : null,
-      }),
-    });
-
-    if (response.ok) {
-      closeBanModal();
+    if (!banType) {
       Swal.fire({
-        title: "تم بنجاح!",
-        text: "تم حظر المستخدم بنجاح",
-        icon: "success",
+        title: "خطأ!",
+        text: "يرجى اختيار نوع الحظر",
+        icon: "error",
         confirmButtonText: "حسناً",
-        confirmButtonColor: "#ffcc00",
       });
-      loadUsers();
-      loadBannedUsers();
-    } else {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || "فشل حظر المستخدم");
+      return;
     }
-  } catch (error) {
-    Swal.fire({
-      title: "خطأ!",
-      text: error.message || "تعذر حظر المستخدم",
-      icon: "error",
-      confirmButtonText: "حسناً",
-    });
-  } finally {
-    if (banSubmitBtn) banSubmitBtn.disabled = false;
-    if (banBtnText) banBtnText.style.display = "inline";
-    if (banBtnLoading) banBtnLoading.style.display = "none";
-  }
-});
+    const duration =
+      document.querySelector('input[name="banDuration"]:checked')?.value ||
+      "permanent";
+    const daysInput = document.getElementById("banDays");
+    const days = duration === "temporary" && daysInput ? daysInput.value : null;
+    if (duration === "temporary" && (!days || parseInt(days, 10) < 1)) {
+      Swal.fire({
+        title: "خطأ!",
+        text: "يرجى إدخال عدد الأيام (1 أو أكثر)",
+        icon: "error",
+        confirmButtonText: "حسناً",
+      });
+      return;
+    }
+
+    if (banSubmitBtn) banSubmitBtn.disabled = true;
+    if (banBtnText) banBtnText.style.display = "none";
+    if (banBtnLoading) banBtnLoading.style.display = "inline";
+
+    try {
+      const userResponse = await fetch(`/api/admin/users/${userId}`);
+
+      if (!userResponse.ok) {
+        if (userResponse.status === 403) {
+          throw new Error("ليس لديك صلاحية للوصول إلى بيانات هذا المستخدم");
+        } else if (userResponse.status === 404) {
+          throw new Error("المستخدم غير موجود");
+        } else {
+          throw new Error(`فشل تحميل بيانات المستخدم (${userResponse.status})`);
+        }
+      }
+
+      const user = await userResponse.json();
+
+      if (!user || !user.username) {
+        throw new Error("بيانات المستخدم غير صحيحة");
+      }
+
+      const response = await fetch(`/api/banned-users`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: user.username,
+          banType: banType,
+          reason: reason,
+          duration: duration,
+          days:
+            duration === "temporary" && daysInput
+              ? parseInt(daysInput.value, 10)
+              : null,
+        }),
+      });
+
+      if (response.ok) {
+        closeBanModal();
+        Swal.fire({
+          title: "تم بنجاح!",
+          text: "تم حظر المستخدم بنجاح",
+          icon: "success",
+          confirmButtonText: "حسناً",
+          confirmButtonColor: "#ffcc00",
+        });
+        loadUsers();
+        loadBannedUsers();
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "فشل حظر المستخدم");
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "خطأ!",
+        text: error.message || "تعذر حظر المستخدم",
+        icon: "error",
+        confirmButtonText: "حسناً",
+      });
+    } finally {
+      if (banSubmitBtn) banSubmitBtn.disabled = false;
+      if (banBtnText) banBtnText.style.display = "inline";
+      if (banBtnLoading) banBtnLoading.style.display = "none";
+    }
+  });
 
 if (closeBanModalBtn) closeBanModalBtn.addEventListener("click", closeBanModal);
 if (cancelBanModal) cancelBanModal.addEventListener("click", closeBanModal);
@@ -1351,7 +1414,6 @@ async function loadBannedUsers() {
     }
 
     const bannedUsers = await response.json();
-
 
     if (!Array.isArray(bannedUsers)) {
       console.error("API returned non-array response:", bannedUsers);
@@ -1390,7 +1452,10 @@ async function loadBannedUsers() {
 
 function displayBannedUsers(bannedUsers) {
   if (!Array.isArray(bannedUsers)) {
-    console.error("displayBannedUsers: bannedUsers is not an array", bannedUsers);
+    console.error(
+      "displayBannedUsers: bannedUsers is not an array",
+      bannedUsers,
+    );
     bannedUsersList.innerHTML = `
           <div class="empty-state">
               <i class="fas fa-exclamation-circle"></i>
@@ -1409,17 +1474,22 @@ function displayBannedUsers(bannedUsers) {
 
   bannedUsersList.innerHTML = sorted
     .map((ban) => {
-      const banTypeText = {
-        login: "حظر تسجيل الدخول",
-        forms: "حظر النماذج",
-        all: "حظر كامل",
-      }[ban.banType] || ban.banType;
+      const banTypeText =
+        {
+          login: "حظر تسجيل الدخول",
+          forms: "حظر النماذج",
+          all: "حظر كامل",
+        }[ban.banType] || ban.banType;
 
-      const banTypeBadge = {
-        login: '<span class="status-badge" style="background: #f39c12; color: white;">🔐 حظر تسجيل الدخول</span>',
-        forms: '<span class="status-badge" style="background: #e67e22; color: white;">📝 حظر النماذج</span>',
-        all: '<span class="status-badge" style="background: #e74c3c; color: white;">🚫 حظر كامل</span>',
-      }[ban.banType] || '<span class="status-badge banned-badge">🔴 محظور</span>';
+      const banTypeBadge =
+        {
+          login:
+            '<span class="status-badge" style="background: #f39c12; color: white;">🔐 حظر تسجيل الدخول</span>',
+          forms:
+            '<span class="status-badge" style="background: #e67e22; color: white;">📝 حظر النماذج</span>',
+          all: '<span class="status-badge" style="background: #e74c3c; color: white;">🚫 حظر كامل</span>',
+        }[ban.banType] ||
+        '<span class="status-badge banned-badge">🔴 محظور</span>';
 
       const banDate = ban.createdAt
         ? new Date(ban.createdAt).toLocaleString("ar-EG")
@@ -1451,10 +1521,9 @@ function displayBannedUsers(bannedUsers) {
                             <span class="detail-label">اسم المستخدم:</span>
                             <span class="detail-value-wrap">
                               <span class="detail-value">@${ban.username}</span>
-                              <button class="copy-btn" type="button" title="نسخ اسم المستخدم" onclick="copyText('${(ban.username || "").replace(
-        /'/g,
-        "\\'"
-      )}')">
+                              <button class="copy-btn" type="button" title="نسخ اسم المستخدم" onclick="copyText('${(
+                                ban.username || ""
+                              ).replace(/'/g, "\\'")}')">
                                 <i class="fas fa-copy"></i>
                               </button>
                             </span>
@@ -1465,50 +1534,62 @@ function displayBannedUsers(bannedUsers) {
                               <span class="detail-value">${banTypeText}</span>
                             </span>
                         </div>
-                        ${ban.reason ? `
+                        ${
+                          ban.reason
+                            ? `
                         <div class="detail-row">
                             <span class="detail-label">السبب:</span>
                             <span class="detail-value-wrap">
                               <span class="detail-value">${ban.reason}</span>
                             </span>
                         </div>
-                        ` : ''}
+                        `
+                            : ""
+                        }
                         <div class="detail-row">
                             <span class="detail-label">تاريخ الحظر:</span>
                             <span class="detail-value-wrap">
                               <span class="detail-value">${banDate}</span>
                             </span>
                         </div>
-                        ${ban.expiresAt ? `
+                        ${
+                          ban.expiresAt
+                            ? `
                         <div class="detail-row">
                             <span class="detail-label">ينتهي في:</span>
                             <span class="detail-value-wrap">
                               <span class="detail-value">${new Date(ban.expiresAt).toLocaleString("ar-EG")}</span>
                             </span>
                         </div>
-                        ` : `
+                        `
+                            : `
                         <div class="detail-row">
                             <span class="detail-label">المدة:</span>
                             <span class="detail-value-wrap">
                               <span class="detail-value">دائم</span>
                             </span>
                         </div>
-                        `}
-                        ${ban.createdBy ? `
+                        `
+                        }
+                        ${
+                          ban.createdBy
+                            ? `
                         <div class="detail-row">
                             <span class="detail-label">حظر بواسطة:</span>
                             <span class="detail-value-wrap">
                               <span class="detail-value">@${ban.createdBy}</span>
                             </span>
                         </div>
-                        ` : ''}
+                        `
+                            : ""
+                        }
                     </div>
                     
                     <div class="user-card-actions">
                         <button class="action-btn unban-btn" onclick="unbanUser('${ban.username.replace(
-        /'/g,
-        "\\'"
-      )}')" style="background: #27ae60; color: white;">
+                          /'/g,
+                          "\\'",
+                        )}')" style="background: #27ae60; color: white;">
                             <i class="fas fa-unlock"></i>
                             إلغاء الحظر
                         </button>
@@ -1555,14 +1636,11 @@ async function givePoints(userId, username) {
 
   if (formValues && formValues.amount) {
     try {
-      const response = await fetch(
-        `/api/admin/users/${userId}/give-points`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formValues),
-        }
-      );
+      const response = await fetch(`/api/admin/users/${userId}/give-points`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formValues),
+      });
 
       if (response.ok) {
         Swal.fire({
@@ -1588,11 +1666,12 @@ async function givePoints(userId, username) {
 }
 
 async function deleteUser(userId, username) {
-
   const user = allUsers.find((u) => u._id === userId);
   if (user) {
-
-    if (currentAdminUsername && user.username.toLowerCase() === currentAdminUsername.toLowerCase()) {
+    if (
+      currentAdminUsername &&
+      user.username.toLowerCase() === currentAdminUsername.toLowerCase()
+    ) {
       Swal.fire({
         title: "غير مسموح!",
         text: "لا يمكنك حذف حسابك الخاص",
@@ -1602,7 +1681,6 @@ async function deleteUser(userId, username) {
       });
       return;
     }
-
 
     if (user.role === "admin" || user.role === "leadadmin") {
       Swal.fire({
@@ -1614,7 +1692,6 @@ async function deleteUser(userId, username) {
       });
       return;
     }
-
 
     if (user._isLocal === true) {
       Swal.fire({
@@ -1671,8 +1748,11 @@ async function deleteUser(userId, username) {
         const errorData = await response.json().catch(() => ({}));
         const errorMessage = errorData.message || "فشل حذف المستخدم";
 
-
-        if (errorMessage.includes("contact carl") || errorMessage.includes("تواصل مع كارل") || errorMessage.includes("حسابك الخاص")) {
+        if (
+          errorMessage.includes("contact carl") ||
+          errorMessage.includes("تواصل مع كارل") ||
+          errorMessage.includes("حسابك الخاص")
+        ) {
           Swal.fire({
             title: "غير مسموح!",
             text: errorMessage.includes("حسابك الخاص")
@@ -1724,7 +1804,7 @@ async function unbanUser(username) {
     try {
       const response = await fetch(
         `/api/banned-users/${encodeURIComponent(username)}`,
-        { method: "DELETE" }
+        { method: "DELETE" },
       );
 
       Swal.close();
@@ -1757,13 +1837,15 @@ function toggleView() {
   if (bannedSection && bannedSection.style.display === "none") {
     if (usersSection) usersSection.style.display = "none";
     bannedSection.style.display = "block";
-    if (toggleViewBtn) toggleViewBtn.innerHTML = '<i class="fas fa-users"></i> عرض النشطين';
+    if (toggleViewBtn)
+      toggleViewBtn.innerHTML = '<i class="fas fa-users"></i> عرض النشطين';
 
     loadBannedUsers();
   } else {
     if (usersSection) usersSection.style.display = "block";
     if (bannedSection) bannedSection.style.display = "none";
-    if (toggleViewBtn) toggleViewBtn.innerHTML = '<i class="fas fa-ban"></i> عرض المحظورين';
+    if (toggleViewBtn)
+      toggleViewBtn.innerHTML = '<i class="fas fa-ban"></i> عرض المحظورين';
 
     displayUsersByCategory(currentCategory);
   }
@@ -1980,9 +2062,7 @@ function getUserStatus(user) {
 }
 
 function isUserBanned(user) {
-  return allBannedUsers.some(
-    (banned) => banned.username === user.username
-  );
+  return allBannedUsers.some((banned) => banned.username === user.username);
 }
 
 function getStatusBadge(status) {
@@ -1993,7 +2073,8 @@ function getStatusBadge(status) {
       '<span class="status-badge signed-in-badge">🔵 مسجل دخول</span>',
     "signed-out":
       '<span class="status-badge signed-out-badge">⚫ غير متصل</span>',
-    offline: '<span class="status-badge offline-badge">⚫ غير متصل منذ فترة</span>',
+    offline:
+      '<span class="status-badge offline-badge">⚫ غير متصل منذ فترة</span>',
     banned: '<span class="status-badge banned-badge">🔴 محظور</span>',
   };
 
@@ -2032,8 +2113,6 @@ function formatTimeAgo(date) {
     return date.toLocaleDateString("ar-EG");
   }
 }
-
-// Expose functions to window for onclick handlers
 window.openEditUserModal = openEditUserModal;
 window.closeEditUserModal = closeEditUserModal;
 window.generatePasswordResetLink = generatePasswordResetLink;

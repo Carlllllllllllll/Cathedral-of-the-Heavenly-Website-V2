@@ -109,7 +109,7 @@ function ensureNumber(
     min = Number.MIN_SAFE_INTEGER,
     max = Number.MAX_SAFE_INTEGER,
     fallback = 0,
-  } = {}
+  } = {},
 ) {
   const numeric = Number(value);
   if (!Number.isFinite(numeric)) {
@@ -189,7 +189,7 @@ async function logSecurityEvent(eventType, details, req) {
     };
     const payload = {
       content: appendOwnerMention(
-        `🔒 <@&1126336222206365696> Security Event: ${eventType}`
+        `🔒 <@&1126336222206365696> Security Event: ${eventType}`,
       ),
       embeds: [
         {
@@ -249,10 +249,3 @@ module.exports = {
   maskSensitiveData,
   buildDataSnapshot,
 };
-
-
-
-
-
-
-

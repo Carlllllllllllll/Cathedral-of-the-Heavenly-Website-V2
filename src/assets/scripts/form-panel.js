@@ -34,7 +34,9 @@ whenReady(() => {
   const targetGradesMenu = document.getElementById("target-grade-menu");
   const targetGradesOptions = document.getElementById("target-grade-options");
   const targetGradesChips = document.getElementById("target-grade-chips");
-  const targetGradesPlaceholder = document.getElementById("target-grade-placeholder");
+  const targetGradesPlaceholder = document.getElementById(
+    "target-grade-placeholder",
+  );
   const targetGradesClose = document.getElementById("target-grade-close");
   const logoutButton = document.getElementById("logoutBtn");
   const logoutBtnMobile = document.getElementById("logoutBtnMobile");
@@ -57,7 +59,15 @@ whenReady(() => {
 
   const STORAGE_KEY = "form_modal_data";
 
-  const ALL_GRADE_VALUES = ["all", "prep1", "prep2", "prep3", "sec1", "sec2", "sec3"];
+  const ALL_GRADE_VALUES = [
+    "all",
+    "prep1",
+    "prep2",
+    "prep3",
+    "sec1",
+    "sec2",
+    "sec3",
+  ];
   const GRADE_LABELS = {
     all: "جميع الصفوف",
     prep1: "أولي إعدادي",
@@ -79,7 +89,9 @@ whenReady(() => {
 
   function getSelectedTargetGrades() {
     const raw = targetGradesHidden ? targetGradesHidden.value : "";
-    const parsed = Array.isArray(safeJsonParse(raw, null)) ? safeJsonParse(raw, []) : [];
+    const parsed = Array.isArray(safeJsonParse(raw, null))
+      ? safeJsonParse(raw, [])
+      : [];
     const normalized = parsed
       .map((v) => (v || "").toString().trim().toLowerCase())
       .filter((v) => ALL_GRADE_VALUES.includes(v));
@@ -102,10 +114,12 @@ whenReady(() => {
     }
 
     if (targetGradesOptions) {
-      targetGradesOptions.querySelectorAll('input[type="checkbox"]').forEach((cb) => {
-        const val = (cb.value || "").toString().trim().toLowerCase();
-        cb.checked = next.includes(val);
-      });
+      targetGradesOptions
+        .querySelectorAll('input[type="checkbox"]')
+        .forEach((cb) => {
+          const val = (cb.value || "").toString().trim().toLowerCase();
+          cb.checked = next.includes(val);
+        });
     }
 
     renderTargetGradeChips(next);
@@ -130,14 +144,16 @@ whenReady(() => {
         <span class="grade-chip-text">${GRADE_LABELS[val] || val}</span>
         <button type="button" class="grade-chip-remove" aria-label="remove">&times;</button>
       `;
-      chip.querySelector(".grade-chip-remove").addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const current = getSelectedTargetGrades();
-        const next = current.filter((x) => x !== val);
-        setSelectedTargetGrades(next);
-        saveFormData();
-      });
+      chip
+        .querySelector(".grade-chip-remove")
+        .addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const current = getSelectedTargetGrades();
+          const next = current.filter((x) => x !== val);
+          setSelectedTargetGrades(next);
+          saveFormData();
+        });
       targetGradesChips.appendChild(chip);
     });
   }
@@ -202,7 +218,8 @@ whenReady(() => {
     }
 
     document.addEventListener("click", (e) => {
-      if (!targetGradesMenu || !targetGradesMenu.classList.contains("open")) return;
+      if (!targetGradesMenu || !targetGradesMenu.classList.contains("open"))
+        return;
       const inside = targetGradeField.contains(e.target);
       if (!inside) closeTargetGradesMenu();
     });
@@ -225,11 +242,11 @@ whenReady(() => {
           const questionText = q.querySelector(".question-text")?.value || "";
           const questionType = q.querySelector(".question-type")?.value || "";
           const options = Array.from(q.querySelectorAll(".option")).map(
-            (opt) => opt.value
+            (opt) => opt.value,
           );
           const correctAnswer = q.querySelector(".correct-answer")?.value || "";
           const points = parseInt(
-            q.querySelector(".question-points")?.value || "0"
+            q.querySelector(".question-points")?.value || "0",
           );
           const hasPoints =
             q.querySelector(".question-has-points")?.checked === true;
@@ -285,14 +302,16 @@ whenReady(() => {
                         <label>نوع السؤال:</label>
                         <select class="question-type" required>
                             <option value="" disabled>اختر خياراً</option>
-                            <option value="true-false" ${qData.questionType === "true-false"
-              ? "selected"
-              : ""
-            }>صحيح/خطأ</option>
-                            <option value="multiple-choice" ${qData.questionType === "multiple-choice"
-              ? "selected"
-              : ""
-            }>اختيارات متعددة</option>
+                            <option value="true-false" ${
+                              qData.questionType === "true-false"
+                                ? "selected"
+                                : ""
+                            }>صحيح/خطأ</option>
+                            <option value="multiple-choice" ${
+                              qData.questionType === "multiple-choice"
+                                ? "selected"
+                                : ""
+                            }>اختيارات متعددة</option>
                         </select>
                         <div class="question-fields"></div>
                     `;
@@ -441,7 +460,7 @@ whenReady(() => {
                                 </div>
                             `;
               const hpCb = fieldsContainer.querySelector(
-                ".question-has-points"
+                ".question-has-points",
               );
               const ptsInp = fieldsContainer.querySelector(".question-points");
               if (hpCb && ptsInp) {
@@ -502,7 +521,7 @@ whenReady(() => {
                                 </div>
                             `;
               const hpCb = fieldsContainer.querySelector(
-                ".question-has-points"
+                ".question-has-points",
               );
               const ptsInp = fieldsContainer.querySelector(".question-points");
               if (hpCb && ptsInp) {
@@ -551,10 +570,12 @@ whenReady(() => {
   }
 
   function resetCreateModalFields() {
-    if (document.getElementById("topic")) document.getElementById("topic").value = "";
+    if (document.getElementById("topic"))
+      document.getElementById("topic").value = "";
     if (document.getElementById("description"))
       document.getElementById("description").value = "";
-    if (document.getElementById("expiry")) document.getElementById("expiry").value = "";
+    if (document.getElementById("expiry"))
+      document.getElementById("expiry").value = "";
     if (targetGradeField) setSelectedTargetGrades(["all"]);
     if (questionsContainer) questionsContainer.innerHTML = "";
     questions = [];
@@ -574,8 +595,12 @@ whenReady(() => {
   }
 
   function setModalMode(isEdit) {
-    const titleEl = formModal ? formModal.querySelector(".modal-header h2") : null;
-    const submitBtn = formCreator ? formCreator.querySelector('button[type="submit"]') : null;
+    const titleEl = formModal
+      ? formModal.querySelector(".modal-header h2")
+      : null;
+    const submitBtn = formCreator
+      ? formCreator.querySelector('button[type="submit"]')
+      : null;
     if (modalCopyLinkBtn) {
       modalCopyLinkBtn.style.display = isEdit ? "inline-flex" : "none";
     }
@@ -647,7 +672,9 @@ whenReady(() => {
       if (document.getElementById("expiry")) {
         const exp = data.expiry ? new Date(data.expiry) : null;
         if (exp && !Number.isNaN(exp.getTime())) {
-          const localIso = new Date(exp.getTime() - exp.getTimezoneOffset() * 60000)
+          const localIso = new Date(
+            exp.getTime() - exp.getTimezoneOffset() * 60000,
+          )
             .toISOString()
             .slice(0, 16);
           document.getElementById("expiry").value = localIso;
@@ -657,8 +684,11 @@ whenReady(() => {
       }
 
       if (targetGradeField) {
-        const allowed = Array.isArray(data.allowedGrades) ? data.allowedGrades : [];
-        const normalized = allowed.length > 0 ? allowed : [data.targetGrade || "all"];
+        const allowed = Array.isArray(data.allowedGrades)
+          ? data.allowedGrades
+          : [];
+        const normalized =
+          allowed.length > 0 ? allowed : [data.targetGrade || "all"];
         setSelectedTargetGrades(normalized);
       }
 
@@ -686,8 +716,10 @@ whenReady(() => {
           const typeSelect = questionDiv.querySelector(".question-type");
           const fieldsContainer = questionDiv.querySelector(".question-fields");
 
-          const hasPoints = typeof qData.points === "number" ? qData.points > 0 : false;
-          const pointsValue = typeof qData.points === "number" ? qData.points : 0;
+          const hasPoints =
+            typeof qData.points === "number" ? qData.points > 0 : false;
+          const pointsValue =
+            typeof qData.points === "number" ? qData.points : 0;
 
           if (qType === "true-false") {
             fieldsContainer.innerHTML = `
@@ -699,8 +731,8 @@ whenReady(() => {
                   <div class="q-field q-answer">
                     <label>الإجابة الصحيحة:</label>
                     <select class="correct-answer">
-                      <option value="True" ${(qData.correctAnswer === "True" || qData.correctAnswerIndex === 0) ? "selected" : ""}>صحيح</option>
-                      <option value="False" ${(qData.correctAnswer === "False" || qData.correctAnswerIndex === 1) ? "selected" : ""}>خطأ</option>
+                      <option value="True" ${qData.correctAnswer === "True" || qData.correctAnswerIndex === 0 ? "selected" : ""}>صحيح</option>
+                      <option value="False" ${qData.correctAnswer === "False" || qData.correctAnswerIndex === 1 ? "selected" : ""}>خطأ</option>
                     </select>
                   </div>
                   <div class="q-field q-points">
@@ -717,7 +749,12 @@ whenReady(() => {
             `;
           } else {
             const opts = Array.isArray(qData.options) ? qData.options : [];
-            const correctIdx = typeof qData.correctAnswerIndex === "number" ? qData.correctAnswerIndex : (typeof qData.correctAnswer === "number" ? qData.correctAnswer : 0);
+            const correctIdx =
+              typeof qData.correctAnswerIndex === "number"
+                ? qData.correctAnswerIndex
+                : typeof qData.correctAnswer === "number"
+                  ? qData.correctAnswer
+                  : 0;
             fieldsContainer.innerHTML = `
                 <div class="q-grid">
                   <div class="q-field">
@@ -784,7 +821,9 @@ whenReady(() => {
           if (typeSelect) {
             const cached = {
               questionText: (qData.questionText || "").toString(),
-              multipleChoiceOptions: Array.isArray(qData.options) ? qData.options.slice(0, 4) : ["", "", "", ""],
+              multipleChoiceOptions: Array.isArray(qData.options)
+                ? qData.options.slice(0, 4)
+                : ["", "", "", ""],
               multipleChoiceCorrectIdx:
                 typeof qData.correctAnswerIndex === "number"
                   ? qData.correctAnswerIndex
@@ -793,7 +832,10 @@ whenReady(() => {
                     : 0,
               trueFalseCorrect:
                 qType === "true-false"
-                  ? (qData.correctAnswer === "False" || qData.correctAnswerIndex === 1 ? "False" : "True")
+                  ? qData.correctAnswer === "False" ||
+                    qData.correctAnswerIndex === 1
+                    ? "False"
+                    : "True"
                   : "True",
               hasPoints,
               pointsValue,
@@ -811,16 +853,22 @@ whenReady(() => {
               const typeNow = typeSelect.value;
               if (typeNow === "multiple-choice") {
                 cached.multipleChoiceOptions = Array.from(
-                  fc.querySelectorAll(".option")
+                  fc.querySelectorAll(".option"),
                 ).map((o) => (o.value || "").toString());
                 while (cached.multipleChoiceOptions.length < 4) {
                   cached.multipleChoiceOptions.push("");
                 }
                 const ca = fc.querySelector(".correct-answer");
-                if (ca) cached.multipleChoiceCorrectIdx = Math.max(0, (parseInt(ca.value, 10) || 1) - 1);
+                if (ca)
+                  cached.multipleChoiceCorrectIdx = Math.max(
+                    0,
+                    (parseInt(ca.value, 10) || 1) - 1,
+                  );
               } else if (typeNow === "true-false") {
                 const ca = fc.querySelector(".correct-answer");
-                if (ca) cached.trueFalseCorrect = ca.value === "False" ? "False" : "True";
+                if (ca)
+                  cached.trueFalseCorrect =
+                    ca.value === "False" ? "False" : "True";
               }
             };
 
@@ -847,7 +895,8 @@ whenReady(() => {
 
             typeSelect.addEventListener("change", (e) => {
               readCurrentIntoCache();
-              const fieldsContainer = questionDiv.querySelector(".question-fields");
+              const fieldsContainer =
+                questionDiv.querySelector(".question-fields");
               fieldsContainer.innerHTML = "";
               if (e.target.value === "true-false") {
                 fieldsContainer.innerHTML = `
@@ -1047,9 +1096,10 @@ whenReady(() => {
                     `;
 
             const hasPointsCheckbox = fieldsContainer.querySelector(
-              ".question-has-points"
+              ".question-has-points",
             );
-            const pointsInput = fieldsContainer.querySelector(".question-points");
+            const pointsInput =
+              fieldsContainer.querySelector(".question-points");
 
             hasPointsCheckbox.addEventListener("change", (e) => {
               if (e.target.checked) {
@@ -1108,9 +1158,10 @@ whenReady(() => {
                     `;
 
             const hasPointsCheckbox = fieldsContainer.querySelector(
-              ".question-has-points"
+              ".question-has-points",
             );
-            const pointsInput = fieldsContainer.querySelector(".question-points");
+            const pointsInput =
+              fieldsContainer.querySelector(".question-points");
 
             hasPointsCheckbox.addEventListener("change", (e) => {
               if (e.target.checked) {
@@ -1168,13 +1219,15 @@ whenReady(() => {
           const questionText = q.querySelector(".question-text").value;
           const questionType = q.querySelector(".question-type").value;
           const options = Array.from(q.querySelectorAll(".option")).map(
-            (opt) => opt.value
+            (opt) => opt.value,
           );
           let correctAnswer = q.querySelector(".correct-answer").value;
           const pointsInput = q.querySelector(".question-points");
           const hasPointsCheckbox = q.querySelector(".question-has-points");
           const hasPoints = hasPointsCheckbox.checked;
-          const pointsValue = hasPoints ? parseInt(pointsInput.value, 10) || 10 : 0;
+          const pointsValue = hasPoints
+            ? parseInt(pointsInput.value, 10) || 10
+            : 0;
 
           if (questionType === "multiple-choice") {
             correctAnswer = parseInt(correctAnswer, 10) - 1;
@@ -1188,22 +1241,23 @@ whenReady(() => {
             points: pointsValue,
             hasPoints,
           };
-        }
+        },
       );
 
       const submitBtn = formCreator.querySelector('button[type="submit"]');
       if (submitBtn) {
         submitBtn.disabled = true;
-        submitBtn.innerHTML =
-          editingFormLink
-            ? '<span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span><span style="margin-right:8px">جاري الحفظ...</span>'
-            : '<span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span><span style="margin-right:8px">جاري الإنشاء...</span>';
+        submitBtn.innerHTML = editingFormLink
+          ? '<span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span><span style="margin-right:8px">جاري الحفظ...</span>'
+          : '<span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span><span style="margin-right:8px">جاري الإنشاء...</span>';
       }
 
       try {
         const selectedGrades = getSelectedTargetGrades();
         const payloadTarget = selectedGrades.includes("all") ? "all" : "all";
-        const payloadAllowed = selectedGrades.includes("all") ? [] : selectedGrades;
+        const payloadAllowed = selectedGrades.includes("all")
+          ? []
+          : selectedGrades;
         const payload = {
           topic,
           description: description || "",
@@ -1222,7 +1276,7 @@ whenReady(() => {
             method: editingFormLink ? "PUT" : "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
-          }
+          },
         );
 
         const data = await response.json().catch(() => ({}));
@@ -1327,7 +1381,7 @@ whenReady(() => {
           .json()
           .catch(() => ({ message: "فشل تحميل النماذج" }));
         throw new Error(
-          errorData.message || `HTTP ${response.status}: فشل تحميل النماذج`
+          errorData.message || `HTTP ${response.status}: فشل تحميل النماذج`,
         );
       }
 
@@ -1418,8 +1472,9 @@ whenReady(() => {
       errorDiv.innerHTML = `
                 <i class="fas fa-exclamation-circle"></i>
                 <h3>حدث خطأ</h3>
-                <p>${error.message || "تعذر تحميل النماذج. يرجى المحاولة مرة أخرى."
-        }</p>
+                <p>${
+                  error.message || "تعذر تحميل النماذج. يرجى المحاولة مرة أخرى."
+                }</p>
                 <button onclick="location.reload()" style="margin-top: 15px; padding: 10px 20px; background: var(--accent); color: var(--dark); border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
                     إعادة المحاولة
                 </button>
@@ -1436,12 +1491,22 @@ whenReady(() => {
 
   function renderFormCard(form, container, isExpired) {
     const expiryDate = form.expiry ? new Date(form.expiry) : null;
-    const formIdent = (form.link && String(form.link).trim()) ? String(form.link).trim() : (form._id ? String(form._id) : "");
-    const allowedGrades = Array.isArray(form.allowedGrades) ? form.allowedGrades : [];
+    const formIdent =
+      form.link && String(form.link).trim()
+        ? String(form.link).trim()
+        : form._id
+          ? String(form._id)
+          : "";
+    const allowedGrades = Array.isArray(form.allowedGrades)
+      ? form.allowedGrades
+      : [];
     const normalizedGrades = allowedGrades
       .map((g) => (g || "").toString().trim().toLowerCase())
       .filter((g) => ALL_GRADE_VALUES.includes(g) && g !== "all");
-    const targetRaw = (form.targetGrade || "all").toString().trim().toLowerCase();
+    const targetRaw = (form.targetGrade || "all")
+      .toString()
+      .trim()
+      .toLowerCase();
     const displayGrades =
       normalizedGrades.length > 0
         ? normalizedGrades
@@ -1458,18 +1523,20 @@ whenReady(() => {
                 <div class="form-icon">
                     <i class="fas fa-file-alt"></i>
                 </div>
-                <span class="form-status ${isExpired
-        ? "status-expired"
-        : form.status === "published"
-          ? "status-published"
-          : "status-draft"
-      }">
-                    ${isExpired
-        ? "منتهي"
-        : form.status === "published"
-          ? "منشور"
-          : "مسودة"
-      }
+                <span class="form-status ${
+                  isExpired
+                    ? "status-expired"
+                    : form.status === "published"
+                      ? "status-published"
+                      : "status-draft"
+                }">
+                    ${
+                      isExpired
+                        ? "منتهي"
+                        : form.status === "published"
+                          ? "منشور"
+                          : "مسودة"
+                    }
                 </span>
             </div>
             <h3 class="form-title">${form.topic}</h3>
@@ -1481,15 +1548,17 @@ whenReady(() => {
                 </div>
                 <div class="meta-item">
                     <span class="meta-label">الأسئلة:</span>
-                    <span class="meta-value">${form.questions?.length || 0
-      }</span>
+                    <span class="meta-value">${
+                      form.questions?.length || 0
+                    }</span>
                 </div>
                 <div class="meta-item">
                     <span class="meta-label">ينتهي:</span>
-                    <span class="meta-value">${expiryDate
-        ? expiryDate.toLocaleDateString("ar-EG")
-        : "بدون موعد"
-      }</span>
+                    <span class="meta-value">${
+                      expiryDate
+                        ? expiryDate.toLocaleDateString("ar-EG")
+                        : "بدون موعد"
+                    }</span>
                 </div>
             </div>
             <div class="form-actions">
@@ -1513,24 +1582,26 @@ whenReady(() => {
                     <i class="fas fa-user-clock"></i>
                     إعادة المحاولة للمستخدم
                 </button>
-                ${showDeactivate
-        ? `
+                ${
+                  showDeactivate
+                    ? `
                 <button class="action-btn deactivate-btn" data-form-ident="${formIdent}">
                     <i class="fas fa-eye-slash"></i>
                     تعطيل
                 </button>
                 `
-        : ""
-      }
-                ${isExpired
-        ? `
+                    : ""
+                }
+                ${
+                  isExpired
+                    ? `
                 <button class="action-btn reactivate-btn" data-form-ident="${formIdent}">
                     <i class="fas fa-redo"></i>
                     إعادة تفعيل
                 </button>
                 `
-        : ""
-      }
+                    : ""
+                }
                 <button class="action-btn delete-btn" data-form-id="${form._id || ""}" data-form-ident="${formIdent}">
                     <i class="fas fa-trash"></i>
                     حذف
@@ -1583,7 +1654,10 @@ whenReady(() => {
     }
   }
 
-  window.resetFormForUser = async function resetFormForUser(formLink, buttonEl) {
+  window.resetFormForUser = async function resetFormForUser(
+    formLink,
+    buttonEl,
+  ) {
     const link = typeof formLink === "string" ? formLink.trim() : "";
     if (!link) return;
 
@@ -1664,7 +1738,8 @@ whenReady(() => {
         .map((u) => {
           const username = (u && u.username ? String(u.username) : "").trim();
           const grade = (u && u.grade ? String(u.grade) : "").trim();
-          const fullName = `${u?.firstName || ""} ${u?.secondName || ""}`.trim();
+          const fullName =
+            `${u?.firstName || ""} ${u?.secondName || ""}`.trim();
           const isChecked = selected.has(username.toLowerCase());
           return `
             <label style="display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid rgba(255,255,255,.12); border-radius:12px; background:rgba(0,0,0,.16); cursor:pointer; direction:ltr;">
@@ -1677,25 +1752,27 @@ whenReady(() => {
                 }</div>
               </div>
               <input type="checkbox" data-username="${username.replace(/"/g, "&quot;")}" ${
-            isChecked ? "checked" : ""
-          } style="width:18px; height:18px; accent-color: var(--accent); flex:0 0 auto;" />
+                isChecked ? "checked" : ""
+              } style="width:18px; height:18px; accent-color: var(--accent); flex:0 0 auto;" />
             </label>
           `;
         })
         .join("");
 
-      containerEl.querySelectorAll('input[type="checkbox"][data-username]').forEach((cb) => {
-        cb.addEventListener("change", (e) => {
-          const uname = (e.target?.dataset?.username || "").toString();
-          const key = uname.trim().toLowerCase();
-          if (!key) return;
-          if (e.target.checked) selected.add(key);
-          else selected.delete(key);
-          if (countEl) {
-            countEl.textContent = selected.size ? `(${selected.size})` : "";
-          }
+      containerEl
+        .querySelectorAll('input[type="checkbox"][data-username]')
+        .forEach((cb) => {
+          cb.addEventListener("change", (e) => {
+            const uname = (e.target?.dataset?.username || "").toString();
+            const key = uname.trim().toLowerCase();
+            if (!key) return;
+            if (e.target.checked) selected.add(key);
+            else selected.delete(key);
+            if (countEl) {
+              countEl.textContent = selected.size ? `(${selected.size})` : "";
+            }
+          });
         });
-      });
     };
 
     const { value: pickedUsernames } = await Swal.fire({
@@ -1706,7 +1783,7 @@ whenReady(() => {
             <input id="retakeUserSearch" type="text" placeholder="ابحث بالاسم / الهاتف / الإيميل..." style="flex:1; min-width:220px; padding:10px 12px; border-radius:12px; border:1px solid rgba(255,255,255,.14); background:rgba(0,0,0,.2); color:var(--text);" />
             <select id="retakeUserGrade" style="min-width:170px; height:38px; padding:6px 12px 10px; line-height:1.1; border-radius:12px; border:1px solid rgba(255,255,255,.14); background:rgba(0,0,0,.2); color:var(--text); cursor:pointer;">
               ${GRADE_FILTER_OPTIONS.map(
-                (g) => `<option value="${g.value}">${g.label}</option>`
+                (g) => `<option value="${g.value}">${g.label}</option>`,
               ).join("")}
             </select>
           </div>
@@ -1820,11 +1897,14 @@ whenReady(() => {
           '<span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span><span style="margin-right:8px">جاري التنفيذ...</span>';
       }
 
-      const response = await fetch(`/api/forms/${encodeURIComponent(link)}/reset-users`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ usernames }),
-      });
+      const response = await fetch(
+        `/api/forms/${encodeURIComponent(link)}/reset-users`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ usernames }),
+        },
+      );
 
       const data = await response.json().catch(() => ({}));
       if (!response.ok || data.success === false) {
@@ -1851,7 +1931,8 @@ whenReady(() => {
     } finally {
       if (buttonEl) {
         buttonEl.disabled = false;
-        buttonEl.innerHTML = '<i class="fas fa-user-clock"></i> إعادة المحاولة للمستخدم';
+        buttonEl.innerHTML =
+          '<i class="fas fa-user-clock"></i> إعادة المحاولة للمستخدم';
       }
     }
   };
@@ -1892,12 +1973,16 @@ whenReady(() => {
       cancelButtonText: "إلغاء",
       confirmButtonColor: "#27ae60",
       cancelButtonColor: "#666",
-      width: '500px',
+      width: "500px",
       didOpen: () => {
         const input = document.getElementById("newExpiry");
         const now = new Date();
         now.setHours(now.getHours() + 24);
-        const localIsoString = new Date(now.getTime() - (now.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
+        const localIsoString = new Date(
+          now.getTime() - now.getTimezoneOffset() * 60000,
+        )
+          .toISOString()
+          .slice(0, 16);
         input.value = localIsoString;
       },
       preConfirm: () => {
@@ -1907,7 +1992,7 @@ whenReady(() => {
           return false;
         }
         return expiry;
-      }
+      },
     });
 
     if (!newExpiry) return;
@@ -1938,7 +2023,7 @@ whenReady(() => {
         loadForms();
       } else {
         throw new Error(
-          data.message || "فشل إعادة تفعيل النموذج، يرجى المحاولة مرة أخرى."
+          data.message || "فشل إعادة تفعيل النموذج، يرجى المحاولة مرة أخرى.",
         );
       }
     } catch (error) {
@@ -1983,18 +2068,23 @@ whenReady(() => {
   window.deactivateForm = async function deactivateForm(formLink, buttonEl) {
     const link = typeof formLink === "string" ? formLink.trim() : "";
     if (!link) {
-      await Swal.fire({ title: "خطأ", text: "معرّف النموذج غير متوفر.", icon: "error", confirmButtonText: "حسنًا" });
+      await Swal.fire({
+        title: "خطأ",
+        text: "معرّف النموذج غير متوفر.",
+        icon: "error",
+        confirmButtonText: "حسنًا",
+      });
       return;
     }
     const result = await Swal.fire({
-      title: 'تعطيل النموذج',
-      text: 'هل أنت متأكد أنك تريد تعطيل هذا النموذج؟ سيتم تعطيله وتحديد تاريخ انتهائه إلى تاريخ سابق.',
-      icon: 'warning',
+      title: "تعطيل النموذج",
+      text: "هل أنت متأكد أنك تريد تعطيل هذا النموذج؟ سيتم تعطيله وتحديد تاريخ انتهائه إلى تاريخ سابق.",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonText: 'نعم، عطل النموذج',
-      cancelButtonText: 'إلغاء',
-      confirmButtonColor: '#f39c12',
-      cancelButtonColor: '#666',
+      confirmButtonText: "نعم، عطل النموذج",
+      cancelButtonText: "إلغاء",
+      confirmButtonColor: "#f39c12",
+      cancelButtonColor: "#666",
     });
 
     if (!result.isConfirmed) return;
@@ -2016,7 +2106,7 @@ whenReady(() => {
             "Content-Type": "application/json",
           },
           credentials: "include",
-        }
+        },
       );
 
       const responseData = await response.json();
@@ -2058,7 +2148,7 @@ whenReady(() => {
         buttonEl.innerHTML = '<i class="fas fa-eye-slash"></i> تعطيل';
       }
     }
-  }
+  };
 
   async function deleteFormFromList(formId, formLink, buttonEl) {
     const result = await Swal.fire({
@@ -2248,7 +2338,10 @@ whenReady(() => {
   });
 });
 
-if (typeof window !== "undefined" && typeof window.deactivateForm === "undefined") {
+if (
+  typeof window !== "undefined" &&
+  typeof window.deactivateForm === "undefined"
+) {
   window.deactivateForm = function (formLink, buttonEl) {
     console.warn("deactivateForm called before initialization", formLink);
   };

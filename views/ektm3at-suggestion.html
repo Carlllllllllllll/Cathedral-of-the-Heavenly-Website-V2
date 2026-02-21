@@ -1,403 +1,438 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="كاتدرائية السمائيين – «اِفْرَحُوا فِي الرَّبِّ كُلَّ حِينٍ» (فيلبي ٤: ٤)"
+    />
+    <meta
+      name="keywords"
+      content="كاتدرائية السمائيين – «اِفْرَحُوا فِي الرَّبِّ كُلَّ حِينٍ» (فيلبي ٤: ٤)"
+    />
+    <meta name="author" content="كاتدرائية السمائيين" />
+    <meta name="theme-color" content="#402958" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>اقتراحات الاجتماعات | لوحة الإدارة | كاتدرائية السمائيين</title>
+    <link rel="icon" href="/UI/icon.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="/UI/icon.png" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/design/theme.css" />
+    <link rel="stylesheet" href="/design/admin.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+    />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="كاتدرائية السمائيين – «اِفْرَحُوا فِي الرَّبِّ كُلَّ حِينٍ» (فيلبي ٤: ٤)" />
-  <meta name="keywords" content="كاتدرائية السمائيين – «اِفْرَحُوا فِي الرَّبِّ كُلَّ حِينٍ» (فيلبي ٤: ٤)" />
-  <meta name="author" content="كاتدرائية السمائيين" />
-  <meta name="theme-color" content="#402958" />
-  <meta name="robots" content="noindex, nofollow" />
-  <title>اقتراحات الاجتماعات | لوحة الإدارة | كاتدرائية السمائيين</title>
-  <link rel="icon" href="/UI/icon.png" type="image/png" sizes="16x16" />
-  <link rel="apple-touch-icon" href="/UI/icon.png" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap"
-    rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="/design/theme.css" />
-  <link rel="stylesheet" href="/design/admin.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
-</head>
-
-<body>
-  <div class="mobile-toggle" id="mobileToggle">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
-
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <div class="logo-container">
-        <img src="/UI/logo.png" alt="اللوغو" />
-        <div class="logo-text">
-          <h1>كاتدرائية السمائيين</h1>
-          <p>متابعة الاقتراحات وتنظيم الأفكار</p>
-        </div>
-      </div>
+  <body>
+    <div class="mobile-toggle" id="mobileToggle">
+      <span></span>
+      <span></span>
+      <span></span>
     </div>
 
-    <nav class="nav-menu">
-      <div class="nav-item">
-        <a href="https://kenisa-el-sama2eyeen.ooguy.com" class="nav-link">
-          <i class="fas fa-home"></i>
-          الصفحة الرئيسية
-        </a>
-      </div>
-      <div class="nav-item">
-        <a href="/admin/form-panel" class="nav-link">
-          <i class="fas fa-tachometer-alt"></i>
-          النماذج
-        </a>
-      </div>
-
-      <div class="nav-item grades-nav-item">
-        <div class="nav-link grades-toggle" id="gradesToggle">
-          <i class="fas fa-graduation-cap"></i>
-          الصفوف الدراسية
-          <i class="fas fa-chevron-down toggle-icon"></i>
-        </div>
-        <div class="grades-submenu-container">
-          <div class="grades-submenu" id="gradesSubmenu">
-            <div class="submenu-header">
-              <div class="nav-link section-toggle" data-section="prep">
-                <i class="fas fa-school"></i>
-                الإعدادية
-                <i class="fas fa-chevron-down toggle-icon"></i>
-              </div>
-              <div class="section-submenu" data-section="prep">
-                <a href="/grades/prep1" class="nav-link submenu-link">
-                  <i class="fas fa-arrow-left"></i>
-                  أولي إعدادي
-                </a>
-                <a href="/grades/prep2" class="nav-link submenu-link">
-                  <i class="fas fa-arrow-left"></i>
-                  ثانية إعدادي
-                </a>
-                <a href="/grades/prep3" class="nav-link submenu-link">
-                  <i class="fas fa-arrow-left"></i>
-                  ثالثة إعدادي
-                </a>
-              </div>
-            </div>
-
-            <div class="submenu-header">
-              <div class="nav-link section-toggle" data-section="sec">
-                <i class="fas fa-university"></i>
-                الثانوية
-                <i class="fas fa-chevron-down toggle-icon"></i>
-              </div>
-              <div class="section-submenu" data-section="sec">
-                <a href="/grades/sec1" class="nav-link submenu-link">
-                  <i class="fas fa-arrow-left"></i>
-                  أولي ثانوي
-                </a>
-                <a href="/grades/sec2" class="nav-link submenu-link">
-                  <i class="fas fa-arrow-left"></i>
-                  ثانية ثانوي
-                </a>
-                <a href="/grades/sec3" class="nav-link submenu-link">
-                  <i class="fas fa-arrow-left"></i>
-                  ثالثة ثانوي
-                </a>
-              </div>
-            </div>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-container">
+          <img src="/UI/logo.png" alt="اللوغو" />
+          <div class="logo-text">
+            <h1>كاتدرائية السمائيين</h1>
+            <p>متابعة الاقتراحات وتنظيم الأفكار</p>
           </div>
         </div>
       </div>
 
-      <div class="nav-item">
-        <a href="/admin/user-approvals" class="nav-link">
-          <i class="fas fa-user-check"></i>
-          <span>طلبات التسجيل</span>
-          <span class="nav-unread-badge" id="nav-badge-login" aria-hidden="true"></span>
-        </a>
-      </div>
-      <div class="nav-item">
-        <a href="/admin/user-management" class="nav-link">
-          <i class="fas fa-users"></i>
-          إدارة المستخدمين
-        </a>
-      </div>
-      <div class="nav-item">
-        <a href="/admin/gift-shop/add" class="nav-link">
-          <i class="fas fa-plus-circle"></i>
-          إضافة هدية
-        </a>
-      </div>
-      <div class="nav-item">
-        <a href="/admin/gift-shop/approvals" class="nav-link">
-          <i class="fas fa-gift"></i>
-          <span>طلبات الهدايا</span>
-          <span class="nav-unread-badge" id="nav-badge-gift" aria-hidden="true"></span>
-        </a>
-      </div>
-
-      <div class="nav-item suggestions-nav-item">
-        <div class="nav-link suggestions-toggle active" id="suggestionsToggle">
-          <i class="fas fa-lightbulb"></i>
-          الاقتراحات
-          <i class="fas fa-chevron-down toggle-icon"></i>
+      <nav class="nav-menu">
+        <div class="nav-item">
+          <a href="https://kenisa-el-sama2eyeen.ooguy.com" class="nav-link">
+            <i class="fas fa-home"></i>
+            الصفحة الرئيسية
+          </a>
         </div>
-        <div class="suggestions-submenu-container">
-          <div class="suggestions-submenu" id="suggestionsSubmenu">
-            <a href="/admin/suggestions" class="nav-link submenu-link active">
-              <i class="fas fa-users"></i>
-              اقتراحات الاجتماعات
-            </a>
+        <div class="nav-item">
+          <a href="/admin/form-panel" class="nav-link">
+            <i class="fas fa-tachometer-alt"></i>
+            النماذج
+          </a>
+        </div>
+
+        <div class="nav-item grades-nav-item">
+          <div class="nav-link grades-toggle" id="gradesToggle">
+            <i class="fas fa-graduation-cap"></i>
+            الصفوف الدراسية
+            <i class="fas fa-chevron-down toggle-icon"></i>
+          </div>
+          <div class="grades-submenu-container">
+            <div class="grades-submenu" id="gradesSubmenu">
+              <div class="submenu-header">
+                <div class="nav-link section-toggle" data-section="prep">
+                  <i class="fas fa-school"></i>
+                  الإعدادية
+                  <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+                <div class="section-submenu" data-section="prep">
+                  <a href="/grades/prep1" class="nav-link submenu-link">
+                    <i class="fas fa-arrow-left"></i>
+                    أولي إعدادي
+                  </a>
+                  <a href="/grades/prep2" class="nav-link submenu-link">
+                    <i class="fas fa-arrow-left"></i>
+                    ثانية إعدادي
+                  </a>
+                  <a href="/grades/prep3" class="nav-link submenu-link">
+                    <i class="fas fa-arrow-left"></i>
+                    ثالثة إعدادي
+                  </a>
+                </div>
+              </div>
+
+              <div class="submenu-header">
+                <div class="nav-link section-toggle" data-section="sec">
+                  <i class="fas fa-university"></i>
+                  الثانوية
+                  <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+                <div class="section-submenu" data-section="sec">
+                  <a href="/grades/sec1" class="nav-link submenu-link">
+                    <i class="fas fa-arrow-left"></i>
+                    أولي ثانوي
+                  </a>
+                  <a href="/grades/sec2" class="nav-link submenu-link">
+                    <i class="fas fa-arrow-left"></i>
+                    ثانية ثانوي
+                  </a>
+                  <a href="/grades/sec3" class="nav-link submenu-link">
+                    <i class="fas fa-arrow-left"></i>
+                    ثالثة ثانوي
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </nav>
 
-    <div class="sidebar-footer">
-      <button class="logout-btn" id="logoutBtn">
-        <i class="fas fa-sign-out-alt"></i>
-        تسجيل الخروج
-      </button>
-    </div>
-  </aside>
-
-  <main class="main-content">
-    <header class="top-nav">
-      <div class="user-info">
-        <img src="/UI/pfp.jpg" alt="المستخدم" class="user-avatar" />
-        <div class="user-details">
-          <h3 id="username-display">جاري التحميل...</h3>
-          <span id="user-role-pill" class="role-badge">مشرف</span>
+        <div class="nav-item">
+          <a href="/admin/user-approvals" class="nav-link">
+            <i class="fas fa-user-check"></i>
+            <span>طلبات التسجيل</span>
+            <span
+              class="nav-unread-badge"
+              id="nav-badge-login"
+              aria-hidden="true"
+            ></span>
+          </a>
         </div>
-        <button class="logout-btn-mobile" id="logoutBtnMobile">
+        <div class="nav-item">
+          <a href="/admin/user-management" class="nav-link">
+            <i class="fas fa-users"></i>
+            إدارة المستخدمين
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="/admin/gift-shop/add" class="nav-link">
+            <i class="fas fa-plus-circle"></i>
+            إضافة هدية
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="/admin/gift-shop/approvals" class="nav-link">
+            <i class="fas fa-gift"></i>
+            <span>طلبات الهدايا</span>
+            <span
+              class="nav-unread-badge"
+              id="nav-badge-gift"
+              aria-hidden="true"
+            ></span>
+          </a>
+        </div>
+
+        <div class="nav-item suggestions-nav-item">
+          <div
+            class="nav-link suggestions-toggle active"
+            id="suggestionsToggle"
+          >
+            <i class="fas fa-lightbulb"></i>
+            الاقتراحات
+            <i class="fas fa-chevron-down toggle-icon"></i>
+          </div>
+          <div class="suggestions-submenu-container">
+            <div class="suggestions-submenu" id="suggestionsSubmenu">
+              <a href="/admin/suggestions" class="nav-link submenu-link active">
+                <i class="fas fa-users"></i>
+                اقتراحات الاجتماعات
+              </a>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="logout-btn" id="logoutBtn">
           <i class="fas fa-sign-out-alt"></i>
+          تسجيل الخروج
         </button>
       </div>
-    </header>
+    </aside>
 
-    <div class="admin-container">
-      <h1><i class="fas fa-lightbulb"></i> اقتراحات الاجتماعات</h1>
-
-      <div id="dashboard-stats" class="dashboard-stats"></div>
-
-      <div class="filters">
-        <div class="filter-group">
-          <label for="searchBox">بحث:</label>
-          <input type="search" id="searchBox" placeholder="بحث بالاسم أو المحتوى" class="filter-select" />
+    <main class="main-content">
+      <header class="top-nav">
+        <div class="user-info">
+          <img src="/UI/pfp.jpg" alt="المستخدم" class="user-avatar" />
+          <div class="user-details">
+            <h3 id="username-display">جاري التحميل...</h3>
+            <span id="user-role-pill" class="role-badge">مشرف</span>
+          </div>
+          <button class="logout-btn-mobile" id="logoutBtnMobile">
+            <i class="fas fa-sign-out-alt"></i>
+          </button>
         </div>
-        <div class="filter-group">
-          <label for="gradeFilter">تصفية حسب الصف:</label>
-          <select id="gradeFilter" class="filter-select">
-            <option value="all">كل الصفوف</option>
-            <option value="prep1">أولي إعدادي</option>
-            <option value="prep2">ثانية إعدادي</option>
-            <option value="prep3">ثالثة إعدادي</option>
-            <option value="sec1">أولي ثانوي</option>
-            <option value="sec2">ثانية ثانوي</option>
-            <option value="sec3">ثالثة ثانوي</option>
-          </select>
+      </header>
+
+      <div class="admin-container">
+        <h1><i class="fas fa-lightbulb"></i> اقتراحات الاجتماعات</h1>
+
+        <div id="dashboard-stats" class="dashboard-stats"></div>
+
+        <div class="filters">
+          <div class="filter-group">
+            <label for="searchBox">بحث:</label>
+            <input
+              type="search"
+              id="searchBox"
+              placeholder="بحث بالاسم أو المحتوى"
+              class="filter-select"
+            />
+          </div>
+          <div class="filter-group">
+            <label for="gradeFilter">تصفية حسب الصف:</label>
+            <select id="gradeFilter" class="filter-select">
+              <option value="all">كل الصفوف</option>
+              <option value="prep1">أولي إعدادي</option>
+              <option value="prep2">ثانية إعدادي</option>
+              <option value="prep3">ثالثة إعدادي</option>
+              <option value="sec1">أولي ثانوي</option>
+              <option value="sec2">ثانية ثانوي</option>
+              <option value="sec3">ثالثة ثانوي</option>
+            </select>
+          </div>
+          <button id="refreshBtn" class="refresh-btn">
+            <i class="fas fa-sync-alt"></i>
+            تحديث
+          </button>
         </div>
-        <button id="refreshBtn" class="refresh-btn">
-          <i class="fas fa-sync-alt"></i>
-          تحديث
-        </button>
+
+        <div id="suggestionsContainer" class="suggestions-grid">
+          <div class="loading-state">
+            <span class="loading-dots" aria-hidden="true"
+              ><span></span><span></span><span></span
+            ></span>
+            <p>جاري التحميل...</p>
+          </div>
+        </div>
       </div>
+    </main>
 
-      <div id="suggestionsContainer" class="suggestions-grid">
-        <div class="loading-state">
-          <span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span>
-          <p>جاري التحميل...</p>
-        </div>
-      </div>
-    </div>
-  </main>
+    <script
+      src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"
+      defer
+    ></script>
+    <script>
+      const mobileToggle = document.getElementById("mobileToggle");
+      const sidebar = document.getElementById("sidebar");
+      const logoutBtn = document.getElementById("logoutBtn");
+      const logoutBtnMobile = document.getElementById("logoutBtnMobile");
+      const container = document.getElementById("suggestionsContainer");
+      const searchBox = document.getElementById("searchBox");
+      const gradeFilter = document.getElementById("gradeFilter");
+      const refreshBtn = document.getElementById("refreshBtn");
+      const usernameDisplay = document.getElementById("username-display");
+      const userRolePill = document.getElementById("user-role-pill");
 
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js" defer></script>
-  <script>
-    const mobileToggle = document.getElementById("mobileToggle");
-    const sidebar = document.getElementById("sidebar");
-    const logoutBtn = document.getElementById("logoutBtn");
-    const logoutBtnMobile = document.getElementById("logoutBtnMobile");
-    const container = document.getElementById("suggestionsContainer");
-    const searchBox = document.getElementById("searchBox");
-    const gradeFilter = document.getElementById("gradeFilter");
-    const refreshBtn = document.getElementById("refreshBtn");
-    const usernameDisplay = document.getElementById("username-display");
-    const userRolePill = document.getElementById("user-role-pill");
+      const gradesToggle = document.getElementById("gradesToggle");
+      const gradesSubmenu = document.getElementById("gradesSubmenu");
+      const sectionToggles = document.querySelectorAll(".section-toggle");
+      const suggestionsToggle = document.getElementById("suggestionsToggle");
+      const suggestionsSubmenu = document.getElementById("suggestionsSubmenu");
 
-    const gradesToggle = document.getElementById("gradesToggle");
-    const gradesSubmenu = document.getElementById("gradesSubmenu");
-    const sectionToggles = document.querySelectorAll(".section-toggle");
-    const suggestionsToggle = document.getElementById("suggestionsToggle");
-    const suggestionsSubmenu = document.getElementById("suggestionsSubmenu");
-
-    function toggleSidebar() {
-      sidebar.classList.toggle("active");
-      const spans = mobileToggle.querySelectorAll("span");
-      if (sidebar.classList.contains("active")) {
-        spans[0].style.transform = "rotate(45deg) translate(5px, 5px)";
-        spans[1].style.opacity = "0";
-        spans[2].style.transform = "rotate(-45deg) translate(7px, -6px)";
-      } else {
-        spans[0].style.transform = "none";
-        spans[1].style.opacity = "1";
-        spans[2].style.transform = "none";
+      function toggleSidebar() {
+        sidebar.classList.toggle("active");
+        const spans = mobileToggle.querySelectorAll("span");
+        if (sidebar.classList.contains("active")) {
+          spans[0].style.transform = "rotate(45deg) translate(5px, 5px)";
+          spans[1].style.opacity = "0";
+          spans[2].style.transform = "rotate(-45deg) translate(7px, -6px)";
+        } else {
+          spans[0].style.transform = "none";
+          spans[1].style.opacity = "1";
+          spans[2].style.transform = "none";
+        }
       }
-    }
 
-    mobileToggle.addEventListener("click", toggleSidebar);
+      mobileToggle.addEventListener("click", toggleSidebar);
 
-    if (gradesToggle) {
-      gradesToggle.addEventListener("click", function (e) {
-        e.stopPropagation();
-        this.classList.toggle("active");
-        const icon = this.querySelector(".toggle-icon");
-        if (this.classList.contains("active")) {
-          icon.classList.remove("fa-chevron-down");
-          icon.classList.add("fa-chevron-up");
-          gradesSubmenu.style.maxHeight = "250px";
-        } else {
-          icon.classList.remove("fa-chevron-up");
-          icon.classList.add("fa-chevron-down");
-          gradesSubmenu.style.maxHeight = "0";
-          document
-            .querySelectorAll(".section-toggle.active")
-            .forEach((toggle) => {
-              toggle.classList.remove("active");
-              const subIcon = toggle.querySelector(".toggle-icon");
-              subIcon.classList.remove("fa-chevron-up");
-              subIcon.classList.add("fa-chevron-down");
-              const sectionSub = document.querySelector(
-                `.section-submenu[data-section="${toggle.dataset.section}"]`
-              );
-              if (sectionSub) sectionSub.style.maxHeight = "0";
-            });
-        }
-      });
-    }
-
-    sectionToggles.forEach((toggle) => {
-      toggle.addEventListener("click", function (e) {
-        e.stopPropagation();
-        this.classList.toggle("active");
-        const icon = this.querySelector(".toggle-icon");
-        const sectionSub = document.querySelector(
-          `.section-submenu[data-section="${this.dataset.section}"]`
-        );
-
-        if (this.classList.contains("active")) {
-          icon.classList.remove("fa-chevron-down");
-          icon.classList.add("fa-chevron-up");
-          sectionSub.style.maxHeight = sectionSub.scrollHeight + "px";
-        } else {
-          icon.classList.remove("fa-chevron-up");
-          icon.classList.add("fa-chevron-down");
-          sectionSub.style.maxHeight = "0";
-        }
-      });
-    });
-
-    if (suggestionsToggle) {
-      suggestionsToggle.addEventListener("click", function (e) {
-        e.stopPropagation();
-        this.classList.toggle("active");
-        const icon = this.querySelector(".toggle-icon");
-        if (this.classList.contains("active")) {
-          icon.classList.remove("fa-chevron-down");
-          icon.classList.add("fa-chevron-up");
-          suggestionsSubmenu.style.maxHeight =
-            suggestionsSubmenu.scrollHeight + "px";
-        } else {
-          icon.classList.remove("fa-chevron-up");
-          icon.classList.add("fa-chevron-down");
-          suggestionsSubmenu.style.maxHeight = "0";
-        }
-      });
-    }
-
-    const gradeLabels = {
-      prep1: "أولي إعدادي",
-      prep2: "ثانية إعدادي",
-      prep3: "ثالثة إعدادي",
-      sec1: "أولي ثانوي",
-      sec2: "ثانية ثانوي",
-      sec3: "ثالثة ثانوي",
-      teachers: "الخدام",
-      admins: "الإدارة",
-    };
-
-    async function hydrateUser() {
-      try {
-        const res = await fetch("/api/user-info", { credentials: "include" });
-        const data = await res.json();
-        if (!data.isAuthenticated) {
-          window.location.href = "/login";
-          return;
-        }
-        if (usernameDisplay) usernameDisplay.textContent = data.username;
-        if (userRolePill) {
-          userRolePill.textContent =
-            data.role === "leadadmin"
-              ? "ليد أدمن"
-              : data.role === "admin"
-                ? "أدمن"
-                : data.role;
-          userRolePill.className = "role-badge role-" + (data.role || "admin");
-        }
-      } catch (error) {
-        showNotification(
-          "error",
-          "فشل تحميل المستخدم",
-          "تعذر تحميل بيانات الحساب."
-        );
+      if (gradesToggle) {
+        gradesToggle.addEventListener("click", function (e) {
+          e.stopPropagation();
+          this.classList.toggle("active");
+          const icon = this.querySelector(".toggle-icon");
+          if (this.classList.contains("active")) {
+            icon.classList.remove("fa-chevron-down");
+            icon.classList.add("fa-chevron-up");
+            gradesSubmenu.style.maxHeight = "250px";
+          } else {
+            icon.classList.remove("fa-chevron-up");
+            icon.classList.add("fa-chevron-down");
+            gradesSubmenu.style.maxHeight = "0";
+            document
+              .querySelectorAll(".section-toggle.active")
+              .forEach((toggle) => {
+                toggle.classList.remove("active");
+                const subIcon = toggle.querySelector(".toggle-icon");
+                subIcon.classList.remove("fa-chevron-up");
+                subIcon.classList.add("fa-chevron-down");
+                const sectionSub = document.querySelector(
+                  `.section-submenu[data-section="${toggle.dataset.section}"]`,
+                );
+                if (sectionSub) sectionSub.style.maxHeight = "0";
+              });
+          }
+        });
       }
-    }
 
-    async function loadSuggestions() {
-      container.innerHTML =
-        '<div class="loading-state"><span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span><p>جاري التحميل...</p></div>';
-      const params = new URLSearchParams({
-        search: searchBox.value.trim(),
-        grade: gradeFilter.value,
-        category: "meeting",
+      sectionToggles.forEach((toggle) => {
+        toggle.addEventListener("click", function (e) {
+          e.stopPropagation();
+          this.classList.toggle("active");
+          const icon = this.querySelector(".toggle-icon");
+          const sectionSub = document.querySelector(
+            `.section-submenu[data-section="${this.dataset.section}"]`,
+          );
+
+          if (this.classList.contains("active")) {
+            icon.classList.remove("fa-chevron-down");
+            icon.classList.add("fa-chevron-up");
+            sectionSub.style.maxHeight = sectionSub.scrollHeight + "px";
+          } else {
+            icon.classList.remove("fa-chevron-up");
+            icon.classList.add("fa-chevron-down");
+            sectionSub.style.maxHeight = "0";
+          }
+        });
       });
-      try {
-        const res = await fetch("/api/suggestions?" + params.toString());
-        const data = await res.json();
-        if (!res.ok || !data.success)
-          throw new Error(data.message || "تعذر التحميل");
-        renderSuggestions(data.suggestions || []);
-      } catch (err) {
+
+      if (suggestionsToggle) {
+        suggestionsToggle.addEventListener("click", function (e) {
+          e.stopPropagation();
+          this.classList.toggle("active");
+          const icon = this.querySelector(".toggle-icon");
+          if (this.classList.contains("active")) {
+            icon.classList.remove("fa-chevron-down");
+            icon.classList.add("fa-chevron-up");
+            suggestionsSubmenu.style.maxHeight =
+              suggestionsSubmenu.scrollHeight + "px";
+          } else {
+            icon.classList.remove("fa-chevron-up");
+            icon.classList.add("fa-chevron-down");
+            suggestionsSubmenu.style.maxHeight = "0";
+          }
+        });
+      }
+
+      const gradeLabels = {
+        prep1: "أولي إعدادي",
+        prep2: "ثانية إعدادي",
+        prep3: "ثالثة إعدادي",
+        sec1: "أولي ثانوي",
+        sec2: "ثانية ثانوي",
+        sec3: "ثالثة ثانوي",
+        teachers: "الخدام",
+        admins: "الإدارة",
+      };
+
+      async function hydrateUser() {
+        try {
+          const res = await fetch("/api/user-info", { credentials: "include" });
+          const data = await res.json();
+          if (!data.isAuthenticated) {
+            window.location.href = "/login";
+            return;
+          }
+          if (usernameDisplay) usernameDisplay.textContent = data.username;
+          if (userRolePill) {
+            userRolePill.textContent =
+              data.role === "leadadmin"
+                ? "ليد أدمن"
+                : data.role === "admin"
+                  ? "أدمن"
+                  : data.role;
+            userRolePill.className =
+              "role-badge role-" + (data.role || "admin");
+          }
+        } catch (error) {
+          showNotification(
+            "error",
+            "فشل تحميل المستخدم",
+            "تعذر تحميل بيانات الحساب.",
+          );
+        }
+      }
+
+      async function loadSuggestions() {
         container.innerHTML =
-          '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>حدث خطأ</h3><p>تعذر تحميل الاقتراحات. يرجى المحاولة مرة أخرى.</p></div>';
+          '<div class="loading-state"><span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span><p>جاري التحميل...</p></div>';
+        const params = new URLSearchParams({
+          search: searchBox.value.trim(),
+          grade: gradeFilter.value,
+          category: "meeting",
+        });
+        try {
+          const res = await fetch("/api/suggestions?" + params.toString());
+          const data = await res.json();
+          if (!res.ok || !data.success)
+            throw new Error(data.message || "تعذر التحميل");
+          renderSuggestions(data.suggestions || []);
+        } catch (err) {
+          container.innerHTML =
+            '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>حدث خطأ</h3><p>تعذر تحميل الاقتراحات. يرجى المحاولة مرة أخرى.</p></div>';
+        }
       }
-    }
 
-    function renderSuggestions(list) {
-      const statsEl = document.getElementById("dashboard-stats");
-      if (statsEl) {
-        const count = list?.length || 0;
-        statsEl.innerHTML = `
+      function renderSuggestions(list) {
+        const statsEl = document.getElementById("dashboard-stats");
+        if (statsEl) {
+          const count = list?.length || 0;
+          statsEl.innerHTML = `
             <div class="stat-card stat-info">
               <div class="stat-icon"><i class="fas fa-lightbulb"></i></div>
               <div class="stat-value">${count}</div>
               <div class="stat-label">اقتراحات</div>
             </div>
           `;
-      }
-      if (!list.length) {
-        container.innerHTML =
-          '<div class="empty-state"><i class="fas fa-lightbulb"></i><h3>لا توجد اقتراحات</h3><p>لا توجد اقتراحات حتى الآن</p></div>';
-        return;
-      }
-      container.innerHTML = "";
-      list.forEach((item) => {
-        const card = document.createElement("div");
-        card.className = "suggestion-card";
-        const date = new Date(item.createdAt).toLocaleString("ar-EG");
-        const displayName = item.displayName || item.username || "مستخدم";
-        const username = item.username ? `@${item.username}` : "";
-        const grade = gradeLabels[item.grade] || item.grade || "غير محدد";
-        card.innerHTML = `
+        }
+        if (!list.length) {
+          container.innerHTML =
+            '<div class="empty-state"><i class="fas fa-lightbulb"></i><h3>لا توجد اقتراحات</h3><p>لا توجد اقتراحات حتى الآن</p></div>';
+          return;
+        }
+        container.innerHTML = "";
+        list.forEach((item) => {
+          const card = document.createElement("div");
+          card.className = "suggestion-card";
+          const date = new Date(item.createdAt).toLocaleString("ar-EG");
+          const displayName = item.displayName || item.username || "مستخدم";
+          const username = item.username ? `@${item.username}` : "";
+          const grade = gradeLabels[item.grade] || item.grade || "غير محدد";
+          card.innerHTML = `
                     <div class="suggestion-header">
                         <div class="user-avatar-small">
                             <i class="fas fa-user-circle"></i>
@@ -417,601 +452,620 @@
                         <span class="meta-date">${date}</span>
                     </div>
                 `;
-        container.appendChild(card);
-      });
-    }
+          container.appendChild(card);
+        });
+      }
 
-    async function performLogout() {
-      const result = await Swal.fire({
-        title: "تسجيل الخروج",
-        text: "هل تريد فعلاً تسجيل الخروج من النظام؟",
-        icon: "question",
-        iconColor: "#ffcc00",
-        showCancelButton: true,
-        confirmButtonText: "نعم، تسجيل خروج",
-        cancelButtonText: "إلغاء",
-        confirmButtonColor: "#e74c3c",
-        cancelButtonColor: "#666",
-        background: "#2a1b3c",
-        color: "#fff",
-        backdrop: "rgba(0,0,0,0.8)",
-        allowOutsideClick: false,
-      });
+      async function performLogout() {
+        const result = await Swal.fire({
+          title: "تسجيل الخروج",
+          text: "هل تريد فعلاً تسجيل الخروج من النظام؟",
+          icon: "question",
+          iconColor: "#ffcc00",
+          showCancelButton: true,
+          confirmButtonText: "نعم، تسجيل خروج",
+          cancelButtonText: "إلغاء",
+          confirmButtonColor: "#e74c3c",
+          cancelButtonColor: "#666",
+          background: "#2a1b3c",
+          color: "#fff",
+          backdrop: "rgba(0,0,0,0.8)",
+          allowOutsideClick: false,
+        });
 
-      if (result.isConfirmed) {
-        try {
-          await fetch("/logout", { method: "POST" });
-          await Swal.fire({
-            title: "تم تسجيل الخروج",
-            text: "وداعاً! تم تسجيل خروجك بنجاح",
-            icon: "success",
-            iconColor: "#27ae60",
-            background: "#2a1b3c",
-            color: "#fff",
-            backdrop: "rgba(0,0,0,0.8)",
-            showConfirmButton: false,
-            timer: 1500,
-          });
-          setTimeout(() => {
+        if (result.isConfirmed) {
+          try {
+            await fetch("/logout", { method: "POST" });
+            await Swal.fire({
+              title: "تم تسجيل الخروج",
+              text: "وداعاً! تم تسجيل خروجك بنجاح",
+              icon: "success",
+              iconColor: "#27ae60",
+              background: "#2a1b3c",
+              color: "#fff",
+              backdrop: "rgba(0,0,0,0.8)",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            setTimeout(() => {
+              window.location.href = "/";
+            }, 500);
+          } catch (error) {
             window.location.href = "/";
-          }, 500);
-        } catch (error) {
-          window.location.href = "/";
+          }
         }
       }
-    }
 
-    searchBox?.addEventListener("input", () => {
-      clearTimeout(window.suggestionTimer);
-      window.suggestionTimer = setTimeout(loadSuggestions, 300);
-    });
-    gradeFilter?.addEventListener("change", loadSuggestions);
-    refreshBtn?.addEventListener("click", loadSuggestions);
-    logoutBtn?.addEventListener("click", performLogout);
-    logoutBtnMobile?.addEventListener("click", performLogout);
+      searchBox?.addEventListener("input", () => {
+        clearTimeout(window.suggestionTimer);
+        window.suggestionTimer = setTimeout(loadSuggestions, 300);
+      });
+      gradeFilter?.addEventListener("change", loadSuggestions);
+      refreshBtn?.addEventListener("click", loadSuggestions);
+      logoutBtn?.addEventListener("click", performLogout);
+      logoutBtnMobile?.addEventListener("click", performLogout);
 
-    document.addEventListener("click", function (event) {
-      if (window.innerWidth <= 992) {
-        if (
-          !sidebar.contains(event.target) &&
-          !mobileToggle.contains(event.target)
-        ) {
-          sidebar.classList.remove("active");
-          const spans = mobileToggle.querySelectorAll("span");
-          spans[0].style.transform = "none";
-          spans[1].style.opacity = "1";
-          spans[2].style.transform = "none";
+      document.addEventListener("click", function (event) {
+        if (window.innerWidth <= 992) {
+          if (
+            !sidebar.contains(event.target) &&
+            !mobileToggle.contains(event.target)
+          ) {
+            sidebar.classList.remove("active");
+            const spans = mobileToggle.querySelectorAll("span");
+            spans[0].style.transform = "none";
+            spans[1].style.opacity = "1";
+            spans[2].style.transform = "none";
+          }
         }
-      }
-    });
+      });
 
-    document.addEventListener("click", function (e) {
-      if (!e.target.closest(".suggestions-nav-item")) {
-        if (
-          suggestionsToggle &&
-          suggestionsToggle.classList.contains("active")
-        ) {
-          suggestionsToggle.classList.remove("active");
-          const icon = suggestionsToggle.querySelector(".toggle-icon");
-          icon.classList.remove("fa-chevron-up");
-          icon.classList.add("fa-chevron-down");
-          suggestionsSubmenu.style.maxHeight = "0";
+      document.addEventListener("click", function (e) {
+        if (!e.target.closest(".suggestions-nav-item")) {
+          if (
+            suggestionsToggle &&
+            suggestionsToggle.classList.contains("active")
+          ) {
+            suggestionsToggle.classList.remove("active");
+            const icon = suggestionsToggle.querySelector(".toggle-icon");
+            icon.classList.remove("fa-chevron-up");
+            icon.classList.add("fa-chevron-down");
+            suggestionsSubmenu.style.maxHeight = "0";
+          }
         }
-      }
-    });
+      });
 
-    document.addEventListener("DOMContentLoaded", async () => {
-      await hydrateUser();
-      loadSuggestions();
-    });
-  </script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        await hydrateUser();
+        loadSuggestions();
+      });
+    </script>
 
-  <style>
-    .filters {
-      display: flex;
-      gap: 20px;
-      margin: 30px 0;
-      align-items: center;
-      flex-wrap: wrap;
-      background: rgba(255, 255, 255, 0.05);
-      padding: 20px;
-      border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .filter-group {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .filter-group label {
-      color: var(--light);
-      font-weight: 600;
-      font-size: 14px;
-    }
-
-    .filter-select {
-      padding: 10px 15px;
-      background: rgba(64, 41, 88, 0.95) !important;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 8px;
-      color: var(--light) !important;
-      font-size: 14px;
-      min-width: 200px;
-      cursor: pointer;
-    }
-
-    .filter-select:focus {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 0 2px rgba(255, 204, 0, 0.2);
-    }
-
-    .refresh-btn {
-      padding: 12px 22px;
-      background: linear-gradient(90deg, var(--secondary), var(--primary));
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 12px;
-      font-size: 15px;
-      font-weight: 800;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      transition: all var(--transition-speed);
-      white-space: nowrap;
-      will-change: transform;
-      min-height: 44px;
-      margin-top: 30px;
-    }
-
-    .refresh-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.28);
-      border-color: rgba(255, 204, 0, 0.22);
-    }
-
-    .refresh-btn:active {
-      transform: translateY(0);
-    }
-
-    .refresh-btn i {
-      transition: transform 0.3s ease;
-    }
-
-    .refresh-btn:hover i {
-      transform: rotate(180deg);
-    }
-
-    .suggestions-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-      gap: 25px;
-      margin-top: 20px;
-    }
-
-    .suggestion-card {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(4px);
-      border-radius: 15px;
-      padding: 25px;
-      transition: all var(--transition-speed);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .suggestion-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-      border-color: rgba(255, 204, 0, 0.35);
-    }
-
-    .suggestion-header {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      margin-bottom: 20px;
-      padding-bottom: 15px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .user-avatar-small {
-      width: 50px;
-      height: 50px;
-      background: rgba(255, 204, 0, 0.1);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      color: var(--accent);
-    }
-
-    .suggestion-info {
-      flex-grow: 1;
-    }
-
-    .suggestion-info h3 {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--light);
-      margin-bottom: 5px;
-    }
-
-    .username {
-      font-size: 14px;
-      color: #bdc3c7;
-      background: rgba(52, 73, 94, 0.5);
-      padding: 3px 10px;
-      border-radius: 12px;
-    }
-
-    .suggestion-grade {
-      padding: 5px 15px;
-      background: rgba(52, 152, 219, 0.2);
-      color: #3498db;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    .suggestion-content {
-      margin-bottom: 20px;
-    }
-
-    .suggestion-content p {
-      color: var(--light);
-      line-height: 1.6;
-      font-size: 15px;
-      padding: 15px;
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 10px;
-      border-right: 3px solid var(--accent);
-    }
-
-    .suggestion-meta {
-      display: flex;
-      justify-content: flex-end;
-    }
-
-    .meta-date {
-      font-size: 13px;
-      color: #95a5a6;
-      background: rgba(255, 255, 255, 0.05);
-      padding: 8px 15px;
-      border-radius: 20px;
-      font-weight: 500;
-    }
-
-    .loading-state,
-    .empty-state {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 60px 20px;
-      background: rgba(255, 255, 255, 0.03);
-      border-radius: 15px;
-      border: 2px dashed rgba(255, 255, 255, 0.1);
-    }
-
-    .loading-state i,
-    .empty-state i {
-      font-size: 48px;
-      color: var(--accent);
-      margin-bottom: 20px;
-    }
-
-    .loading-state p,
-    .empty-state h3 {
-      color: var(--light);
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-
-    .empty-state p {
-      color: #bdc3c7;
-      font-size: 14px;
-    }
-
-    .grades-nav-item,
-    .suggestions-nav-item {
-      position: relative;
-    }
-
-    .grades-submenu-container,
-    .suggestions-submenu-container {
-      overflow: hidden;
-      position: relative;
-    }
-
-    .grades-submenu,
-    .suggestions-submenu {
-      max-height: 0;
-      overflow-y: auto;
-      overflow-x: hidden;
-      transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      margin-right: 20px;
-      border-right: 2px solid var(--accent);
-      margin-top: 5px;
-      padding-right: 8px;
-      scrollbar-width: thin;
-      scrollbar-color: var(--accent) rgba(255, 255, 255, 0.05);
-    }
-
-    .grades-toggle.active+.grades-submenu-container .grades-submenu,
-    .suggestions-toggle.active+.suggestions-submenu-container .suggestions-submenu {
-      max-height: 250px;
-      animation: fadeInDown 0.3s ease-out;
-    }
-
-    .grades-submenu::-webkit-scrollbar,
-    .suggestions-submenu::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .grades-submenu::-webkit-scrollbar-track,
-    .suggestions-submenu::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.03);
-      border-radius: 10px;
-      margin: 5px 0;
-    }
-
-    .grades-submenu::-webkit-scrollbar-thumb,
-    .suggestions-submenu::-webkit-scrollbar-thumb {
-      background: linear-gradient(to bottom, var(--accent), #ffd700);
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .grades-submenu::-webkit-scrollbar-thumb:hover,
-    .suggestions-submenu::-webkit-scrollbar-thumb:hover {
-      background: linear-gradient(to bottom, #ffd700, var(--accent));
-      box-shadow: 0 0 8px rgba(255, 204, 0, 0.3);
-    }
-
-    .grades-submenu-container::before,
-    .grades-submenu-container::after,
-    .suggestions-submenu-container::before,
-    .suggestions-submenu-container::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      right: 12px;
-      height: 20px;
-      pointer-events: none;
-      z-index: 2;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .grades-submenu-container::before,
-    .suggestions-submenu-container::before {
-      top: 0;
-      background: linear-gradient(to bottom,
-          rgba(42, 27, 60, 0.95),
-          transparent);
-    }
-
-    .grades-submenu-container::after,
-    .suggestions-submenu-container::after {
-      bottom: 0;
-      background: linear-gradient(to top,
-          rgba(42, 27, 60, 0.95),
-          transparent);
-    }
-
-    .grades-toggle.active+.grades-submenu-container::before,
-    .grades-toggle.active+.grades-submenu-container::after,
-    .suggestions-toggle.active+.suggestions-submenu-container::before,
-    .suggestions-toggle.active+.suggestions-submenu-container::after {
-      opacity: 1;
-    }
-
-    .submenu-header {
-      margin-bottom: 5px;
-      position: relative;
-    }
-
-    .section-submenu {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease;
-      margin-right: 20px;
-      margin-top: 5px;
-    }
-
-    .section-toggle.active+.section-submenu {
-      max-height: 150px;
-      animation: slideIn 0.3s ease-out;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .submenu-link {
-      padding: 12px 15px;
-      font-size: 14px;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 6px;
-      margin-bottom: 3px;
-      display: block;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-      border: 1px solid transparent;
-    }
-
-    .submenu-link:hover {
-      background: rgba(255, 204, 0, 0.15);
-      transform: translateX(-5px);
-      border-color: var(--accent);
-      box-shadow: 0 4px 12px rgba(255, 204, 0, 0.2);
-    }
-
-    .submenu-link.active {
-      background: rgba(255, 204, 0, 0.2);
-      border-color: var(--accent);
-    }
-
-    .submenu-link::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg,
-          transparent,
-          rgba(255, 255, 255, 0.1),
-          transparent);
-      transition: left 0.5s ease;
-    }
-
-    .submenu-link:hover::before {
-      left: 100%;
-    }
-
-    .submenu-link i {
-      font-size: 12px;
-      color: var(--accent);
-      transition: transform 0.3s ease;
-    }
-
-    .submenu-link:hover i {
-      transform: translateX(-3px);
-    }
-
-    @keyframes fadeInDown {
-      from {
-        opacity: 0;
-        transform: translateY(-10px);
+    <style>
+      .filters {
+        display: flex;
+        gap: 20px;
+        margin: 30px 0;
+        align-items: center;
+        flex-wrap: wrap;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 20px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
       }
 
-      to {
-        opacity: 1;
+      .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .filter-group label {
+        color: var(--light);
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      .filter-select {
+        padding: 10px 15px;
+        background: rgba(64, 41, 88, 0.95) !important;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        color: var(--light) !important;
+        font-size: 14px;
+        min-width: 200px;
+        cursor: pointer;
+      }
+
+      .filter-select:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 2px rgba(255, 204, 0, 0.2);
+      }
+
+      .refresh-btn {
+        padding: 12px 22px;
+        background: linear-gradient(90deg, var(--secondary), var(--primary));
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 12px;
+        font-size: 15px;
+        font-weight: 800;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: all var(--transition-speed);
+        white-space: nowrap;
+        will-change: transform;
+        min-height: 44px;
+        margin-top: 30px;
+      }
+
+      .refresh-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.28);
+        border-color: rgba(255, 204, 0, 0.22);
+      }
+
+      .refresh-btn:active {
         transform: translateY(0);
       }
-    }
 
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateX(-10px);
+      .refresh-btn i {
+        transition: transform 0.3s ease;
       }
 
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-
-    @media (max-width: 992px) {
-      .sidebar {
-        overflow-y: auto;
-        overflow-x: hidden;
-        scrollbar-width: thin;
-        scrollbar-color: var(--accent) rgba(255, 255, 255, 0.05);
+      .refresh-btn:hover i {
+        transform: rotate(180deg);
       }
 
-      .sidebar::-webkit-scrollbar {
-        width: 4px;
+      .suggestions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+        gap: 25px;
+        margin-top: 20px;
       }
 
-      .sidebar::-webkit-scrollbar-track {
-        background: rgba(255, 255, 255, 0.03);
+      .suggestion-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(4px);
+        border-radius: 15px;
+        padding: 25px;
+        transition: all var(--transition-speed);
+        border: 1px solid rgba(255, 255, 255, 0.1);
       }
 
-      .sidebar::-webkit-scrollbar-thumb {
-        background: var(--accent);
+      .suggestion-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        border-color: rgba(255, 204, 0, 0.35);
+      }
+
+      .suggestion-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .user-avatar-small {
+        width: 50px;
+        height: 50px;
+        background: rgba(255, 204, 0, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: var(--accent);
+      }
+
+      .suggestion-info {
+        flex-grow: 1;
+      }
+
+      .suggestion-info h3 {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--light);
+        margin-bottom: 5px;
+      }
+
+      .username {
+        font-size: 14px;
+        color: #bdc3c7;
+        background: rgba(52, 73, 94, 0.5);
+        padding: 3px 10px;
+        border-radius: 12px;
+      }
+
+      .suggestion-grade {
+        padding: 5px 15px;
+        background: rgba(52, 152, 219, 0.2);
+        color: #3498db;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .suggestion-content {
+        margin-bottom: 20px;
+      }
+
+      .suggestion-content p {
+        color: var(--light);
+        line-height: 1.6;
+        font-size: 15px;
+        padding: 15px;
+        background: rgba(0, 0, 0, 0.3);
         border-radius: 10px;
+        border-right: 3px solid var(--accent);
+      }
+
+      .suggestion-meta {
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      .meta-date {
+        font-size: 13px;
+        color: #95a5a6;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-weight: 500;
+      }
+
+      .loading-state,
+      .empty-state {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 60px 20px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 15px;
+        border: 2px dashed rgba(255, 255, 255, 0.1);
+      }
+
+      .loading-state i,
+      .empty-state i {
+        font-size: 48px;
+        color: var(--accent);
+        margin-bottom: 20px;
+      }
+
+      .loading-state p,
+      .empty-state h3 {
+        color: var(--light);
+        font-size: 18px;
+        margin-bottom: 10px;
+      }
+
+      .empty-state p {
+        color: #bdc3c7;
+        font-size: 14px;
+      }
+
+      .grades-nav-item,
+      .suggestions-nav-item {
+        position: relative;
+      }
+
+      .grades-submenu-container,
+      .suggestions-submenu-container {
+        overflow: hidden;
+        position: relative;
       }
 
       .grades-submenu,
       .suggestions-submenu {
         max-height: 0;
-        margin-right: 15px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        margin-right: 20px;
+        border-right: 2px solid var(--accent);
+        margin-top: 5px;
+        padding-right: 8px;
+        scrollbar-width: thin;
+        scrollbar-color: var(--accent) rgba(255, 255, 255, 0.05);
       }
 
-      .grades-toggle.active+.grades-submenu-container .grades-submenu {
-        max-height: 220px;
+      .grades-toggle.active + .grades-submenu-container .grades-submenu,
+      .suggestions-toggle.active
+        + .suggestions-submenu-container
+        .suggestions-submenu {
+        max-height: 250px;
+        animation: fadeInDown 0.3s ease-out;
       }
 
-      .suggestions-toggle.active+.suggestions-submenu-container .suggestions-submenu {
-        max-height: 180px;
+      .grades-submenu::-webkit-scrollbar,
+      .suggestions-submenu::-webkit-scrollbar {
+        width: 6px;
       }
 
-      .section-toggle.active+.section-submenu {
-        max-height: 140px;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .suggestions-grid {
-        grid-template-columns: 1fr;
+      .grades-submenu::-webkit-scrollbar-track,
+      .suggestions-submenu::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 10px;
+        margin: 5px 0;
       }
 
-      .filters {
-        flex-direction: column;
-        align-items: stretch;
+      .grades-submenu::-webkit-scrollbar-thumb,
+      .suggestions-submenu::-webkit-scrollbar-thumb {
+        background: linear-gradient(to bottom, var(--accent), #ffd700);
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
       }
 
-      .filter-select {
-        min-width: auto;
-        width: 100%;
-      }
-    }
-
-    @media (max-width: 576px) {
-      .grades-toggle.active+.grades-submenu-container .grades-submenu {
-        max-height: 200px;
+      .grades-submenu::-webkit-scrollbar-thumb:hover,
+      .suggestions-submenu::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(to bottom, #ffd700, var(--accent));
+        box-shadow: 0 0 8px rgba(255, 204, 0, 0.3);
       }
 
-      .suggestions-toggle.active+.suggestions-submenu-container .suggestions-submenu {
-        max-height: 160px;
+      .grades-submenu-container::before,
+      .grades-submenu-container::after,
+      .suggestions-submenu-container::before,
+      .suggestions-submenu-container::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 12px;
+        height: 20px;
+        pointer-events: none;
+        z-index: 2;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .grades-submenu-container::before,
+      .suggestions-submenu-container::before {
+        top: 0;
+        background: linear-gradient(
+          to bottom,
+          rgba(42, 27, 60, 0.95),
+          transparent
+        );
+      }
+
+      .grades-submenu-container::after,
+      .suggestions-submenu-container::after {
+        bottom: 0;
+        background: linear-gradient(
+          to top,
+          rgba(42, 27, 60, 0.95),
+          transparent
+        );
+      }
+
+      .grades-toggle.active + .grades-submenu-container::before,
+      .grades-toggle.active + .grades-submenu-container::after,
+      .suggestions-toggle.active + .suggestions-submenu-container::before,
+      .suggestions-toggle.active + .suggestions-submenu-container::after {
+        opacity: 1;
+      }
+
+      .submenu-header {
+        margin-bottom: 5px;
+        position: relative;
+      }
+
+      .section-submenu {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        margin-right: 20px;
+        margin-top: 5px;
+      }
+
+      .section-toggle.active + .section-submenu {
+        max-height: 150px;
+        animation: slideIn 0.3s ease-out;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
       }
 
       .submenu-link {
-        padding: 10px 12px;
-        font-size: 13px;
+        padding: 12px 15px;
+        font-size: 14px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 6px;
+        margin-bottom: 3px;
+        display: block;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid transparent;
       }
 
-      .suggestion-header {
-        flex-direction: column;
-        text-align: center;
+      .submenu-link:hover {
+        background: rgba(255, 204, 0, 0.15);
+        transform: translateX(-5px);
+        border-color: var(--accent);
+        box-shadow: 0 4px 12px rgba(255, 204, 0, 0.2);
       }
-    }
-  </style>
-  <script>
-    (function () {
-      function updatePendingBadges() {
-        if (document.visibilityState !== "visible") return;
-        fetch("/api/admin/pending-counts")
-          .then(function (r) { return r.json(); })
-          .then(function (d) {
-            var loginBadge = document.getElementById("nav-badge-login");
-            var giftBadge = document.getElementById("nav-badge-gift");
-            var loginCount = d.pendingRegistration || 0;
-            var giftCount = d.pendingGift || 0;
-            if (loginBadge) {
-              loginBadge.textContent = loginCount;
-              loginBadge.classList.toggle("empty", loginCount === 0);
-              loginBadge.setAttribute("aria-hidden", loginCount === 0 ? "true" : "false");
-            }
-            if (giftBadge) {
-              giftBadge.textContent = giftCount;
-              giftBadge.classList.toggle("empty", giftCount === 0);
-              giftBadge.setAttribute("aria-hidden", giftCount === 0 ? "true" : "false");
-            }
-          })
-          .catch(function () { });
-      }
-      updatePendingBadges();
-      setInterval(updatePendingBadges, 10000);
-      document.addEventListener("visibilitychange", function () {
-        if (document.visibilityState === "visible") updatePendingBadges();
-      });
-    })();
-  </script>
-</body>
 
+      .submenu-link.active {
+        background: rgba(255, 204, 0, 0.2);
+        border-color: var(--accent);
+      }
+
+      .submenu-link::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.1),
+          transparent
+        );
+        transition: left 0.5s ease;
+      }
+
+      .submenu-link:hover::before {
+        left: 100%;
+      }
+
+      .submenu-link i {
+        font-size: 12px;
+        color: var(--accent);
+        transition: transform 0.3s ease;
+      }
+
+      .submenu-link:hover i {
+        transform: translateX(-3px);
+      }
+
+      @keyframes fadeInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(-10px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @media (max-width: 992px) {
+        .sidebar {
+          overflow-y: auto;
+          overflow-x: hidden;
+          scrollbar-width: thin;
+          scrollbar-color: var(--accent) rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar::-webkit-scrollbar {
+          width: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.03);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+          background: var(--accent);
+          border-radius: 10px;
+        }
+
+        .grades-submenu,
+        .suggestions-submenu {
+          max-height: 0;
+          margin-right: 15px;
+        }
+
+        .grades-toggle.active + .grades-submenu-container .grades-submenu {
+          max-height: 220px;
+        }
+
+        .suggestions-toggle.active
+          + .suggestions-submenu-container
+          .suggestions-submenu {
+          max-height: 180px;
+        }
+
+        .section-toggle.active + .section-submenu {
+          max-height: 140px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .suggestions-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .filters {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .filter-select {
+          min-width: auto;
+          width: 100%;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .grades-toggle.active + .grades-submenu-container .grades-submenu {
+          max-height: 200px;
+        }
+
+        .suggestions-toggle.active
+          + .suggestions-submenu-container
+          .suggestions-submenu {
+          max-height: 160px;
+        }
+
+        .submenu-link {
+          padding: 10px 12px;
+          font-size: 13px;
+        }
+
+        .suggestion-header {
+          flex-direction: column;
+          text-align: center;
+        }
+      }
+    </style>
+    <script>
+      (function () {
+        function updatePendingBadges() {
+          if (document.visibilityState !== "visible") return;
+          fetch("/api/admin/pending-counts")
+            .then(function (r) {
+              return r.json();
+            })
+            .then(function (d) {
+              var loginBadge = document.getElementById("nav-badge-login");
+              var giftBadge = document.getElementById("nav-badge-gift");
+              var loginCount = d.pendingRegistration || 0;
+              var giftCount = d.pendingGift || 0;
+              if (loginBadge) {
+                loginBadge.textContent = loginCount;
+                loginBadge.classList.toggle("empty", loginCount === 0);
+                loginBadge.setAttribute(
+                  "aria-hidden",
+                  loginCount === 0 ? "true" : "false",
+                );
+              }
+              if (giftBadge) {
+                giftBadge.textContent = giftCount;
+                giftBadge.classList.toggle("empty", giftCount === 0);
+                giftBadge.setAttribute(
+                  "aria-hidden",
+                  giftCount === 0 ? "true" : "false",
+                );
+              }
+            })
+            .catch(function () {});
+        }
+        updatePendingBadges();
+        setInterval(updatePendingBadges, 10000);
+        document.addEventListener("visibilitychange", function () {
+          if (document.visibilityState === "visible") updatePendingBadges();
+        });
+      })();
+    </script>
+  </body>
 </html>

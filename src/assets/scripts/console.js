@@ -36,9 +36,7 @@
       if (typeof console[method] === "function") {
         originalConsoleMethods[method] = console[method].bind(console);
       }
-    } catch (e) {
-      // Some methods might not be bindable
-    }
+    } catch (e) {}
   });
 
   Object.keys(console).forEach((method) => {
@@ -49,18 +47,19 @@
       console[method] = (...args) => {
         if (
           args.some(
-            (arg) => typeof arg === "string" && (arg.includes("localStorage") || arg.includes("sessionStorage"))
+            (arg) =>
+              typeof arg === "string" &&
+              (arg.includes("localStorage") || arg.includes("sessionStorage")),
           )
         ) {
-          throw new Error(`Blocked: Unauthorized console operation on ${method}!`);
+          throw new Error(
+            `Blocked: Unauthorized console operation on ${method}!`,
+          );
         }
         return original(...args);
       };
-    } catch (e) {
-      // Fallback for non-configurable console methods
-    }
+    } catch (e) {}
   });
-
 
   const warning = `
     %cSTOP!

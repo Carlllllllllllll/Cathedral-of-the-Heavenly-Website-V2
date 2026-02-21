@@ -1,339 +1,411 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="كاتدرائية السمائيين – «اِفْرَحُوا فِي الرَّبِّ كُلَّ حِينٍ» (فيلبي ٤: ٤)"
+    />
+    <meta
+      name="keywords"
+      content="كاتدرائية السمائيين – «اِفْرَحُوا فِي الرَّبِّ كُلَّ حِينٍ» (فيلبي ٤: ٤)"
+    />
+    <meta name="author" content="كاتدرائية السمائيين" />
+    <meta name="theme-color" content="#402958" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>إضافة هدية | لوحة الإدارة | كاتدرائية السمائيين</title>
+    <link rel="icon" href="/UI/icon.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="/UI/icon.png" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"
+      defer
+    ></script>
+    <link rel="stylesheet" href="/design/theme.css" />
+    <link rel="stylesheet" href="/design/admin.css" />
+    <link rel="stylesheet" href="/design/admin-dashboard.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="كاتدرائية السمائيين – «اِفْرَحُوا فِي الرَّبِّ كُلَّ حِينٍ» (فيلبي ٤: ٤)" />
-  <meta name="keywords" content="كاتدرائية السمائيين – «اِفْرَحُوا فِي الرَّبِّ كُلَّ حِينٍ» (فيلبي ٤: ٤)" />
-  <meta name="author" content="كاتدرائية السمائيين" />
-  <meta name="theme-color" content="#402958" />
-  <meta name="robots" content="noindex, nofollow" />
-  <title>إضافة هدية | لوحة الإدارة | كاتدرائية السمائيين</title>
-  <link rel="icon" href="/UI/icon.png" type="image/png" sizes="16x16" />
-  <link rel="apple-touch-icon" href="/UI/icon.png" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap"
-    rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js" defer></script>
-  <link rel="stylesheet" href="/design/theme.css" />
-  <link rel="stylesheet" href="/design/admin.css" />
-  <link rel="stylesheet" href="/design/admin-dashboard.css" />
-</head>
-
-<body>
-  <div class="mobile-toggle" id="mobileToggle">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
-
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <div class="logo-container">
-        <img src="/UI/logo.png" alt="اللوغو" />
-        <div class="logo-text">
-          <h1>كاتدرائية السمائيين</h1>
-          <p>إضافة هدايا المتجر وتجهيزها للعرض</p>
-        </div>
-      </div>
+  <body>
+    <div class="mobile-toggle" id="mobileToggle">
+      <span></span>
+      <span></span>
+      <span></span>
     </div>
 
-    <nav class="nav-menu">
-      <div class="nav-item">
-        <a href="https://kenisa-el-sama2eyeen.ooguy.com" class="nav-link">
-          <i class="fas fa-home"></i>
-          الصفحة الرئيسية
-        </a>
-      </div>
-      <div class="nav-item" data-nav-access="hasFormEditorRole">
-        <a href="/admin/form-panel" class="nav-link">
-          <i class="fas fa-tachometer-alt"></i>
-          النماذج
-        </a>
-      </div>
-
-      <div class="nav-item grades-nav-item">
-        <div class="nav-link grades-toggle" id="gradesToggle">
-          <i class="fas fa-graduation-cap"></i>
-          الصفوف الدراسية
-          <i class="fas fa-chevron-down toggle-icon"></i>
-        </div>
-        <div class="grades-submenu-container">
-          <div class="grades-submenu" id="gradesSubmenu">
-            <div class="submenu-header">
-              <div class="nav-link section-toggle" data-section="prep">
-                <i class="fas fa-school"></i>
-                الإعدادية
-                <i class="fas fa-chevron-down toggle-icon"></i>
-              </div>
-              <div class="section-submenu" data-section="prep">
-                <a href="/grades/prep1" class="nav-link submenu-link">
-                  <i class="fas fa-arrow-left"></i>
-                  أولي إعدادي
-                </a>
-                <a href="/grades/prep2" class="nav-link submenu-link">
-                  <i class="fas fa-arrow-left"></i>
-                  ثانية إعدادي
-                </a>
-                <a href="/grades/prep3" class="nav-link submenu-link">
-                  <i class="fas fa-arrow-left"></i>
-                  ثالثة إعدادي
-                </a>
-              </div>
-            </div>
-
-            <div class="submenu-header">
-              <div class="nav-link section-toggle" data-section="sec">
-                <i class="fas fa-university"></i>
-                الثانوية
-                <i class="fas fa-chevron-down toggle-icon"></i>
-              </div>
-              <div class="section-submenu" data-section="sec">
-                <a href="/grades/sec1" class="nav-link submenu-link">
-                  <i class="fas fa-arrow-left"></i>
-                  أولي ثانوي
-                </a>
-                <a href="/grades/sec2" class="nav-link submenu-link">
-                  <i class="fas fa-arrow-left"></i>
-                  ثانية ثانوي
-                </a>
-                <a href="/grades/sec3" class="nav-link submenu-link">
-                  <i class="fas fa-arrow-left"></i>
-                  ثالثة ثانوي
-                </a>
-              </div>
-            </div>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-container">
+          <img src="/UI/logo.png" alt="اللوغو" />
+          <div class="logo-text">
+            <h1>كاتدرائية السمائيين</h1>
+            <p>إضافة هدايا المتجر وتجهيزها للعرض</p>
           </div>
         </div>
       </div>
 
-      <div class="nav-item" data-nav-access="hasUserApproverRole">
-        <a href="/admin/user-approvals" class="nav-link">
-          <i class="fas fa-user-check"></i>
-          <span>طلبات التسجيل</span>
-          <span class="nav-unread-badge" id="nav-badge-login" aria-hidden="true"></span>
-        </a>
-      </div>
-      <div class="nav-item" data-nav-access="hasUserApproverRole">
-        <a href="/admin/user-management" class="nav-link">
-          <i class="fas fa-users"></i>
-          إدارة المستخدمين
-        </a>
-      </div>
-      <div class="nav-item" data-nav-access="hasFormEditorRole">
-        <a href="/admin/gift-shop/add" class="nav-link active">
-          <i class="fas fa-plus-circle"></i>
-          إضافة هدية
-        </a>
-      </div>
-      <div class="nav-item" data-nav-access="hasGiftApproverRole">
-        <a href="/admin/gift-shop/approvals" class="nav-link">
-          <i class="fas fa-gift"></i>
-          <span>طلبات الهدايا</span>
-          <span class="nav-unread-badge" id="nav-badge-gift" aria-hidden="true"></span>
-        </a>
-      </div>
-
-      <div class="nav-item suggestions-nav-item">
-        <div class="nav-link suggestions-toggle" id="suggestionsToggle">
-          <i class="fas fa-lightbulb"></i>
-          الاقتراحات
-          <i class="fas fa-chevron-down toggle-icon"></i>
+      <nav class="nav-menu">
+        <div class="nav-item">
+          <a href="https://kenisa-el-sama2eyeen.ooguy.com" class="nav-link">
+            <i class="fas fa-home"></i>
+            الصفحة الرئيسية
+          </a>
         </div>
-        <div class="suggestions-submenu-container">
-          <div class="suggestions-submenu" id="suggestionsSubmenu">
-            <a href="/admin/suggestion/ektma3at" class="nav-link submenu-link">
-              <i class="fas fa-users"></i>
-              اقتراحات الاجتماعات
-            </a>
+        <div class="nav-item" data-nav-access="hasFormEditorRole">
+          <a href="/admin/form-panel" class="nav-link">
+            <i class="fas fa-tachometer-alt"></i>
+            النماذج
+          </a>
+        </div>
+
+        <div class="nav-item grades-nav-item">
+          <div class="nav-link grades-toggle" id="gradesToggle">
+            <i class="fas fa-graduation-cap"></i>
+            الصفوف الدراسية
+            <i class="fas fa-chevron-down toggle-icon"></i>
+          </div>
+          <div class="grades-submenu-container">
+            <div class="grades-submenu" id="gradesSubmenu">
+              <div class="submenu-header">
+                <div class="nav-link section-toggle" data-section="prep">
+                  <i class="fas fa-school"></i>
+                  الإعدادية
+                  <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+                <div class="section-submenu" data-section="prep">
+                  <a href="/grades/prep1" class="nav-link submenu-link">
+                    <i class="fas fa-arrow-left"></i>
+                    أولي إعدادي
+                  </a>
+                  <a href="/grades/prep2" class="nav-link submenu-link">
+                    <i class="fas fa-arrow-left"></i>
+                    ثانية إعدادي
+                  </a>
+                  <a href="/grades/prep3" class="nav-link submenu-link">
+                    <i class="fas fa-arrow-left"></i>
+                    ثالثة إعدادي
+                  </a>
+                </div>
+              </div>
+
+              <div class="submenu-header">
+                <div class="nav-link section-toggle" data-section="sec">
+                  <i class="fas fa-university"></i>
+                  الثانوية
+                  <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+                <div class="section-submenu" data-section="sec">
+                  <a href="/grades/sec1" class="nav-link submenu-link">
+                    <i class="fas fa-arrow-left"></i>
+                    أولي ثانوي
+                  </a>
+                  <a href="/grades/sec2" class="nav-link submenu-link">
+                    <i class="fas fa-arrow-left"></i>
+                    ثانية ثانوي
+                  </a>
+                  <a href="/grades/sec3" class="nav-link submenu-link">
+                    <i class="fas fa-arrow-left"></i>
+                    ثالثة ثانوي
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </nav>
 
-    <div class="sidebar-footer">
-      <button class="logout-btn" id="logoutBtn">
-        <i class="fas fa-sign-out-alt"></i>
-        تسجيل الخروج
-      </button>
-    </div>
-  </aside>
-
-  <main class="main-content">
-    <header class="top-nav">
-      <div class="user-info">
-        <img src="/UI/pfp.jpg" alt="المستخدم" class="user-avatar" />
-        <div class="user-details">
-          <h3 id="username-display">جاري التحميل...</h3>
-          <span id="user-role-pill" class="role-badge">مشرف</span>
+        <div class="nav-item" data-nav-access="hasUserApproverRole">
+          <a href="/admin/user-approvals" class="nav-link">
+            <i class="fas fa-user-check"></i>
+            <span>طلبات التسجيل</span>
+            <span
+              class="nav-unread-badge"
+              id="nav-badge-login"
+              aria-hidden="true"
+            ></span>
+          </a>
         </div>
-        <button class="logout-btn-mobile" id="logoutBtnMobile">
+        <div class="nav-item" data-nav-access="hasUserApproverRole">
+          <a href="/admin/user-management" class="nav-link">
+            <i class="fas fa-users"></i>
+            إدارة المستخدمين
+          </a>
+        </div>
+        <div class="nav-item" data-nav-access="hasFormEditorRole">
+          <a href="/admin/gift-shop/add" class="nav-link active">
+            <i class="fas fa-plus-circle"></i>
+            إضافة هدية
+          </a>
+        </div>
+        <div class="nav-item" data-nav-access="hasGiftApproverRole">
+          <a href="/admin/gift-shop/approvals" class="nav-link">
+            <i class="fas fa-gift"></i>
+            <span>طلبات الهدايا</span>
+            <span
+              class="nav-unread-badge"
+              id="nav-badge-gift"
+              aria-hidden="true"
+            ></span>
+          </a>
+        </div>
+
+        <div class="nav-item suggestions-nav-item">
+          <div class="nav-link suggestions-toggle" id="suggestionsToggle">
+            <i class="fas fa-lightbulb"></i>
+            الاقتراحات
+            <i class="fas fa-chevron-down toggle-icon"></i>
+          </div>
+          <div class="suggestions-submenu-container">
+            <div class="suggestions-submenu" id="suggestionsSubmenu">
+              <a
+                href="/admin/suggestion/ektma3at"
+                class="nav-link submenu-link"
+              >
+                <i class="fas fa-users"></i>
+                اقتراحات الاجتماعات
+              </a>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="logout-btn" id="logoutBtn">
           <i class="fas fa-sign-out-alt"></i>
+          تسجيل الخروج
         </button>
       </div>
-    </header>
+    </aside>
 
-    <div class="admin-container">
-      <h1><i class="fas fa-gift"></i> إدارة متجر الهدايا</h1>
-
-      <div class="create-form-card create-gift-card">
-        <div class="create-form-card-inner">
-          <i class="fas fa-gift create-form-icon"></i>
-          <h2 class="create-form-title">إضافة عنصر جديد</h2>
-          <p class="create-form-desc">أضف هدية جديدة للمتجر مع الاسم والتكلفة والوصف والصورة.</p>
-          <button id="add-item-btn" class="admin-btn add-btn" type="button">
-            <i class="fas fa-plus-circle"></i>
-            إضافة عنصر جديد
+    <main class="main-content">
+      <header class="top-nav">
+        <div class="user-info">
+          <img src="/UI/pfp.jpg" alt="المستخدم" class="user-avatar" />
+          <div class="user-details">
+            <h3 id="username-display">جاري التحميل...</h3>
+            <span id="user-role-pill" class="role-badge">مشرف</span>
+          </div>
+          <button class="logout-btn-mobile" id="logoutBtnMobile">
+            <i class="fas fa-sign-out-alt"></i>
           </button>
         </div>
+      </header>
+
+      <div class="admin-container">
+        <h1><i class="fas fa-gift"></i> إدارة متجر الهدايا</h1>
+
+        <div class="create-form-card create-gift-card">
+          <div class="create-form-card-inner">
+            <i class="fas fa-gift create-form-icon"></i>
+            <h2 class="create-form-title">إضافة عنصر جديد</h2>
+            <p class="create-form-desc">
+              أضف هدية جديدة للمتجر مع الاسم والتكلفة والوصف والصورة.
+            </p>
+            <button id="add-item-btn" class="admin-btn add-btn" type="button">
+              <i class="fas fa-plus-circle"></i>
+              إضافة عنصر جديد
+            </button>
+          </div>
+        </div>
+
+        <h2 class="section-title">
+          <i class="fas fa-gift"></i>
+          العناصر الموجودة
+        </h2>
+
+        <div id="admin-items-list" class="gift-shop-grid">
+          <div class="empty-state">
+            <span class="loading-dots" aria-hidden="true"
+              ><span></span><span></span><span></span
+            ></span>
+            <h3>جاري التحميل...</h3>
+          </div>
+        </div>
       </div>
+    </main>
 
-      <h2 class="section-title">
-        <i class="fas fa-gift"></i>
-        العناصر الموجودة
-      </h2>
-
-      <div id="admin-items-list" class="gift-shop-grid">
-        <div class="empty-state">
-          <span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span>
-          <h3>جاري التحميل...</h3>
+    <div id="add-item-modal" class="modal">
+      <div class="modal-content modal-gift-add">
+        <div class="modal-header">
+          <h2><i class="fas fa-gift"></i> إضافة عنصر جديد</h2>
+          <button class="close-button" id="close-modal-btn" aria-label="إغلاق">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="add-item-form" class="gift-add-form">
+            <div class="form-row form-row-2">
+              <div class="form-group">
+                <label for="item-name">اسم العنصر</label>
+                <input
+                  type="text"
+                  id="item-name"
+                  required
+                  placeholder="مثال: قلم مميز"
+                />
+              </div>
+              <div class="form-group">
+                <label for="item-cost">التكلفة (نقاط)</label>
+                <input
+                  type="number"
+                  id="item-cost"
+                  required
+                  min="1"
+                  placeholder="0"
+                />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="item-description">الوصف</label>
+              <textarea
+                id="item-description"
+                rows="3"
+                placeholder="وصف مختصر للعنصر..."
+              ></textarea>
+            </div>
+            <div class="form-row form-row-2">
+              <div class="form-group">
+                <label for="item-stock">الكمية (-1 = غير محدود)</label>
+                <input
+                  type="number"
+                  id="item-stock"
+                  value="-1"
+                  placeholder="-1"
+                />
+              </div>
+              <div class="form-group">
+                <label for="item-purchase-limit"
+                  >حد الشراء لكل مستخدم (-1 = غير محدود)</label
+                >
+                <input
+                  type="number"
+                  id="item-purchase-limit"
+                  value="-1"
+                  placeholder="-1"
+                />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="item-image">رابط الصورة</label>
+              <input
+                type="url"
+                id="item-image"
+                placeholder="https://example.com/image.jpg"
+              />
+            </div>
+            <div class="form-actions">
+              <button type="button" class="cancel-btn" id="cancel-add-btn">
+                إلغاء
+              </button>
+              <button type="submit" class="submit-btn">
+                <i class="fas fa-plus"></i>
+                إضافة العنصر
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
-  </main>
 
-  <div id="add-item-modal" class="modal">
-    <div class="modal-content modal-gift-add">
-      <div class="modal-header">
-        <h2><i class="fas fa-gift"></i> إضافة عنصر جديد</h2>
-        <button class="close-button" id="close-modal-btn" aria-label="إغلاق">&times;</button>
-      </div>
-      <div class="modal-body">
-        <form id="add-item-form" class="gift-add-form">
-          <div class="form-row form-row-2">
-            <div class="form-group">
-              <label for="item-name">اسم العنصر</label>
-              <input type="text" id="item-name" required placeholder="مثال: قلم مميز" />
-            </div>
-            <div class="form-group">
-              <label for="item-cost">التكلفة (نقاط)</label>
-              <input type="number" id="item-cost" required min="1" placeholder="0" />
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="item-description">الوصف</label>
-            <textarea id="item-description" rows="3" placeholder="وصف مختصر للعنصر..."></textarea>
-          </div>
-          <div class="form-row form-row-2">
-            <div class="form-group">
-              <label for="item-stock">الكمية (-1 = غير محدود)</label>
-              <input type="number" id="item-stock" value="-1" placeholder="-1" />
-            </div>
-            <div class="form-group">
-              <label for="item-purchase-limit">حد الشراء لكل مستخدم (-1 = غير محدود)</label>
-              <input type="number" id="item-purchase-limit" value="-1" placeholder="-1" />
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="item-image">رابط الصورة</label>
-            <input type="url" id="item-image" placeholder="https://example.com/image.jpg" />
-          </div>
-          <div class="form-actions">
-            <button type="button" class="cancel-btn" id="cancel-add-btn">إلغاء</button>
-            <button type="submit" class="submit-btn">
-              <i class="fas fa-plus"></i>
-              إضافة العنصر
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    async function loadUserInfo() {
-      try {
-        const response = await fetch("/api/user-info");
-        const data = await response.json();
-        if (!data.isAuthenticated) {
-          window.location.href = "/login";
-          return;
+    <script>
+      async function loadUserInfo() {
+        try {
+          const response = await fetch("/api/user-info");
+          const data = await response.json();
+          if (!data.isAuthenticated) {
+            window.location.href = "/login";
+            return;
+          }
+          if (data.role !== "admin" && data.role !== "leadadmin") {
+            window.location.href = "/403";
+            return;
+          }
+          document.getElementById("username-display").textContent =
+            data.username;
+          const pill = document.getElementById("user-role-pill");
+          pill.textContent = data.role === "leadadmin" ? "ليد أدمن" : "أدمن";
+          pill.className = "role-badge role-" + (data.role || "admin");
+          document.querySelectorAll("[data-nav-access]").forEach(function (el) {
+            var key = el.getAttribute("data-nav-access");
+            el.style.display = data[key] ? "" : "none";
+          });
+        } catch (error) {
+          console.error("Error fetching user info:", error);
         }
-        if (data.role !== "admin" && data.role !== "leadadmin") {
-          window.location.href = "/403";
-          return;
+      }
+
+      const INITIAL_ITEMS_LIMIT = 4;
+      const LOAD_MORE_ITEMS_LIMIT = 2;
+      let adminItemsTotal = null;
+      let adminItemsSkip = 0;
+      let adminItemsLoading = false;
+      let adminItemsById = {};
+      let editingItemId = null;
+
+      function applyModalMode(isEdit) {
+        const modal = document.getElementById("add-item-modal");
+        if (!modal) return;
+        const titleEl = modal.querySelector(".modal-header h2");
+        if (titleEl) {
+          titleEl.innerHTML = isEdit
+            ? '<i class="fas fa-pen"></i> تعديل الهدية'
+            : '<i class="fas fa-gift"></i> إضافة عنصر جديد';
         }
-        document.getElementById("username-display").textContent =
-          data.username;
-        const pill = document.getElementById("user-role-pill");
-        pill.textContent = data.role === "leadadmin" ? "ليد أدمن" : "أدمن";
-        pill.className = "role-badge role-" + (data.role || "admin");
-        document.querySelectorAll("[data-nav-access]").forEach(function (el) {
-          var key = el.getAttribute("data-nav-access");
-          el.style.display = data[key] ? "" : "none";
-        });
-      } catch (error) {
-        console.error("Error fetching user info:", error);
+        const submitBtn = modal.querySelector(
+          "#add-item-form button[type='submit']",
+        );
+        if (submitBtn) {
+          submitBtn.innerHTML = isEdit
+            ? '<i class="fas fa-save"></i> حفظ التعديلات'
+            : '<i class="fas fa-plus"></i> إضافة العنصر';
+        }
       }
-    }
 
-    const INITIAL_ITEMS_LIMIT = 4;
-    const LOAD_MORE_ITEMS_LIMIT = 2;
-    let adminItemsTotal = null;
-    let adminItemsSkip = 0;
-    let adminItemsLoading = false;
-    let adminItemsById = {};
-    let editingItemId = null;
+      function openEditItem(itemId) {
+        const id = String(itemId || "");
+        if (!id) return;
+        const item = adminItemsById[id];
+        if (!item) return;
+        editingItemId = id;
+        applyModalMode(true);
+        showAddItemModal();
 
-    function applyModalMode(isEdit) {
-      const modal = document.getElementById("add-item-modal");
-      if (!modal) return;
-      const titleEl = modal.querySelector(".modal-header h2");
-      if (titleEl) {
-        titleEl.innerHTML = isEdit
-          ? '<i class="fas fa-pen"></i> تعديل الهدية'
-          : '<i class="fas fa-gift"></i> إضافة عنصر جديد';
+        const setVal = (elId, val) => {
+          const el = document.getElementById(elId);
+          if (el) el.value = val != null ? String(val) : "";
+        };
+
+        setVal("item-name", item.name || "");
+        setVal("item-description", item.description || "");
+        setVal("item-cost", item.cost != null ? item.cost : "");
+        setVal("item-stock", item.stock != null ? item.stock : "");
+        setVal(
+          "item-purchase-limit",
+          item.purchaseLimit != null ? item.purchaseLimit : "",
+        );
+        setVal("item-image", item.image || "");
       }
-      const submitBtn = modal.querySelector("#add-item-form button[type='submit']");
-      if (submitBtn) {
-        submitBtn.innerHTML = isEdit
-          ? '<i class="fas fa-save"></i> حفظ التعديلات'
-          : '<i class="fas fa-plus"></i> إضافة العنصر';
-      }
-    }
 
-    function openEditItem(itemId) {
-      const id = String(itemId || "");
-      if (!id) return;
-      const item = adminItemsById[id];
-      if (!item) return;
-      editingItemId = id;
-      applyModalMode(true);
-      showAddItemModal();
-
-      const setVal = (elId, val) => {
-        const el = document.getElementById(elId);
-        if (el) el.value = val != null ? String(val) : "";
-      };
-
-      setVal("item-name", item.name || "");
-      setVal("item-description", item.description || "");
-      setVal("item-cost", item.cost != null ? item.cost : "");
-      setVal("item-stock", item.stock != null ? item.stock : "");
-      setVal("item-purchase-limit", item.purchaseLimit != null ? item.purchaseLimit : "");
-      setVal("item-image", item.image || "");
-    }
-
-    function getAdminItemCardHtml(item) {
-      return `
+      function getAdminItemCardHtml(item) {
+        return `
           <div class="gift-item admin-item">
-              ${item.image
-          ? `<img src="${item.image}" alt="${item.name}" loading="lazy">`
-          : '<div class="no-image"><i class="fas fa-gift"></i></div>'
-        }
+              ${
+                item.image
+                  ? `<img src="${item.image}" alt="${item.name}" loading="lazy">`
+                  : '<div class="no-image"><i class="fas fa-gift"></i></div>'
+              }
               <h3>${item.name}</h3>
               <p>${item.description || ""}</p>
               <div class="gift-meta">
@@ -358,13 +430,13 @@
               </div>
           </div>
       `;
-    }
+      }
 
-    function renderAdminItemsLoading(listEl) {
-      if (!listEl) return;
-      listEl.insertAdjacentHTML(
-        "beforeend",
-        `
+      function renderAdminItemsLoading(listEl) {
+        if (!listEl) return;
+        listEl.insertAdjacentHTML(
+          "beforeend",
+          `
           <div class="gift-item admin-item admin-item-loading" aria-hidden="true">
             <div class="admin-item-loading-img"></div>
             <div class="admin-item-loading-line"></div>
@@ -374,1498 +446,1567 @@
               <div class="admin-item-loading-btn"></div>
             </div>
           </div>
-        `
-      );
-    }
-
-    function clearAdminItemsLoading(listEl) {
-      if (!listEl) return;
-      listEl.querySelectorAll(".admin-item-loading").forEach((el) => el.remove());
-    }
-
-    function ensureAdminItemsSentinel(listEl) {
-      if (!listEl) return null;
-      let sentinel = document.getElementById("admin-items-sentinel");
-      if (!sentinel) {
-        sentinel = document.createElement("div");
-        sentinel.id = "admin-items-sentinel";
-        sentinel.className = "admin-items-sentinel";
-        listEl.appendChild(sentinel);
-      }
-      return sentinel;
-    }
-
-    async function fetchAdminItemsPage(limit, skip) {
-      const params = new URLSearchParams({ limit: String(limit), skip: String(skip) });
-      const res = await fetch("/api/admin/gift-shop/items?" + params.toString(), { credentials: "include" });
-      if (res.status === 401) {
-        window.location.href = "/login?redirect=" + encodeURIComponent(window.location.pathname + window.location.search);
-        return null;
-      }
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.message || "فشل تحميل العناصر");
-      const items = Array.isArray(data.items) ? data.items : Array.isArray(data) ? data : [];
-      const total = typeof data.total === "number" ? data.total : null;
-      return { items, total };
-    }
-
-    async function loadAdminItems(reset) {
-      const list = document.getElementById("admin-items-list");
-      if (!list || adminItemsLoading) return;
-
-      if (reset !== false) {
-        adminItemsSkip = 0;
-        adminItemsTotal = null;
-        list.innerHTML =
-          '<div class="empty-state"><span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span><h3>جاري التحميل...</h3></div>';
+        `,
+        );
       }
 
-      adminItemsLoading = true;
+      function clearAdminItemsLoading(listEl) {
+        if (!listEl) return;
+        listEl
+          .querySelectorAll(".admin-item-loading")
+          .forEach((el) => el.remove());
+      }
 
-      const requestLimit = adminItemsSkip === 0 ? INITIAL_ITEMS_LIMIT : LOAD_MORE_ITEMS_LIMIT;
+      function ensureAdminItemsSentinel(listEl) {
+        if (!listEl) return null;
+        let sentinel = document.getElementById("admin-items-sentinel");
+        if (!sentinel) {
+          sentinel = document.createElement("div");
+          sentinel.id = "admin-items-sentinel";
+          sentinel.className = "admin-items-sentinel";
+          listEl.appendChild(sentinel);
+        }
+        return sentinel;
+      }
 
-      try {
-        if (adminItemsSkip > 0) {
-          const sentinel = ensureAdminItemsSentinel(list);
-          if (sentinel) {
-            sentinel.classList.add("loading");
-            sentinel.innerHTML = `<div class="admin-items-loading-indicator">
+      async function fetchAdminItemsPage(limit, skip) {
+        const params = new URLSearchParams({
+          limit: String(limit),
+          skip: String(skip),
+        });
+        const res = await fetch(
+          "/api/admin/gift-shop/items?" + params.toString(),
+          { credentials: "include" },
+        );
+        if (res.status === 401) {
+          window.location.href =
+            "/login?redirect=" +
+            encodeURIComponent(
+              window.location.pathname + window.location.search,
+            );
+          return null;
+        }
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.message || "فشل تحميل العناصر");
+        const items = Array.isArray(data.items)
+          ? data.items
+          : Array.isArray(data)
+            ? data
+            : [];
+        const total = typeof data.total === "number" ? data.total : null;
+        return { items, total };
+      }
+
+      async function loadAdminItems(reset) {
+        const list = document.getElementById("admin-items-list");
+        if (!list || adminItemsLoading) return;
+
+        if (reset !== false) {
+          adminItemsSkip = 0;
+          adminItemsTotal = null;
+          list.innerHTML =
+            '<div class="empty-state"><span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span><h3>جاري التحميل...</h3></div>';
+        }
+
+        adminItemsLoading = true;
+
+        const requestLimit =
+          adminItemsSkip === 0 ? INITIAL_ITEMS_LIMIT : LOAD_MORE_ITEMS_LIMIT;
+
+        try {
+          if (adminItemsSkip > 0) {
+            const sentinel = ensureAdminItemsSentinel(list);
+            if (sentinel) {
+              sentinel.classList.add("loading");
+              sentinel.innerHTML = `<div class="admin-items-loading-indicator">
               <span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span>
               <span class="admin-items-loading-text">جاري التحميل...</span>
             </div>`;
+            }
           }
-        }
 
-        const page = await fetchAdminItemsPage(requestLimit, adminItemsSkip);
-        if (!page) return;
+          const page = await fetchAdminItemsPage(requestLimit, adminItemsSkip);
+          if (!page) return;
 
-        const items = page.items || [];
-        if (adminItemsTotal == null && page.total != null) adminItemsTotal = page.total;
+          const items = page.items || [];
+          if (adminItemsTotal == null && page.total != null)
+            adminItemsTotal = page.total;
 
-        items.forEach((it) => {
-          if (it && it._id) adminItemsById[String(it._id)] = it;
-        });
+          items.forEach((it) => {
+            if (it && it._id) adminItemsById[String(it._id)] = it;
+          });
 
-        if (adminItemsSkip === 0) {
-          if (items.length === 0) {
+          if (adminItemsSkip === 0) {
+            if (items.length === 0) {
+              list.innerHTML =
+                '<div class="empty-state"><i class="fas fa-gift"></i><h3>لا توجد عناصر</h3><p>لم يتم إضافة أي عناصر بعد</p></div>';
+              return;
+            }
+            list.innerHTML = items.map(getAdminItemCardHtml).join("");
+          } else {
+            const sentinel = document.getElementById("admin-items-sentinel");
+            if (sentinel) sentinel.remove();
+            list.insertAdjacentHTML(
+              "beforeend",
+              items.map(getAdminItemCardHtml).join(""),
+            );
+          }
+
+          adminItemsSkip += items.length;
+
+          const shouldLoadMore =
+            items.length > 0 &&
+            (adminItemsTotal == null || adminItemsSkip < adminItemsTotal);
+          if (shouldLoadMore) {
+            const sentinel = ensureAdminItemsSentinel(list);
+            if (sentinel && !sentinel._observerBound) {
+              const observer = new IntersectionObserver(
+                (entries) => {
+                  if (entries[0].isIntersecting) loadAdminItems(false);
+                },
+                { root: null, rootMargin: "240px", threshold: 0 },
+              );
+              observer.observe(sentinel);
+              sentinel._observerBound = true;
+            }
+          } else {
+            const sentinel = document.getElementById("admin-items-sentinel");
+            if (sentinel) sentinel.remove();
+          }
+        } catch (error) {
+          console.error("Error loading admin items:", error);
+          if (adminItemsSkip === 0) {
             list.innerHTML =
-              '<div class="empty-state"><i class="fas fa-gift"></i><h3>لا توجد عناصر</h3><p>لم يتم إضافة أي عناصر بعد</p></div>';
-            return;
+              '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>حدث خطأ</h3><p>تعذر تحميل العناصر</p></div>';
           }
-          list.innerHTML = items.map(getAdminItemCardHtml).join("");
-        } else {
-          const sentinel = document.getElementById("admin-items-sentinel");
-          if (sentinel) sentinel.remove();
-          list.insertAdjacentHTML("beforeend", items.map(getAdminItemCardHtml).join(""));
-        }
-
-        adminItemsSkip += items.length;
-
-        const shouldLoadMore = items.length > 0 && (adminItemsTotal == null || adminItemsSkip < adminItemsTotal);
-        if (shouldLoadMore) {
-          const sentinel = ensureAdminItemsSentinel(list);
-          if (sentinel && !sentinel._observerBound) {
-            const observer = new IntersectionObserver(
-              (entries) => {
-                if (entries[0].isIntersecting) loadAdminItems(false);
-              },
-              { root: null, rootMargin: "240px", threshold: 0 }
-            );
-            observer.observe(sentinel);
-            sentinel._observerBound = true;
-          }
-        } else {
-          const sentinel = document.getElementById("admin-items-sentinel");
-          if (sentinel) sentinel.remove();
-        }
-      } catch (error) {
-        console.error("Error loading admin items:", error);
-        if (adminItemsSkip === 0) {
-          list.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>حدث خطأ</h3><p>تعذر تحميل العناصر</p></div>';
-        }
-      } finally {
-        adminItemsLoading = false;
-        const sentinel = document.getElementById("admin-items-sentinel");
-        if (sentinel) {
-          sentinel.classList.remove("loading");
-          sentinel.innerHTML = "";
-        }
-      }
-    }
-
-    async function toggleItemActive(itemId, newStatus) {
-      const actionLabel = newStatus ? "تفعيل" : "تعطيل";
-      const confirmTitle = newStatus ? "تأكيد التفعيل" : "تأكيد التعطيل";
-      const confirmText = newStatus
-        ? "سيصبح هذا العنصر متاحاً في المتجر"
-        : "لن يكون هذا العنصر متاحاً للطلب في المتجر";
-
-      const result = await Swal.fire({
-        title: confirmTitle,
-        text: confirmText,
-        icon: "question",
-        showCancelButton: true,
-        confirmButtonText: `نعم، ${actionLabel}`,
-        cancelButtonText: "إلغاء",
-        confirmButtonColor: newStatus ? "#27ae60" : "#e67e22",
-        cancelButtonColor: "#666",
-        background: "#2a1b3c",
-        color: "#fff",
-        backdrop: "rgba(0,0,0,0.8)",
-      });
-
-      if (!result.isConfirmed) return;
-
-      await Swal.fire({
-        title: "جاري المعالجة...",
-        html:
-          '<span class="swal-loading-dots" aria-hidden="true"><span></span><span></span><span></span></span>',
-        allowOutsideClick: false,
-        allowEscapeKey: false,
-        showConfirmButton: false,
-        background: "#2a1b3c",
-        color: "#fff",
-        didOpen: async () => {
-          try {
-            const response = await fetch(
-              `/api/admin/gift-shop/items/${itemId}`,
-              {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ active: newStatus }),
-              }
-            );
-            const data = await response.json();
-
-            if (!response.ok) {
-              throw new Error(data.message || "فشل التحديث");
-            }
-
-            await Swal.fire({
-              title: "تم بنجاح!",
-              text: `تم ${actionLabel} العنصر بنجاح`,
-              icon: "success",
-              confirmButtonText: "حسنًا",
-              confirmButtonColor: "#ffcc00",
-            });
-            loadAdminItems();
-          } catch (error) {
-            Swal.fire({
-              title: "خطأ!",
-              text: error.message || "تعذر تحديث العنصر",
-              icon: "error",
-              confirmButtonText: "حسنًا",
-            });
-          }
-        },
-      });
-    }
-
-    async function deleteItem(itemId) {
-      const result = await Swal.fire({
-        title: "هل أنت متأكد؟",
-        text: "هل أنت متأكد أنك تريد حذف هذا العنصر؟",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "نعم، احذف",
-        cancelButtonText: "إلغاء",
-        confirmButtonColor: "#e74c3c",
-        cancelButtonColor: "#666",
-      });
-
-      if (result.isConfirmed) {
-        try {
-          const response = await fetch(
-            `/api/admin/gift-shop/items/${itemId}`,
-            {
-              method: "DELETE",
-            }
-          );
-          const result = await response.json();
-
-          if (response.ok) {
-            Swal.fire({
-              title: "تم الحذف!",
-              text: "تم حذف العنصر بنجاح",
-              icon: "success",
-              confirmButtonText: "حسنًا",
-              confirmButtonColor: "#ffcc00",
-            });
-            loadAdminItems();
-          } else {
-            throw new Error(result.message || "فشل الحذف");
-          }
-        } catch (error) {
-          Swal.fire({
-            title: "خطأ!",
-            text: error.message || "تعذر حذف العنصر",
-            icon: "error",
-            confirmButtonText: "حسنًا",
-          });
-        }
-      }
-    }
-
-    async function copyItem(itemId) {
-      try {
-        const response = await fetch(`/api/admin/gift-shop/items/${itemId}`);
-        const item = await response.json();
-
-        if (response.ok) {
-          const copyData = {
-            name: `${item.name} (نسخة)`,
-            description: item.description,
-            cost: item.cost,
-            stock: item.stock,
-            purchaseLimit: item.purchaseLimit,
-            image: item.image,
-          };
-
-          const createResponse = await fetch("/api/admin/gift-shop/items", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(copyData),
-          });
-
-          const result = await createResponse.json();
-
-          if (createResponse.ok) {
-            Swal.fire({
-              title: "تم النسخ!",
-              text: "تم نسخ العنصر بنجاح",
-              icon: "success",
-              confirmButtonText: "حسنًا",
-              confirmButtonColor: "#ffcc00",
-            });
-            loadAdminItems();
-          } else {
-            throw new Error(result.message || "فشل النسخ");
-          }
-        } else {
-          throw new Error("فشل جلب بيانات العنصر");
-        }
-      } catch (error) {
-        Swal.fire({
-          title: "خطأ!",
-          text: error.message || "تعذر نسخ العنصر",
-          icon: "error",
-          confirmButtonText: "حسنًا",
-        });
-      }
-    }
-
-    function viewLeaderboard(itemId) {
-      window.open(`/admin/gift-shop/items/${itemId}/leaderboard`, '_blank');
-    }
-
-    function viewItem(itemId) {
-      window.open(`/admin/gift-shop/items/${itemId}`, '_blank');
-    }
-
-    function showAddItemModal() {
-      const modal = document.getElementById("add-item-modal");
-      if (modal) {
-        if (!editingItemId) applyModalMode(false);
-        modal.style.display = "flex";
-        modal.classList.add("active");
-        modal.classList.add("show");
-        document.body.style.overflow = "hidden";
-        setTimeout(() => {
-          const firstInput = modal.querySelector("input");
-          if (firstInput) firstInput.focus();
-        }, 100);
-      }
-    }
-
-    function closeAddItemModal() {
-      const modal = document.getElementById("add-item-modal");
-      if (modal) {
-        modal.style.display = "none";
-        modal.classList.remove("show");
-        modal.classList.remove("active");
-        document.body.style.overflow = "";
-        const form = document.getElementById("add-item-form");
-        if (form) form.reset();
-        editingItemId = null;
-        applyModalMode(false);
-      }
-    }
-
-    document.addEventListener("click", function (event) {
-      const modal = document.getElementById("add-item-modal");
-      if (modal && event.target === modal) {
-        closeAddItemModal();
-      }
-    });
-
-    document
-      .getElementById("add-item-form")
-      .addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const formData = {
-          name: document.getElementById("item-name").value,
-          description: document.getElementById("item-description").value,
-          cost: parseInt(document.getElementById("item-cost").value),
-          stock: parseInt(document.getElementById("item-stock").value),
-          purchaseLimit: parseInt(
-            document.getElementById("item-purchase-limit").value
-          ),
-          image: document.getElementById("item-image").value,
-        };
-
-        const submitBtn = document.querySelector(
-          "#add-item-form button[type='submit']"
-        );
-        if (submitBtn) {
-          submitBtn.disabled = true;
-          submitBtn.innerHTML =
-            '<span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span><span style="margin-right:8px">جاري الإضافة...</span>';
-        }
-
-        try {
-          const url = editingItemId
-            ? `/api/admin/gift-shop/items/${encodeURIComponent(editingItemId)}`
-            : "/api/admin/gift-shop/items";
-          const method = editingItemId ? "PUT" : "POST";
-          const response = await fetch(url, {
-            method,
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(formData),
-          });
-          const result = await response.json();
-
-          if (response.ok) {
-            Swal.fire({
-              title: "تم!",
-              text: editingItemId ? "تم تحديث العنصر بنجاح" : "تم إضافة العنصر بنجاح",
-              icon: "success",
-              confirmButtonText: "حسنًا",
-              confirmButtonColor: "#ffcc00",
-            });
-            closeAddItemModal();
-            loadAdminItems();
-          } else {
-            throw new Error(result.message || "فشل الإضافة");
-          }
-        } catch (error) {
-          Swal.fire({
-            title: "خطأ!",
-            text: error.message || (editingItemId ? "تعذر تحديث العنصر" : "تعذر إضافة العنصر"),
-            icon: "error",
-            confirmButtonText: "حسنًا",
-          });
         } finally {
-          if (submitBtn) {
-            submitBtn.disabled = false;
-            applyModalMode(Boolean(editingItemId));
+          adminItemsLoading = false;
+          const sentinel = document.getElementById("admin-items-sentinel");
+          if (sentinel) {
+            sentinel.classList.remove("loading");
+            sentinel.innerHTML = "";
           }
         }
-      });
-
-    document.addEventListener("DOMContentLoaded", async () => {
-      await loadUserInfo();
-      await loadAdminItems();
-
-      document
-        .getElementById("add-item-btn")
-        .addEventListener("click", () => {
-          editingItemId = null;
-          applyModalMode(false);
-          showAddItemModal();
-        });
-      document
-        .getElementById("close-modal-btn")
-        .addEventListener("click", closeAddItemModal);
-      const cancelBtn = document.getElementById("cancel-add-btn");
-      if (cancelBtn) cancelBtn.addEventListener("click", closeAddItemModal);
-
-      const mobileToggle = document.getElementById("mobileToggle");
-      const sidebar = document.getElementById("sidebar");
-      const logoutBtn = document.getElementById("logoutBtn");
-      const logoutBtnMobile = document.getElementById("logoutBtnMobile");
-
-      const gradesToggle = document.getElementById("gradesToggle");
-      const gradesSubmenu = document.getElementById("gradesSubmenu");
-      const sectionToggles = document.querySelectorAll(".section-toggle");
-
-      if (mobileToggle) {
-        mobileToggle.addEventListener("click", () => {
-          sidebar.classList.toggle("active");
-        });
       }
 
-      const handleLogoutClick = async () => {
+      async function toggleItemActive(itemId, newStatus) {
+        const actionLabel = newStatus ? "تفعيل" : "تعطيل";
+        const confirmTitle = newStatus ? "تأكيد التفعيل" : "تأكيد التعطيل";
+        const confirmText = newStatus
+          ? "سيصبح هذا العنصر متاحاً في المتجر"
+          : "لن يكون هذا العنصر متاحاً للطلب في المتجر";
+
         const result = await Swal.fire({
-          title: "تسجيل الخروج",
-          text: "هل تريد فعلاً تسجيل الخروج من النظام؟",
+          title: confirmTitle,
+          text: confirmText,
           icon: "question",
-          iconColor: "#ffcc00",
           showCancelButton: true,
-          confirmButtonText: "نعم، تسجيل خروج",
+          confirmButtonText: `نعم، ${actionLabel}`,
           cancelButtonText: "إلغاء",
-          confirmButtonColor: "#e74c3c",
+          confirmButtonColor: newStatus ? "#27ae60" : "#e67e22",
           cancelButtonColor: "#666",
           background: "#2a1b3c",
           color: "#fff",
           backdrop: "rgba(0,0,0,0.8)",
+        });
+
+        if (!result.isConfirmed) return;
+
+        await Swal.fire({
+          title: "جاري المعالجة...",
+          html: '<span class="swal-loading-dots" aria-hidden="true"><span></span><span></span><span></span></span>',
           allowOutsideClick: false,
+          allowEscapeKey: false,
+          showConfirmButton: false,
+          background: "#2a1b3c",
+          color: "#fff",
+          didOpen: async () => {
+            try {
+              const response = await fetch(
+                `/api/admin/gift-shop/items/${itemId}`,
+                {
+                  method: "PUT",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ active: newStatus }),
+                },
+              );
+              const data = await response.json();
+
+              if (!response.ok) {
+                throw new Error(data.message || "فشل التحديث");
+              }
+
+              await Swal.fire({
+                title: "تم بنجاح!",
+                text: `تم ${actionLabel} العنصر بنجاح`,
+                icon: "success",
+                confirmButtonText: "حسنًا",
+                confirmButtonColor: "#ffcc00",
+              });
+              loadAdminItems();
+            } catch (error) {
+              Swal.fire({
+                title: "خطأ!",
+                text: error.message || "تعذر تحديث العنصر",
+                icon: "error",
+                confirmButtonText: "حسنًا",
+              });
+            }
+          },
+        });
+      }
+
+      async function deleteItem(itemId) {
+        const result = await Swal.fire({
+          title: "هل أنت متأكد؟",
+          text: "هل أنت متأكد أنك تريد حذف هذا العنصر؟",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "نعم، احذف",
+          cancelButtonText: "إلغاء",
+          confirmButtonColor: "#e74c3c",
+          cancelButtonColor: "#666",
         });
 
         if (result.isConfirmed) {
           try {
-            const response = await fetch("/logout", { method: "POST" });
+            const response = await fetch(
+              `/api/admin/gift-shop/items/${itemId}`,
+              {
+                method: "DELETE",
+              },
+            );
+            const result = await response.json();
+
             if (response.ok) {
-              await Swal.fire({
-                title: "تم تسجيل الخروج",
-                text: "وداعاً! تم تسجيل خروجك بنجاح",
+              Swal.fire({
+                title: "تم الحذف!",
+                text: "تم حذف العنصر بنجاح",
                 icon: "success",
-                iconColor: "#27ae60",
-                background: "#2a1b3c",
-                color: "#fff",
-                backdrop: "rgba(0,0,0,0.8)",
-                showConfirmButton: false,
-                timer: 1500,
+                confirmButtonText: "حسنًا",
+                confirmButtonColor: "#ffcc00",
               });
-              setTimeout(() => {
-                window.location.href = "/";
-              }, 500);
+              loadAdminItems();
+            } else {
+              throw new Error(result.message || "فشل الحذف");
             }
           } catch (error) {
-            console.error("Logout error:", error);
-            window.location.href = "/";
+            Swal.fire({
+              title: "خطأ!",
+              text: error.message || "تعذر حذف العنصر",
+              icon: "error",
+              confirmButtonText: "حسنًا",
+            });
           }
         }
-      };
-
-      if (logoutBtn) {
-        logoutBtn.addEventListener("click", handleLogoutClick);
-      }
-      if (logoutBtnMobile) {
-        logoutBtnMobile.addEventListener("click", handleLogoutClick);
       }
 
-      if (gradesToggle) {
-        gradesToggle.addEventListener("click", function (e) {
-          e.stopPropagation();
-          this.classList.toggle("active");
-          const icon = this.querySelector(".toggle-icon");
-          if (this.classList.contains("active")) {
-            icon.classList.remove("fa-chevron-down");
-            icon.classList.add("fa-chevron-up");
-            gradesSubmenu.style.maxHeight = "250px";
-          } else {
-            icon.classList.remove("fa-chevron-up");
-            icon.classList.add("fa-chevron-down");
-            gradesSubmenu.style.maxHeight = "0";
-            document
-              .querySelectorAll(".section-toggle.active")
-              .forEach((toggle) => {
-                toggle.classList.remove("active");
-                const subIcon = toggle.querySelector(".toggle-icon");
-                subIcon.classList.remove("fa-chevron-up");
-                subIcon.classList.add("fa-chevron-down");
-                const sectionSub = document.querySelector(
-                  `.section-submenu[data-section="${toggle.dataset.section}"]`
-                );
-                if (sectionSub) sectionSub.style.maxHeight = "0";
+      async function copyItem(itemId) {
+        try {
+          const response = await fetch(`/api/admin/gift-shop/items/${itemId}`);
+          const item = await response.json();
+
+          if (response.ok) {
+            const copyData = {
+              name: `${item.name} (نسخة)`,
+              description: item.description,
+              cost: item.cost,
+              stock: item.stock,
+              purchaseLimit: item.purchaseLimit,
+              image: item.image,
+            };
+
+            const createResponse = await fetch("/api/admin/gift-shop/items", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(copyData),
+            });
+
+            const result = await createResponse.json();
+
+            if (createResponse.ok) {
+              Swal.fire({
+                title: "تم النسخ!",
+                text: "تم نسخ العنصر بنجاح",
+                icon: "success",
+                confirmButtonText: "حسنًا",
+                confirmButtonColor: "#ffcc00",
               });
+              loadAdminItems();
+            } else {
+              throw new Error(result.message || "فشل النسخ");
+            }
+          } else {
+            throw new Error("فشل جلب بيانات العنصر");
+          }
+        } catch (error) {
+          Swal.fire({
+            title: "خطأ!",
+            text: error.message || "تعذر نسخ العنصر",
+            icon: "error",
+            confirmButtonText: "حسنًا",
+          });
+        }
+      }
+
+      function viewLeaderboard(itemId) {
+        window.open(`/admin/gift-shop/items/${itemId}/leaderboard`, "_blank");
+      }
+
+      function viewItem(itemId) {
+        window.open(`/admin/gift-shop/items/${itemId}`, "_blank");
+      }
+
+      function showAddItemModal() {
+        const modal = document.getElementById("add-item-modal");
+        if (modal) {
+          if (!editingItemId) applyModalMode(false);
+          modal.style.display = "flex";
+          modal.classList.add("active");
+          modal.classList.add("show");
+          document.body.style.overflow = "hidden";
+          setTimeout(() => {
+            const firstInput = modal.querySelector("input");
+            if (firstInput) firstInput.focus();
+          }, 100);
+        }
+      }
+
+      function closeAddItemModal() {
+        const modal = document.getElementById("add-item-modal");
+        if (modal) {
+          modal.style.display = "none";
+          modal.classList.remove("show");
+          modal.classList.remove("active");
+          document.body.style.overflow = "";
+          const form = document.getElementById("add-item-form");
+          if (form) form.reset();
+          editingItemId = null;
+          applyModalMode(false);
+        }
+      }
+
+      document.addEventListener("click", function (event) {
+        const modal = document.getElementById("add-item-modal");
+        if (modal && event.target === modal) {
+          closeAddItemModal();
+        }
+      });
+
+      document
+        .getElementById("add-item-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const formData = {
+            name: document.getElementById("item-name").value,
+            description: document.getElementById("item-description").value,
+            cost: parseInt(document.getElementById("item-cost").value),
+            stock: parseInt(document.getElementById("item-stock").value),
+            purchaseLimit: parseInt(
+              document.getElementById("item-purchase-limit").value,
+            ),
+            image: document.getElementById("item-image").value,
+          };
+
+          const submitBtn = document.querySelector(
+            "#add-item-form button[type='submit']",
+          );
+          if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML =
+              '<span class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></span><span style="margin-right:8px">جاري الإضافة...</span>';
+          }
+
+          try {
+            const url = editingItemId
+              ? `/api/admin/gift-shop/items/${encodeURIComponent(editingItemId)}`
+              : "/api/admin/gift-shop/items";
+            const method = editingItemId ? "PUT" : "POST";
+            const response = await fetch(url, {
+              method,
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(formData),
+            });
+            const result = await response.json();
+
+            if (response.ok) {
+              Swal.fire({
+                title: "تم!",
+                text: editingItemId
+                  ? "تم تحديث العنصر بنجاح"
+                  : "تم إضافة العنصر بنجاح",
+                icon: "success",
+                confirmButtonText: "حسنًا",
+                confirmButtonColor: "#ffcc00",
+              });
+              closeAddItemModal();
+              loadAdminItems();
+            } else {
+              throw new Error(result.message || "فشل الإضافة");
+            }
+          } catch (error) {
+            Swal.fire({
+              title: "خطأ!",
+              text:
+                error.message ||
+                (editingItemId ? "تعذر تحديث العنصر" : "تعذر إضافة العنصر"),
+              icon: "error",
+              confirmButtonText: "حسنًا",
+            });
+          } finally {
+            if (submitBtn) {
+              submitBtn.disabled = false;
+              applyModalMode(Boolean(editingItemId));
+            }
           }
         });
-      }
 
-      sectionToggles.forEach((toggle) => {
-        toggle.addEventListener("click", function (e) {
-          e.stopPropagation();
-          this.classList.toggle("active");
-          const icon = this.querySelector(".toggle-icon");
-          const sectionSub = document.querySelector(
-            `.section-submenu[data-section="${this.dataset.section}"]`
-          );
+      document.addEventListener("DOMContentLoaded", async () => {
+        await loadUserInfo();
+        await loadAdminItems();
 
-          if (this.classList.contains("active")) {
-            icon.classList.remove("fa-chevron-down");
-            icon.classList.add("fa-chevron-up");
-            sectionSub.style.maxHeight = sectionSub.scrollHeight + "px";
-          } else {
-            icon.classList.remove("fa-chevron-up");
-            icon.classList.add("fa-chevron-down");
-            sectionSub.style.maxHeight = "0";
+        document
+          .getElementById("add-item-btn")
+          .addEventListener("click", () => {
+            editingItemId = null;
+            applyModalMode(false);
+            showAddItemModal();
+          });
+        document
+          .getElementById("close-modal-btn")
+          .addEventListener("click", closeAddItemModal);
+        const cancelBtn = document.getElementById("cancel-add-btn");
+        if (cancelBtn) cancelBtn.addEventListener("click", closeAddItemModal);
+
+        const mobileToggle = document.getElementById("mobileToggle");
+        const sidebar = document.getElementById("sidebar");
+        const logoutBtn = document.getElementById("logoutBtn");
+        const logoutBtnMobile = document.getElementById("logoutBtnMobile");
+
+        const gradesToggle = document.getElementById("gradesToggle");
+        const gradesSubmenu = document.getElementById("gradesSubmenu");
+        const sectionToggles = document.querySelectorAll(".section-toggle");
+
+        if (mobileToggle) {
+          mobileToggle.addEventListener("click", () => {
+            sidebar.classList.toggle("active");
+          });
+        }
+
+        const handleLogoutClick = async () => {
+          const result = await Swal.fire({
+            title: "تسجيل الخروج",
+            text: "هل تريد فعلاً تسجيل الخروج من النظام؟",
+            icon: "question",
+            iconColor: "#ffcc00",
+            showCancelButton: true,
+            confirmButtonText: "نعم، تسجيل خروج",
+            cancelButtonText: "إلغاء",
+            confirmButtonColor: "#e74c3c",
+            cancelButtonColor: "#666",
+            background: "#2a1b3c",
+            color: "#fff",
+            backdrop: "rgba(0,0,0,0.8)",
+            allowOutsideClick: false,
+          });
+
+          if (result.isConfirmed) {
+            try {
+              const response = await fetch("/logout", { method: "POST" });
+              if (response.ok) {
+                await Swal.fire({
+                  title: "تم تسجيل الخروج",
+                  text: "وداعاً! تم تسجيل خروجك بنجاح",
+                  icon: "success",
+                  iconColor: "#27ae60",
+                  background: "#2a1b3c",
+                  color: "#fff",
+                  backdrop: "rgba(0,0,0,0.8)",
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+                setTimeout(() => {
+                  window.location.href = "/";
+                }, 500);
+              }
+            } catch (error) {
+              console.error("Logout error:", error);
+              window.location.href = "/";
+            }
           }
+        };
+
+        if (logoutBtn) {
+          logoutBtn.addEventListener("click", handleLogoutClick);
+        }
+        if (logoutBtnMobile) {
+          logoutBtnMobile.addEventListener("click", handleLogoutClick);
+        }
+
+        if (gradesToggle) {
+          gradesToggle.addEventListener("click", function (e) {
+            e.stopPropagation();
+            this.classList.toggle("active");
+            const icon = this.querySelector(".toggle-icon");
+            if (this.classList.contains("active")) {
+              icon.classList.remove("fa-chevron-down");
+              icon.classList.add("fa-chevron-up");
+              gradesSubmenu.style.maxHeight = "250px";
+            } else {
+              icon.classList.remove("fa-chevron-up");
+              icon.classList.add("fa-chevron-down");
+              gradesSubmenu.style.maxHeight = "0";
+              document
+                .querySelectorAll(".section-toggle.active")
+                .forEach((toggle) => {
+                  toggle.classList.remove("active");
+                  const subIcon = toggle.querySelector(".toggle-icon");
+                  subIcon.classList.remove("fa-chevron-up");
+                  subIcon.classList.add("fa-chevron-down");
+                  const sectionSub = document.querySelector(
+                    `.section-submenu[data-section="${toggle.dataset.section}"]`,
+                  );
+                  if (sectionSub) sectionSub.style.maxHeight = "0";
+                });
+            }
+          });
+        }
+
+        sectionToggles.forEach((toggle) => {
+          toggle.addEventListener("click", function (e) {
+            e.stopPropagation();
+            this.classList.toggle("active");
+            const icon = this.querySelector(".toggle-icon");
+            const sectionSub = document.querySelector(
+              `.section-submenu[data-section="${this.dataset.section}"]`,
+            );
+
+            if (this.classList.contains("active")) {
+              icon.classList.remove("fa-chevron-down");
+              icon.classList.add("fa-chevron-up");
+              sectionSub.style.maxHeight = sectionSub.scrollHeight + "px";
+            } else {
+              icon.classList.remove("fa-chevron-up");
+              icon.classList.add("fa-chevron-down");
+              sectionSub.style.maxHeight = "0";
+            }
+          });
         });
       });
-    });
-  </script>
+    </script>
 
-  <style>
-    .section-title {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--accent);
-      margin: 2rem 0 1rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 2px solid rgba(255, 204, 0, 0.25);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    <style>
+      .section-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--accent);
+        margin: 2rem 0 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid rgba(255, 204, 0, 0.25);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
 
-    .modal-gift-add .modal-content {
-      max-width: 560px;
-    }
+      .modal-gift-add .modal-content {
+        max-width: 560px;
+      }
 
-    .gift-add-form .form-row-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-
-    @media (max-width: 600px) {
       .gift-add-form .form-row-2 {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .gift-add-form .form-actions {
-      display: flex;
-      gap: 12px;
-      margin-top: 1.5rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid var(--border);
-    }
-
-    .gift-add-form .form-actions .submit-btn {
-      flex: 1;
-    }
-
-    .gift-add-form .form-group label {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: 600;
-      color: var(--text);
-      font-size: 0.9rem;
-    }
-
-    .gift-add-form input,
-    .gift-add-form textarea {
-      width: 100%;
-      padding: 12px 14px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--text);
-      font-size: 1rem;
-      font-family: inherit;
-      transition: var(--transition);
-    }
-
-    .gift-add-form input:focus,
-    .gift-add-form textarea:focus {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 0 2px var(--accent-soft);
-    }
-
-    .gift-add-form textarea {
-      min-height: 80px;
-      resize: vertical;
-    }
-
-    .gift-item.admin-item {
-      background: var(--card-bg);
-      backdrop-filter: blur(4px);
-      border-radius: var(--radius);
-      padding: 1.25rem;
-      border: 1px solid var(--border);
-      transition: var(--transition);
-      overflow: hidden;
-    }
-
-    .gift-item.admin-item:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow);
-      border-color: rgba(255, 204, 0, 0.25);
-    }
-
-    .gift-item.admin-item img {
-      width: 100%;
-      height: auto;
-      object-fit: contain;
-      background: rgba(0, 0, 0, 0.18);
-      border-radius: 8px;
-      margin-bottom: 1rem;
-      display: block;
-    }
-
-    .admin-items-sentinel {
-      width: 100%;
-      height: 1px;
-      grid-column: 1 / -1;
-    }
-
-    .admin-items-sentinel.loading {
-      height: auto;
-      padding: 14px 0;
-    }
-
-    .admin-items-sentinel .admin-items-loading-indicator {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      width: 100%;
-      box-sizing: border-box;
-      text-align: center;
-      opacity: 0.92;
-    }
-
-    .gift-item.admin-item.admin-item-loading {
-      border-style: dashed;
-      opacity: 0.95;
-    }
-
-    .admin-item-loading-img {
-      width: 100%;
-      height: 140px;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.06);
-      overflow: hidden;
-      position: relative;
-      margin-bottom: 1rem;
-    }
-
-    .admin-item-loading-line {
-      height: 14px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.06);
-      margin-bottom: 10px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .admin-item-loading-line.short {
-      width: 70%;
-    }
-
-    .admin-item-loading-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 10px;
-    }
-
-    .admin-item-loading-btn {
-      flex: 1;
-      height: 36px;
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.06);
-      overflow: hidden;
-      position: relative;
-    }
-
-    .admin-item-loading-img::after,
-    .admin-item-loading-line::after,
-    .admin-item-loading-btn::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      transform: translateX(-100%);
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.14), transparent);
-      animation: shimmer 1.2s ease-in-out infinite;
-    }
-
-    @keyframes shimmer {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
-    }
-
-    .close-button {
-      width: 40px;
-      height: 40px;
-      border-radius: 999px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .close-button:hover {
-      border-radius: 999px;
-    }
-
-    .modal-gift-add {
-      background: var(--panel-bg);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .gift-item.admin-item .no-image {
-      width: 100%;
-      height: 140px;
-      background: rgba(255, 204, 0, 0.08);
-      border-radius: 8px;
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2.5rem;
-      color: var(--accent);
-    }
-
-    .gift-item.admin-item h3 {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 0.5rem;
-    }
-
-    .gift-item.admin-item>p {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      margin-bottom: 1rem;
-      line-height: 1.5;
-      display: -webkit-box;
-      line-clamp: 2;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .gift-item.admin-item .gift-meta {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 1rem;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .gift-item.admin-item .gift-meta .cost {
-      font-weight: 700;
-      color: var(--accent);
-      font-size: 1rem;
-    }
-
-    .gift-item.admin-item .gift-meta .stock {
-      font-size: 0.75rem;
-      padding: 3px 10px;
-      border-radius: 6px;
-      font-weight: 600;
-    }
-
-    .gift-item.admin-item .gift-meta .stock.active {
-      background: var(--success-soft);
-      color: var(--success);
-    }
-
-    .gift-item.admin-item .gift-meta .stock.inactive {
-      background: var(--danger-soft);
-      color: var(--danger);
-    }
-
-    .gift-item.admin-item .admin-actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .gift-item.admin-item .admin-actions button {
-      flex: 1;
-      min-width: 80px;
-      padding: 8px 12px;
-      font-size: 0.85rem;
-    }
-
-    .activate-btn {
-      background: var(--success-soft);
-      color: var(--success);
-      border: 1px solid rgba(39, 174, 96, 0.3);
-    }
-
-    .activate-btn:hover {
-      background: var(--success);
-      color: white;
-      transform: translateY(-2px);
-    }
-
-    .deactivate-btn {
-      background: rgba(243, 156, 18, 0.15);
-      color: #f39c12;
-      border: 1px solid rgba(243, 156, 18, 0.4);
-      padding: 10px 16px;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: background 0.2s, color 0.2s;
-    }
-
-    .deactivate-btn:hover {
-      background: rgba(243, 156, 18, 0.3);
-      color: #fff;
-    }
-
-    .edit-btn {
-      background: rgba(52, 152, 219, 0.15);
-      color: #3498db;
-      border: 1px solid rgba(52, 152, 219, 0.4);
-    }
-
-    .edit-btn:hover {
-      background: rgba(52, 152, 219, 0.35);
-      color: #fff;
-    }
-
-    .delete-btn {
-      background: rgba(231, 76, 60, 0.15);
-      color: #e74c3c;
-      border: 1px solid rgba(231, 76, 60, 0.4);
-      padding: 10px 16px;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: background 0.2s, color 0.2s;
-    }
-
-    .delete-btn:hover {
-      background: rgba(231, 76, 60, 0.35);
-      color: #fff;
-    }
-
-    .grades-nav-item {
-      position: relative;
-    }
-
-    .grades-submenu-container {
-      overflow: hidden;
-      position: relative;
-    }
-
-    .grades-submenu {
-      max-height: 0;
-      overflow-y: auto;
-      overflow-x: hidden;
-      transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      margin-right: 20px;
-      border-right: 2px solid var(--accent);
-      margin-top: 5px;
-      padding-right: 8px;
-      scrollbar-width: thin;
-      scrollbar-color: var(--accent) rgba(255, 255, 255, 0.05);
-    }
-
-    .grades-toggle.active+.grades-submenu-container .grades-submenu {
-      max-height: 250px;
-      animation: fadeInDown 0.3s ease-out;
-    }
-
-    .grades-submenu::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .grades-submenu::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.03);
-      border-radius: 10px;
-      margin: 5px 0;
-    }
-
-    .grades-submenu::-webkit-scrollbar-thumb {
-      background: linear-gradient(to bottom, var(--accent), #ffd700);
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .grades-submenu::-webkit-scrollbar-thumb:hover {
-      background: linear-gradient(to bottom, #ffd700, var(--accent));
-      box-shadow: 0 0 8px rgba(255, 204, 0, 0.3);
-    }
-
-    .grades-submenu::-webkit-scrollbar-corner {
-      background: transparent;
-    }
-
-    .grades-submenu-container::before,
-    .grades-submenu-container::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      right: 12px;
-      height: 20px;
-      pointer-events: none;
-      z-index: 2;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .grades-submenu-container::before {
-      top: 0;
-      background: linear-gradient(to bottom,
-          rgba(42, 27, 60, 0.95),
-          transparent);
-    }
-
-    .grades-submenu-container::after {
-      bottom: 0;
-      background: linear-gradient(to top,
-          rgba(42, 27, 60, 0.95),
-          transparent);
-    }
-
-    .grades-toggle.active+.grades-submenu-container::before,
-    .grades-toggle.active+.grades-submenu-container::after {
-      opacity: 1;
-    }
-
-    .submenu-header {
-      margin-bottom: 5px;
-      position: relative;
-    }
-
-    .section-submenu {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease;
-      margin-right: 20px;
-      margin-top: 5px;
-    }
-
-    .section-toggle.active+.section-submenu {
-      max-height: 150px;
-      animation: slideIn 0.3s ease-out;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .submenu-link {
-      padding: 12px 15px;
-      font-size: 14px;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 6px;
-      margin-bottom: 3px;
-      display: block;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-      border: 1px solid transparent;
-    }
-
-    .submenu-link:hover {
-      background: rgba(255, 204, 0, 0.15);
-      transform: translateX(-5px);
-      border-color: var(--accent);
-      box-shadow: 0 4px 12px rgba(255, 204, 0, 0.2);
-    }
-
-    .submenu-link::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg,
-          transparent,
-          rgba(255, 255, 255, 0.1),
-          transparent);
-      transition: left 0.5s ease;
-    }
-
-    .submenu-link:hover::before {
-      left: 100%;
-    }
-
-    .submenu-link i {
-      font-size: 12px;
-      color: var(--accent);
-      transition: transform 0.3s ease;
-    }
-
-    .submenu-link:hover i {
-      transform: translateX(-3px);
-    }
-
-    @keyframes fadeInDown {
-      from {
-        opacity: 0;
-        transform: translateY(-10px);
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
       }
 
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateX(-10px);
+      @media (max-width: 600px) {
+        .gift-add-form .form-row-2 {
+          grid-template-columns: 1fr;
+        }
       }
 
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-
-    @media (max-width: 992px) {
-      .sidebar {
-        overflow-y: auto;
-        overflow-x: hidden;
-        scrollbar-width: thin;
-        scrollbar-color: var(--accent) rgba(255, 255, 255, 0.05);
+      .gift-add-form .form-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border);
       }
 
-      .sidebar::-webkit-scrollbar {
-        width: 4px;
+      .gift-add-form .form-actions .submit-btn {
+        flex: 1;
       }
 
-      .sidebar::-webkit-scrollbar-track {
-        background: rgba(255, 255, 255, 0.03);
+      .gift-add-form .form-group label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 600;
+        color: var(--text);
+        font-size: 0.9rem;
       }
 
-      .sidebar::-webkit-scrollbar-thumb {
-        background: var(--accent);
+      .gift-add-form input,
+      .gift-add-form textarea {
+        width: 100%;
+        padding: 12px 14px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        color: var(--text);
+        font-size: 1rem;
+        font-family: inherit;
+        transition: var(--transition);
+      }
+
+      .gift-add-form input:focus,
+      .gift-add-form textarea:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 2px var(--accent-soft);
+      }
+
+      .gift-add-form textarea {
+        min-height: 80px;
+        resize: vertical;
+      }
+
+      .gift-item.admin-item {
+        background: var(--card-bg);
+        backdrop-filter: blur(4px);
+        border-radius: var(--radius);
+        padding: 1.25rem;
+        border: 1px solid var(--border);
+        transition: var(--transition);
+        overflow: hidden;
+      }
+
+      .gift-item.admin-item:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow);
+        border-color: rgba(255, 204, 0, 0.25);
+      }
+
+      .gift-item.admin-item img {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+        background: rgba(0, 0, 0, 0.18);
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        display: block;
+      }
+
+      .admin-items-sentinel {
+        width: 100%;
+        height: 1px;
+        grid-column: 1 / -1;
+      }
+
+      .admin-items-sentinel.loading {
+        height: auto;
+        padding: 14px 0;
+      }
+
+      .admin-items-sentinel .admin-items-loading-indicator {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        box-sizing: border-box;
+        text-align: center;
+        opacity: 0.92;
+      }
+
+      .gift-item.admin-item.admin-item-loading {
+        border-style: dashed;
+        opacity: 0.95;
+      }
+
+      .admin-item-loading-img {
+        width: 100%;
+        height: 140px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.06);
+        overflow: hidden;
+        position: relative;
+        margin-bottom: 1rem;
+      }
+
+      .admin-item-loading-line {
+        height: 14px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        margin-bottom: 10px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .admin-item-loading-line.short {
+        width: 70%;
+      }
+
+      .admin-item-loading-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .admin-item-loading-btn {
+        flex: 1;
+        height: 36px;
         border-radius: 10px;
+        background: rgba(255, 255, 255, 0.06);
+        overflow: hidden;
+        position: relative;
+      }
+
+      .admin-item-loading-img::after,
+      .admin-item-loading-line::after,
+      .admin-item-loading-btn::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        transform: translateX(-100%);
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.14),
+          transparent
+        );
+        animation: shimmer 1.2s ease-in-out infinite;
+      }
+
+      @keyframes shimmer {
+        0% {
+          transform: translateX(-100%);
+        }
+        100% {
+          transform: translateX(100%);
+        }
+      }
+
+      .close-button {
+        width: 40px;
+        height: 40px;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .close-button:hover {
+        border-radius: 999px;
+      }
+
+      .modal-gift-add {
+        background: var(--panel-bg);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .gift-item.admin-item .no-image {
+        width: 100%;
+        height: 140px;
+        background: rgba(255, 204, 0, 0.08);
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        color: var(--accent);
+      }
+
+      .gift-item.admin-item h3 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 0.5rem;
+      }
+
+      .gift-item.admin-item > p {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        margin-bottom: 1rem;
+        line-height: 1.5;
+        display: -webkit-box;
+        line-clamp: 2;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .gift-item.admin-item .gift-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .gift-item.admin-item .gift-meta .cost {
+        font-weight: 700;
+        color: var(--accent);
+        font-size: 1rem;
+      }
+
+      .gift-item.admin-item .gift-meta .stock {
+        font-size: 0.75rem;
+        padding: 3px 10px;
+        border-radius: 6px;
+        font-weight: 600;
+      }
+
+      .gift-item.admin-item .gift-meta .stock.active {
+        background: var(--success-soft);
+        color: var(--success);
+      }
+
+      .gift-item.admin-item .gift-meta .stock.inactive {
+        background: var(--danger-soft);
+        color: var(--danger);
+      }
+
+      .gift-item.admin-item .admin-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .gift-item.admin-item .admin-actions button {
+        flex: 1;
+        min-width: 80px;
+        padding: 8px 12px;
+        font-size: 0.85rem;
+      }
+
+      .activate-btn {
+        background: var(--success-soft);
+        color: var(--success);
+        border: 1px solid rgba(39, 174, 96, 0.3);
+      }
+
+      .activate-btn:hover {
+        background: var(--success);
+        color: white;
+        transform: translateY(-2px);
+      }
+
+      .deactivate-btn {
+        background: rgba(243, 156, 18, 0.15);
+        color: #f39c12;
+        border: 1px solid rgba(243, 156, 18, 0.4);
+        padding: 10px 16px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition:
+          background 0.2s,
+          color 0.2s;
+      }
+
+      .deactivate-btn:hover {
+        background: rgba(243, 156, 18, 0.3);
+        color: #fff;
+      }
+
+      .edit-btn {
+        background: rgba(52, 152, 219, 0.15);
+        color: #3498db;
+        border: 1px solid rgba(52, 152, 219, 0.4);
+      }
+
+      .edit-btn:hover {
+        background: rgba(52, 152, 219, 0.35);
+        color: #fff;
+      }
+
+      .delete-btn {
+        background: rgba(231, 76, 60, 0.15);
+        color: #e74c3c;
+        border: 1px solid rgba(231, 76, 60, 0.4);
+        padding: 10px 16px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition:
+          background 0.2s,
+          color 0.2s;
+      }
+
+      .delete-btn:hover {
+        background: rgba(231, 76, 60, 0.35);
+        color: #fff;
+      }
+
+      .grades-nav-item {
+        position: relative;
+      }
+
+      .grades-submenu-container {
+        overflow: hidden;
+        position: relative;
       }
 
       .grades-submenu {
         max-height: 0;
-        margin-right: 15px;
-      }
-
-      .grades-toggle.active+.grades-submenu-container .grades-submenu {
-        max-height: 220px;
-      }
-
-      .section-toggle.active+.section-submenu {
-        max-height: 140px;
-      }
-    }
-
-    @media (max-width: 576px) {
-      .grades-toggle.active+.grades-submenu-container .grades-submenu {
-        max-height: 200px;
-      }
-
-      .submenu-link {
-        padding: 10px 12px;
-        font-size: 13px;
-      }
-    }
-
-    .grades-submenu {
-      max-height: 0;
-      overflow-y: hidden;
-      transition: max-height var(--transition-speed);
-      margin-right: 20px;
-      border-right: 2px solid var(--accent);
-      margin-top: 5px;
-      padding-right: 10px;
-    }
-
-    .grades-toggle.active+.grades-submenu {
-      max-height: 250px;
-      overflow-y: auto;
-    }
-
-    .grades-submenu::-webkit-scrollbar {
-      width: 5px;
-    }
-
-    .grades-submenu::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 10px;
-    }
-
-    .grades-submenu::-webkit-scrollbar-thumb {
-      background: var(--accent);
-      border-radius: 10px;
-      transition: background var(--transition-speed);
-    }
-
-    .grades-submenu::-webkit-scrollbar-thumb:hover {
-      background: #ffd700;
-    }
-
-    .section-submenu {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height var(--transition-speed);
-      margin-right: 20px;
-      margin-top: 5px;
-    }
-
-    @media (max-width: 992px) {
-      .sidebar {
         overflow-y: auto;
         overflow-x: hidden;
+        transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        margin-right: 20px;
+        border-right: 2px solid var(--accent);
+        margin-top: 5px;
+        padding-right: 8px;
+        scrollbar-width: thin;
+        scrollbar-color: var(--accent) rgba(255, 255, 255, 0.05);
+      }
+
+      .grades-toggle.active + .grades-submenu-container .grades-submenu {
+        max-height: 250px;
+        animation: fadeInDown 0.3s ease-out;
+      }
+
+      .grades-submenu::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .grades-submenu::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 10px;
+        margin: 5px 0;
+      }
+
+      .grades-submenu::-webkit-scrollbar-thumb {
+        background: linear-gradient(to bottom, var(--accent), #ffd700);
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .grades-submenu::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(to bottom, #ffd700, var(--accent));
+        box-shadow: 0 0 8px rgba(255, 204, 0, 0.3);
+      }
+
+      .grades-submenu::-webkit-scrollbar-corner {
+        background: transparent;
+      }
+
+      .grades-submenu-container::before,
+      .grades-submenu-container::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 12px;
+        height: 20px;
+        pointer-events: none;
+        z-index: 2;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .grades-submenu-container::before {
+        top: 0;
+        background: linear-gradient(
+          to bottom,
+          rgba(42, 27, 60, 0.95),
+          transparent
+        );
+      }
+
+      .grades-submenu-container::after {
+        bottom: 0;
+        background: linear-gradient(
+          to top,
+          rgba(42, 27, 60, 0.95),
+          transparent
+        );
+      }
+
+      .grades-toggle.active + .grades-submenu-container::before,
+      .grades-toggle.active + .grades-submenu-container::after {
+        opacity: 1;
+      }
+
+      .submenu-header {
+        margin-bottom: 5px;
+        position: relative;
+      }
+
+      .section-submenu {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        margin-right: 20px;
+        margin-top: 5px;
+      }
+
+      .section-toggle.active + .section-submenu {
+        max-height: 150px;
+        animation: slideIn 0.3s ease-out;
+        overflow-y: auto;
         -webkit-overflow-scrolling: touch;
       }
 
-      .sidebar::-webkit-scrollbar {
-        width: 5px;
-      }
-
-      .sidebar::-webkit-scrollbar-track {
+      .submenu-link {
+        padding: 12px 15px;
+        font-size: 14px;
         background: rgba(255, 255, 255, 0.05);
+        border-radius: 6px;
+        margin-bottom: 3px;
+        display: block;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid transparent;
       }
 
-      .sidebar::-webkit-scrollbar-thumb {
-        background: var(--accent);
-        border-radius: 10px;
+      .submenu-link:hover {
+        background: rgba(255, 204, 0, 0.15);
+        transform: translateX(-5px);
+        border-color: var(--accent);
+        box-shadow: 0 4px 12px rgba(255, 204, 0, 0.2);
       }
 
-      .sidebar::-webkit-scrollbar-thumb:hover {
-        background: #ffd700;
+      .submenu-link::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.1),
+          transparent
+        );
+        transition: left 0.5s ease;
+      }
+
+      .submenu-link:hover::before {
+        left: 100%;
+      }
+
+      .submenu-link i {
+        font-size: 12px;
+        color: var(--accent);
+        transition: transform 0.3s ease;
+      }
+
+      .submenu-link:hover i {
+        transform: translateX(-3px);
+      }
+
+      @keyframes fadeInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(-10px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @media (max-width: 992px) {
+        .sidebar {
+          overflow-y: auto;
+          overflow-x: hidden;
+          scrollbar-width: thin;
+          scrollbar-color: var(--accent) rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar::-webkit-scrollbar {
+          width: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.03);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+          background: var(--accent);
+          border-radius: 10px;
+        }
+
+        .grades-submenu {
+          max-height: 0;
+          margin-right: 15px;
+        }
+
+        .grades-toggle.active + .grades-submenu-container .grades-submenu {
+          max-height: 220px;
+        }
+
+        .section-toggle.active + .section-submenu {
+          max-height: 140px;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .grades-toggle.active + .grades-submenu-container .grades-submenu {
+          max-height: 200px;
+        }
+
+        .submenu-link {
+          padding: 10px 12px;
+          font-size: 13px;
+        }
       }
 
       .grades-submenu {
         max-height: 0;
-        margin-right: 15px;
+        overflow-y: hidden;
+        transition: max-height var(--transition-speed);
+        margin-right: 20px;
+        border-right: 2px solid var(--accent);
+        margin-top: 5px;
+        padding-right: 10px;
       }
 
-      .grades-toggle.active+.grades-submenu {
-        max-height: 200px;
+      .grades-toggle.active + .grades-submenu {
+        max-height: 250px;
         overflow-y: auto;
       }
-    }
 
-    .grades-submenu {
-      scrollbar-width: thin;
-      scrollbar-color: var(--accent) rgba(255, 255, 255, 0.05);
-    }
+      .grades-submenu::-webkit-scrollbar {
+        width: 5px;
+      }
 
-    @media (max-width: 992px) {
-      .sidebar {
+      .grades-submenu::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+      }
+
+      .grades-submenu::-webkit-scrollbar-thumb {
+        background: var(--accent);
+        border-radius: 10px;
+        transition: background var(--transition-speed);
+      }
+
+      .grades-submenu::-webkit-scrollbar-thumb:hover {
+        background: #ffd700;
+      }
+
+      .section-submenu {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height var(--transition-speed);
+        margin-right: 20px;
+        margin-top: 5px;
+      }
+
+      @media (max-width: 992px) {
+        .sidebar {
+          overflow-y: auto;
+          overflow-x: hidden;
+          -webkit-overflow-scrolling: touch;
+        }
+
+        .sidebar::-webkit-scrollbar {
+          width: 5px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+          background: var(--accent);
+          border-radius: 10px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+          background: #ffd700;
+        }
+
+        .grades-submenu {
+          max-height: 0;
+          margin-right: 15px;
+        }
+
+        .grades-toggle.active + .grades-submenu {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      }
+
+      .grades-submenu {
         scrollbar-width: thin;
         scrollbar-color: var(--accent) rgba(255, 255, 255, 0.05);
       }
-    }
 
-    @media (max-width: 992px) {
-      html {
-        scroll-behavior: smooth;
+      @media (max-width: 992px) {
+        .sidebar {
+          scrollbar-width: thin;
+          scrollbar-color: var(--accent) rgba(255, 255, 255, 0.05);
+        }
       }
 
-      .sidebar {
-        overscroll-behavior: contain;
+      @media (max-width: 992px) {
+        html {
+          scroll-behavior: smooth;
+        }
+
+        .sidebar {
+          overscroll-behavior: contain;
+        }
       }
-    }
 
-    .grades-nav-item {
-      position: relative;
-    }
+      .grades-nav-item {
+        position: relative;
+      }
 
-    .grades-submenu-container {
-      overflow: hidden;
-      position: relative;
-    }
+      .grades-submenu-container {
+        overflow: hidden;
+        position: relative;
+      }
 
-    .grades-submenu {
-      max-height: 0;
-      overflow-y: auto;
-      overflow-x: hidden;
-      transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      margin-right: 20px;
-      border-right: 2px solid var(--accent);
-      margin-top: 5px;
-      padding-right: 8px;
-    }
+      .grades-submenu {
+        max-height: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+        transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        margin-right: 20px;
+        border-right: 2px solid var(--accent);
+        margin-top: 5px;
+        padding-right: 8px;
+      }
 
-    .grades-submenu::-webkit-scrollbar {
-      width: 5px;
-    }
+      .grades-submenu::-webkit-scrollbar {
+        width: 5px;
+      }
 
-    .grades-submenu::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 10px;
-    }
+      .grades-submenu::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+      }
 
-    .grades-submenu::-webkit-scrollbar-thumb {
-      background: var(--accent);
-      border-radius: 10px;
-    }
+      .grades-submenu::-webkit-scrollbar-thumb {
+        background: var(--accent);
+        border-radius: 10px;
+      }
 
-    .grades-submenu::-webkit-scrollbar-thumb:hover {
-      background: #ffd700;
-    }
+      .grades-submenu::-webkit-scrollbar-thumb:hover {
+        background: #ffd700;
+      }
 
-    .grades-submenu-container::before,
-    .grades-submenu-container::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      right: 12px;
-      height: 20px;
-      pointer-events: none;
-      z-index: 2;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
+      .grades-submenu-container::before,
+      .grades-submenu-container::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 12px;
+        height: 20px;
+        pointer-events: none;
+        z-index: 2;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
 
-    .grades-submenu-container::before {
-      top: 0;
-      background: linear-gradient(to bottom,
+      .grades-submenu-container::before {
+        top: 0;
+        background: linear-gradient(
+          to bottom,
           rgba(42, 27, 60, 0.95),
-          transparent);
-    }
+          transparent
+        );
+      }
 
-    .grades-submenu-container::after {
-      bottom: 0;
-      background: linear-gradient(to top,
+      .grades-submenu-container::after {
+        bottom: 0;
+        background: linear-gradient(
+          to top,
           rgba(42, 27, 60, 0.95),
-          transparent);
-    }
+          transparent
+        );
+      }
 
-    .grades-toggle.active+.grades-submenu-container::before,
-    .grades-toggle.active+.grades-submenu-container::after {
-      opacity: 1;
-    }
+      .grades-toggle.active + .grades-submenu-container::before,
+      .grades-toggle.active + .grades-submenu-container::after {
+        opacity: 1;
+      }
 
-    .section-submenu {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease;
-      margin-right: 20px;
-      margin-top: 5px;
-    }
+      .section-submenu {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        margin-right: 20px;
+        margin-top: 5px;
+      }
 
-    .grades-toggle.active+.grades-submenu-container .grades-submenu {
-      max-height: 250px;
-      overflow-y: auto;
-    }
+      .grades-toggle.active + .grades-submenu-container .grades-submenu {
+        max-height: 250px;
+        overflow-y: auto;
+      }
 
-    .section-toggle.active+.section-submenu {
-      max-height: 150px;
-    }
+      .section-toggle.active + .section-submenu {
+        max-height: 150px;
+      }
 
-    .grades-submenu {
-      scrollbar-width: thin;
-      scrollbar-color: var(--accent) rgba(255, 255, 255, 0.05);
-    }
+      .grades-submenu {
+        scrollbar-width: thin;
+        scrollbar-color: var(--accent) rgba(255, 255, 255, 0.05);
+      }
 
-    .suggestions-nav-item {
-      position: relative;
-    }
+      .suggestions-nav-item {
+        position: relative;
+      }
 
-    .suggestions-submenu-container {
-      overflow: hidden;
-      position: relative;
-    }
+      .suggestions-submenu-container {
+        overflow: hidden;
+        position: relative;
+      }
 
-    .suggestions-submenu {
-      max-height: 0;
-      overflow-y: auto;
-      overflow-x: hidden;
-      transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      margin-right: 20px;
-      border-right: 2px solid var(--accent);
-      margin-top: 5px;
-      padding-right: 8px;
-      scrollbar-width: thin;
-      scrollbar-color: var(--accent) rgba(255, 255, 255, 0.05);
-    }
-
-    .suggestions-toggle.active+.suggestions-submenu-container .suggestions-submenu {
-      max-height: 200px;
-      animation: fadeInDown 0.3s ease-out;
-    }
-
-    .suggestions-submenu::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .suggestions-submenu::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.03);
-      border-radius: 10px;
-      margin: 5px 0;
-    }
-
-    .suggestions-submenu::-webkit-scrollbar-thumb {
-      background: linear-gradient(to bottom, var(--accent), #ffd700);
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .suggestions-submenu::-webkit-scrollbar-thumb:hover {
-      background: linear-gradient(to bottom, #ffd700, var(--accent));
-      box-shadow: 0 0 8px rgba(255, 204, 0, 0.3);
-    }
-
-    .suggestions-submenu-container::before,
-    .suggestions-submenu-container::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      right: 12px;
-      height: 20px;
-      pointer-events: none;
-      z-index: 2;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .suggestions-submenu-container::before {
-      top: 0;
-      background: linear-gradient(to bottom,
-          rgba(42, 27, 60, 0.95),
-          transparent);
-    }
-
-    .suggestions-submenu-container::after {
-      bottom: 0;
-      background: linear-gradient(to top,
-          rgba(42, 27, 60, 0.95),
-          transparent);
-    }
-
-    .suggestions-toggle.active+.suggestions-submenu-container::before,
-    .suggestions-toggle.active+.suggestions-submenu-container::after {
-      opacity: 1;
-    }
-
-    .suggestions-submenu .submenu-link {
-      padding: 12px 15px;
-      font-size: 14px;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 6px;
-      margin-bottom: 3px;
-      display: block;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-      border: 1px solid transparent;
-    }
-
-    .suggestions-submenu .submenu-link:hover {
-      background: rgba(255, 204, 0, 0.15);
-      transform: translateX(-5px);
-      border-color: var(--accent);
-      box-shadow: 0 4px 12px rgba(255, 204, 0, 0.2);
-    }
-
-    .suggestions-submenu .submenu-link::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg,
-          transparent,
-          rgba(255, 255, 255, 0.1),
-          transparent);
-      transition: left 0.5s ease;
-    }
-
-    .suggestions-submenu .submenu-link:hover::before {
-      left: 100%;
-    }
-
-    .suggestions-submenu .submenu-link i {
-      font-size: 12px;
-      color: var(--accent);
-      transition: transform 0.3s ease;
-    }
-
-    .suggestions-submenu .submenu-link:hover i {
-      transform: translateX(-3px);
-    }
-
-    @media (max-width: 992px) {
       .suggestions-submenu {
         max-height: 0;
-        margin-right: 15px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        margin-right: 20px;
+        border-right: 2px solid var(--accent);
+        margin-top: 5px;
+        padding-right: 8px;
+        scrollbar-width: thin;
+        scrollbar-color: var(--accent) rgba(255, 255, 255, 0.05);
       }
 
-      .suggestions-toggle.active+.suggestions-submenu-container .suggestions-submenu {
-        max-height: 180px;
+      .suggestions-toggle.active
+        + .suggestions-submenu-container
+        .suggestions-submenu {
+        max-height: 200px;
+        animation: fadeInDown 0.3s ease-out;
       }
-    }
 
-    @media (max-width: 576px) {
-      .suggestions-toggle.active+.suggestions-submenu-container .suggestions-submenu {
-        max-height: 160px;
+      .suggestions-submenu::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .suggestions-submenu::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 10px;
+        margin: 5px 0;
+      }
+
+      .suggestions-submenu::-webkit-scrollbar-thumb {
+        background: linear-gradient(to bottom, var(--accent), #ffd700);
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .suggestions-submenu::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(to bottom, #ffd700, var(--accent));
+        box-shadow: 0 0 8px rgba(255, 204, 0, 0.3);
+      }
+
+      .suggestions-submenu-container::before,
+      .suggestions-submenu-container::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 12px;
+        height: 20px;
+        pointer-events: none;
+        z-index: 2;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .suggestions-submenu-container::before {
+        top: 0;
+        background: linear-gradient(
+          to bottom,
+          rgba(42, 27, 60, 0.95),
+          transparent
+        );
+      }
+
+      .suggestions-submenu-container::after {
+        bottom: 0;
+        background: linear-gradient(
+          to top,
+          rgba(42, 27, 60, 0.95),
+          transparent
+        );
+      }
+
+      .suggestions-toggle.active + .suggestions-submenu-container::before,
+      .suggestions-toggle.active + .suggestions-submenu-container::after {
+        opacity: 1;
       }
 
       .suggestions-submenu .submenu-link {
-        padding: 10px 12px;
-        font-size: 13px;
+        padding: 12px 15px;
+        font-size: 14px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 6px;
+        margin-bottom: 3px;
+        display: block;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid transparent;
       }
-    }
-  </style>
-  <script>
-    const suggestionsToggle = document.getElementById("suggestionsToggle");
-    const suggestionsSubmenu = document.getElementById("suggestionsSubmenu");
 
-    if (suggestionsToggle) {
-      suggestionsToggle.addEventListener("click", function (e) {
-        e.stopPropagation();
-        this.classList.toggle("active");
-        const icon = this.querySelector(".toggle-icon");
-        if (this.classList.contains("active")) {
-          icon.classList.remove("fa-chevron-down");
-          icon.classList.add("fa-chevron-up");
-          suggestionsSubmenu.style.maxHeight =
-            suggestionsSubmenu.scrollHeight + "px";
-        } else {
-          icon.classList.remove("fa-chevron-up");
-          icon.classList.add("fa-chevron-down");
-          suggestionsSubmenu.style.maxHeight = "0";
+      .suggestions-submenu .submenu-link:hover {
+        background: rgba(255, 204, 0, 0.15);
+        transform: translateX(-5px);
+        border-color: var(--accent);
+        box-shadow: 0 4px 12px rgba(255, 204, 0, 0.2);
+      }
+
+      .suggestions-submenu .submenu-link::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.1),
+          transparent
+        );
+        transition: left 0.5s ease;
+      }
+
+      .suggestions-submenu .submenu-link:hover::before {
+        left: 100%;
+      }
+
+      .suggestions-submenu .submenu-link i {
+        font-size: 12px;
+        color: var(--accent);
+        transition: transform 0.3s ease;
+      }
+
+      .suggestions-submenu .submenu-link:hover i {
+        transform: translateX(-3px);
+      }
+
+      @media (max-width: 992px) {
+        .suggestions-submenu {
+          max-height: 0;
+          margin-right: 15px;
+        }
+
+        .suggestions-toggle.active
+          + .suggestions-submenu-container
+          .suggestions-submenu {
+          max-height: 180px;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .suggestions-toggle.active
+          + .suggestions-submenu-container
+          .suggestions-submenu {
+          max-height: 160px;
+        }
+
+        .suggestions-submenu .submenu-link {
+          padding: 10px 12px;
+          font-size: 13px;
+        }
+      }
+    </style>
+    <script>
+      const suggestionsToggle = document.getElementById("suggestionsToggle");
+      const suggestionsSubmenu = document.getElementById("suggestionsSubmenu");
+
+      if (suggestionsToggle) {
+        suggestionsToggle.addEventListener("click", function (e) {
+          e.stopPropagation();
+          this.classList.toggle("active");
+          const icon = this.querySelector(".toggle-icon");
+          if (this.classList.contains("active")) {
+            icon.classList.remove("fa-chevron-down");
+            icon.classList.add("fa-chevron-up");
+            suggestionsSubmenu.style.maxHeight =
+              suggestionsSubmenu.scrollHeight + "px";
+          } else {
+            icon.classList.remove("fa-chevron-up");
+            icon.classList.add("fa-chevron-down");
+            suggestionsSubmenu.style.maxHeight = "0";
+          }
+        });
+      }
+
+      document.addEventListener("click", function (e) {
+        if (!e.target.closest(".suggestions-nav-item")) {
+          const suggestionsToggle =
+            document.getElementById("suggestionsToggle");
+          const suggestionsSubmenu =
+            document.getElementById("suggestionsSubmenu");
+
+          if (
+            suggestionsToggle &&
+            suggestionsToggle.classList.contains("active")
+          ) {
+            suggestionsToggle.classList.remove("active");
+            const icon = suggestionsToggle.querySelector(".toggle-icon");
+            icon.classList.remove("fa-chevron-up");
+            icon.classList.add("fa-chevron-down");
+            suggestionsSubmenu.style.maxHeight = "0";
+          }
         }
       });
-    }
-
-    document.addEventListener("click", function (e) {
-      if (!e.target.closest(".suggestions-nav-item")) {
-        const suggestionsToggle =
-          document.getElementById("suggestionsToggle");
-        const suggestionsSubmenu =
-          document.getElementById("suggestionsSubmenu");
-
-        if (
-          suggestionsToggle &&
-          suggestionsToggle.classList.contains("active")
-        ) {
-          suggestionsToggle.classList.remove("active");
-          const icon = suggestionsToggle.querySelector(".toggle-icon");
-          icon.classList.remove("fa-chevron-up");
-          icon.classList.add("fa-chevron-down");
-          suggestionsSubmenu.style.maxHeight = "0";
+    </script>
+    <script>
+      (function () {
+        function updatePendingBadges() {
+          if (document.visibilityState !== "visible") return;
+          fetch("/api/admin/pending-counts")
+            .then(function (r) {
+              return r.json();
+            })
+            .then(function (d) {
+              var loginBadge = document.getElementById("nav-badge-login");
+              var giftBadge = document.getElementById("nav-badge-gift");
+              var loginCount = d.pendingRegistration || 0;
+              var giftCount = d.pendingGift || 0;
+              if (loginBadge) {
+                loginBadge.textContent = loginCount;
+                loginBadge.classList.toggle("empty", loginCount === 0);
+                loginBadge.setAttribute(
+                  "aria-hidden",
+                  loginCount === 0 ? "true" : "false",
+                );
+              }
+              if (giftBadge) {
+                giftBadge.textContent = giftCount;
+                giftBadge.classList.toggle("empty", giftCount === 0);
+                giftBadge.setAttribute(
+                  "aria-hidden",
+                  giftCount === 0 ? "true" : "false",
+                );
+              }
+            })
+            .catch(function () {});
         }
-      }
-    });
-  </script>
-  <script>
-    (function () {
-      function updatePendingBadges() {
-        if (document.visibilityState !== "visible") return;
-        fetch("/api/admin/pending-counts")
-          .then(function (r) { return r.json(); })
-          .then(function (d) {
-            var loginBadge = document.getElementById("nav-badge-login");
-            var giftBadge = document.getElementById("nav-badge-gift");
-            var loginCount = d.pendingRegistration || 0;
-            var giftCount = d.pendingGift || 0;
-            if (loginBadge) {
-              loginBadge.textContent = loginCount;
-              loginBadge.classList.toggle("empty", loginCount === 0);
-              loginBadge.setAttribute("aria-hidden", loginCount === 0 ? "true" : "false");
-            }
-            if (giftBadge) {
-              giftBadge.textContent = giftCount;
-              giftBadge.classList.toggle("empty", giftCount === 0);
-              giftBadge.setAttribute("aria-hidden", giftCount === 0 ? "true" : "false");
-            }
-          })
-          .catch(function () { });
-      }
-      updatePendingBadges();
-      setInterval(updatePendingBadges, 10000);
-      document.addEventListener("visibilitychange", function () {
-        if (document.visibilityState === "visible") updatePendingBadges();
-      });
-    })();
-  </script>
-</body>
-
+        updatePendingBadges();
+        setInterval(updatePendingBadges, 10000);
+        document.addEventListener("visibilitychange", function () {
+          if (document.visibilityState === "visible") updatePendingBadges();
+        });
+      })();
+    </script>
+  </body>
 </html>

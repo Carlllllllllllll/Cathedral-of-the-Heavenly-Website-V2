@@ -1,482 +1,548 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="كاتدرائية السمائيين – إدارة المستخدمين" />
+    <meta name="theme-color" content="#402958" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>إدارة المستخدمين | لوحة الإدارة | كاتدرائية السمائيين</title>
+    <link rel="icon" href="/UI/icon.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="/UI/icon.png" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+    />
+    <link rel="stylesheet" href="/design/theme.css" />
+    <link rel="stylesheet" href="/design/admin.css" />
+    <link rel="stylesheet" href="/design/admin-dashboard.css" />
+    <link rel="stylesheet" href="/design/user-management.css?v=5" />
+    <script src="/scripts/utils.js" defer></script>
+    <script src="/scripts/console.js" defer></script>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="كاتدرائية السمائيين – إدارة المستخدمين" />
-  <meta name="theme-color" content="#402958" />
-  <meta name="robots" content="noindex, nofollow" />
-  <title>إدارة المستخدمين | لوحة الإدارة | كاتدرائية السمائيين</title>
-  <link rel="icon" href="/UI/icon.png" type="image/png" sizes="16x16" />
-  <link rel="apple-touch-icon" href="/UI/icon.png" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap"
-    rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
-  <link rel="stylesheet" href="/design/theme.css" />
-  <link rel="stylesheet" href="/design/admin.css" />
-  <link rel="stylesheet" href="/design/admin-dashboard.css" />
-  <link rel="stylesheet" href="/design/user-management.css?v=5" />
-  <script src="/scripts/utils.js" defer></script>
-  <script src="/scripts/console.js" defer></script>
-</head>
-
-<body>
-  <div class="mobile-toggle" id="mobileToggle">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
-
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <div class="logo-container">
-        <img src="/UI/logo.png" alt="اللوغو" />
-        <div class="logo-text">
-          <h1>كاتدرائية السمائيين</h1>
-          <p>إدارة الحسابات والصلاحيات</p>
-        </div>
-      </div>
+  <body>
+    <div class="mobile-toggle" id="mobileToggle">
+      <span></span>
+      <span></span>
+      <span></span>
     </div>
 
-    <nav class="nav-menu">
-      <div class="nav-item">
-        <a href="https://kenisa-el-sama2eyeen.ooguy.com" class="nav-link">
-          <i class="fas fa-home"></i>
-          الصفحة الرئيسية
-        </a>
-      </div>
-      <div class="nav-item" data-nav-access="hasFormEditorRole">
-        <a href="/admin/form-panel" class="nav-link">
-          <i class="fas fa-tachometer-alt"></i>
-          النماذج
-        </a>
-      </div>
-
-      <div class="nav-item grades-nav-item">
-        <div class="nav-link grades-toggle" id="gradesToggle">
-          <i class="fas fa-graduation-cap"></i>
-          الصفوف الدراسية
-          <i class="fas fa-chevron-down toggle-icon"></i>
-        </div>
-        <div class="grades-submenu-container">
-          <div class="grades-submenu" id="gradesSubmenu">
-            <div class="submenu-header">
-              <div class="nav-link section-toggle" data-section="prep">
-                <i class="fas fa-school"></i>
-                الإعدادية
-                <i class="fas fa-chevron-down toggle-icon"></i>
-              </div>
-              <div class="section-submenu" data-section="prep">
-                <a href="/grades/prep1" class="nav-link submenu-link">
-                  <i class="fas fa-arrow-left"></i>
-                  أولي إعدادي
-                </a>
-                <a href="/grades/prep2" class="nav-link submenu-link">
-                  <i class="fas fa-arrow-left"></i>
-                  ثانية إعدادي
-                </a>
-                <a href="/grades/prep3" class="nav-link submenu-link">
-                  <i class="fas fa-arrow-left"></i>
-                  ثالثة إعدادي
-                </a>
-              </div>
-            </div>
-
-            <div class="submenu-header">
-              <div class="nav-link section-toggle" data-section="sec">
-                <i class="fas fa-university"></i>
-                الثانوية
-                <i class="fas fa-chevron-down toggle-icon"></i>
-              </div>
-              <div class="section-submenu" data-section="sec">
-                <a href="/grades/sec1" class="nav-link submenu-link">
-                  <i class="fas fa-arrow-left"></i>
-                  أولي ثانوي
-                </a>
-                <a href="/grades/sec2" class="nav-link submenu-link">
-                  <i class="fas fa-arrow-left"></i>
-                  ثانية ثانوي
-                </a>
-                <a href="/grades/sec3" class="nav-link submenu-link">
-                  <i class="fas fa-arrow-left"></i>
-                  ثالثة ثانوي
-                </a>
-              </div>
-            </div>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-container">
+          <img src="/UI/logo.png" alt="اللوغو" />
+          <div class="logo-text">
+            <h1>كاتدرائية السمائيين</h1>
+            <p>إدارة الحسابات والصلاحيات</p>
           </div>
         </div>
       </div>
 
-      <div class="nav-item" data-nav-access="hasUserApproverRole">
-        <a href="/admin/user-approvals" class="nav-link">
-          <i class="fas fa-user-check"></i>
-          <span>طلبات التسجيل</span>
-          <span class="nav-unread-badge" id="nav-badge-login" aria-hidden="true"></span>
-        </a>
-      </div>
-      <div class="nav-item" data-nav-access="hasUserApproverRole">
-        <a href="/admin/user-management" class="nav-link active">
-          <i class="fas fa-users"></i>
-          إدارة المستخدمين
-        </a>
-      </div>
-      <div class="nav-item" data-nav-access="hasFormEditorRole">
-        <a href="/admin/gift-shop/add" class="nav-link">
-          <i class="fas fa-plus-circle"></i>
-          إضافة هدية
-        </a>
-      </div>
-      <div class="nav-item" data-nav-access="hasGiftApproverRole">
-        <a href="/admin/gift-shop/approvals" class="nav-link">
-          <i class="fas fa-gift"></i>
-          <span>طلبات الهدايا</span>
-          <span class="nav-unread-badge" id="nav-badge-gift" aria-hidden="true"></span>
-        </a>
-      </div>
-
-      <div class="nav-item suggestions-nav-item">
-        <div class="nav-link suggestions-toggle" id="suggestionsToggle">
-          <i class="fas fa-lightbulb"></i>
-          الاقتراحات
-          <i class="fas fa-chevron-down toggle-icon"></i>
+      <nav class="nav-menu">
+        <div class="nav-item">
+          <a href="https://kenisa-el-sama2eyeen.ooguy.com" class="nav-link">
+            <i class="fas fa-home"></i>
+            الصفحة الرئيسية
+          </a>
         </div>
-        <div class="suggestions-submenu-container">
-          <div class="suggestions-submenu" id="suggestionsSubmenu">
-            <a href="/admin/suggestion/ektma3at" class="nav-link submenu-link">
-              <i class="fas fa-users"></i>
-              اقتراحات الاجتماعات
-            </a>
+        <div class="nav-item" data-nav-access="hasFormEditorRole">
+          <a href="/admin/form-panel" class="nav-link">
+            <i class="fas fa-tachometer-alt"></i>
+            النماذج
+          </a>
+        </div>
+
+        <div class="nav-item grades-nav-item">
+          <div class="nav-link grades-toggle" id="gradesToggle">
+            <i class="fas fa-graduation-cap"></i>
+            الصفوف الدراسية
+            <i class="fas fa-chevron-down toggle-icon"></i>
+          </div>
+          <div class="grades-submenu-container">
+            <div class="grades-submenu" id="gradesSubmenu">
+              <div class="submenu-header">
+                <div class="nav-link section-toggle" data-section="prep">
+                  <i class="fas fa-school"></i>
+                  الإعدادية
+                  <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+                <div class="section-submenu" data-section="prep">
+                  <a href="/grades/prep1" class="nav-link submenu-link">
+                    <i class="fas fa-arrow-left"></i>
+                    أولي إعدادي
+                  </a>
+                  <a href="/grades/prep2" class="nav-link submenu-link">
+                    <i class="fas fa-arrow-left"></i>
+                    ثانية إعدادي
+                  </a>
+                  <a href="/grades/prep3" class="nav-link submenu-link">
+                    <i class="fas fa-arrow-left"></i>
+                    ثالثة إعدادي
+                  </a>
+                </div>
+              </div>
+
+              <div class="submenu-header">
+                <div class="nav-link section-toggle" data-section="sec">
+                  <i class="fas fa-university"></i>
+                  الثانوية
+                  <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+                <div class="section-submenu" data-section="sec">
+                  <a href="/grades/sec1" class="nav-link submenu-link">
+                    <i class="fas fa-arrow-left"></i>
+                    أولي ثانوي
+                  </a>
+                  <a href="/grades/sec2" class="nav-link submenu-link">
+                    <i class="fas fa-arrow-left"></i>
+                    ثانية ثانوي
+                  </a>
+                  <a href="/grades/sec3" class="nav-link submenu-link">
+                    <i class="fas fa-arrow-left"></i>
+                    ثالثة ثانوي
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </nav>
 
-    <div class="sidebar-footer">
-      <button type="button" class="logout-btn" id="logoutBtn">
-        <i class="fas fa-sign-out-alt"></i>
-        تسجيل الخروج
-      </button>
-    </div>
-  </aside>
-
-  <main class="main-content">
-    <header class="top-nav">
-      <div class="user-info">
-        <img src="/UI/pfp.jpg" alt="المستخدم" class="user-avatar" />
-        <div class="user-details">
-          <h3 id="username">جاري التحميل...</h3>
-          <span id="userRole" class="role-badge">مشرف</span>
+        <div class="nav-item" data-nav-access="hasUserApproverRole">
+          <a href="/admin/user-approvals" class="nav-link">
+            <i class="fas fa-user-check"></i>
+            <span>طلبات التسجيل</span>
+            <span
+              class="nav-unread-badge"
+              id="nav-badge-login"
+              aria-hidden="true"
+            ></span>
+          </a>
         </div>
-        <button class="logout-btn-mobile" id="logoutBtnMobile">
+        <div class="nav-item" data-nav-access="hasUserApproverRole">
+          <a href="/admin/user-management" class="nav-link active">
+            <i class="fas fa-users"></i>
+            إدارة المستخدمين
+          </a>
+        </div>
+        <div class="nav-item" data-nav-access="hasFormEditorRole">
+          <a href="/admin/gift-shop/add" class="nav-link">
+            <i class="fas fa-plus-circle"></i>
+            إضافة هدية
+          </a>
+        </div>
+        <div class="nav-item" data-nav-access="hasGiftApproverRole">
+          <a href="/admin/gift-shop/approvals" class="nav-link">
+            <i class="fas fa-gift"></i>
+            <span>طلبات الهدايا</span>
+            <span
+              class="nav-unread-badge"
+              id="nav-badge-gift"
+              aria-hidden="true"
+            ></span>
+          </a>
+        </div>
+
+        <div class="nav-item suggestions-nav-item">
+          <div class="nav-link suggestions-toggle" id="suggestionsToggle">
+            <i class="fas fa-lightbulb"></i>
+            الاقتراحات
+            <i class="fas fa-chevron-down toggle-icon"></i>
+          </div>
+          <div class="suggestions-submenu-container">
+            <div class="suggestions-submenu" id="suggestionsSubmenu">
+              <a
+                href="/admin/suggestion/ektma3at"
+                class="nav-link submenu-link"
+              >
+                <i class="fas fa-users"></i>
+                اقتراحات الاجتماعات
+              </a>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button type="button" class="logout-btn" id="logoutBtn">
           <i class="fas fa-sign-out-alt"></i>
+          تسجيل الخروج
         </button>
       </div>
-    </header>
+    </aside>
 
-    <div class="admin-container">
-      <h1><i class="fas fa-users-cog"></i> إدارة المستخدمين</h1>
-
-      <div class="user-management-tools" id="toolsHeader">
-        <div class="tools-left">
-          <div class="search-box">
-            <i class="fas fa-search"></i>
-            <input type="text" id="searchInput" placeholder="بحث باسم المستخدم، الاسم، الهاتف..." />
-            <i class="fas fa-times clear-search" id="clearSearch" style="display:none"></i>
+    <main class="main-content">
+      <header class="top-nav">
+        <div class="user-info">
+          <img src="/UI/pfp.jpg" alt="المستخدم" class="user-avatar" />
+          <div class="user-details">
+            <h3 id="username">جاري التحميل...</h3>
+            <span id="userRole" class="role-badge">مشرف</span>
           </div>
+          <button class="logout-btn-mobile" id="logoutBtnMobile">
+            <i class="fas fa-sign-out-alt"></i>
+          </button>
         </div>
+      </header>
 
-        <div class="tools-right">
-          <div class="category-dropdown" id="categoryDropdown">
-            <button class="category-toggle" id="categoryToggle">
-              <span>تصفية حسب الفئة</span>
-              <i class="fas fa-chevron-down"></i>
-            </button>
-            <div class="dropdown-menu" id="dropdownMenu">
-              <div class="dropdown-grid">
-                <div class="dropdown-column">
-                  <h4><i class="fas fa-graduation-cap"></i> المرحلة الثانوية</h4>
-                  <div class="category-option" data-category="sec1">أولى ثانوي <span class="category-count"
-                      id="count-sec1">0</span></div>
-                  <div class="category-option" data-category="sec2">ثانية ثانوي <span class="category-count"
-                      id="count-sec2">0</span></div>
-                  <div class="category-option" data-category="sec3">ثالثة ثانوي <span class="category-count"
-                      id="count-sec3">0</span></div>
-                </div>
-                <div class="dropdown-column">
-                  <h4><i class="fas fa-school"></i> المرحلة الإعدادية</h4>
-                  <div class="category-option" data-category="prep1">أولى إعدادي <span class="category-count"
-                      id="count-prep1">0</span></div>
-                  <div class="category-option" data-category="prep2">ثانية إعدادي <span class="category-count"
-                      id="count-prep2">0</span></div>
-                  <div class="category-option" data-category="prep3">ثالثة إعدادي <span class="category-count"
-                      id="count-prep3">0</span></div>
-                </div>
-                <div class="dropdown-column">
-                  <h4><i class="fas fa-list"></i> عرض الكل</h4>
-                  <div class="category-option active" data-category="all">كل المستخدمين <span class="category-count"
-                      id="count-all">0</span></div>
-                </div>
-              </div>
+      <div class="admin-container">
+        <h1><i class="fas fa-users-cog"></i> إدارة المستخدمين</h1>
+
+        <div class="user-management-tools" id="toolsHeader">
+          <div class="tools-left">
+            <div class="search-box">
+              <i class="fas fa-search"></i>
+              <input
+                type="text"
+                id="searchInput"
+                placeholder="بحث باسم المستخدم، الاسم، الهاتف..."
+              />
+              <i
+                class="fas fa-times clear-search"
+                id="clearSearch"
+                style="display: none"
+              ></i>
             </div>
           </div>
 
-          <div class="view-toggles">
-            <button id="toggleViewBtn" class="toggle-btn">
-              <i class="fas fa-ban"></i> عرض المحظورين
-            </button>
-            <button id="refreshUsersBtn" class="toggle-btn">
-              <i class="fas fa-sync-alt"></i> تحديث
-            </button>
+          <div class="tools-right">
+            <div class="category-dropdown" id="categoryDropdown">
+              <button class="category-toggle" id="categoryToggle">
+                <span>تصفية حسب الفئة</span>
+                <i class="fas fa-chevron-down"></i>
+              </button>
+              <div class="dropdown-menu" id="dropdownMenu">
+                <div class="dropdown-grid">
+                  <div class="dropdown-column">
+                    <h4>
+                      <i class="fas fa-graduation-cap"></i> المرحلة الثانوية
+                    </h4>
+                    <div class="category-option" data-category="sec1">
+                      أولى ثانوي
+                      <span class="category-count" id="count-sec1">0</span>
+                    </div>
+                    <div class="category-option" data-category="sec2">
+                      ثانية ثانوي
+                      <span class="category-count" id="count-sec2">0</span>
+                    </div>
+                    <div class="category-option" data-category="sec3">
+                      ثالثة ثانوي
+                      <span class="category-count" id="count-sec3">0</span>
+                    </div>
+                  </div>
+                  <div class="dropdown-column">
+                    <h4><i class="fas fa-school"></i> المرحلة الإعدادية</h4>
+                    <div class="category-option" data-category="prep1">
+                      أولى إعدادي
+                      <span class="category-count" id="count-prep1">0</span>
+                    </div>
+                    <div class="category-option" data-category="prep2">
+                      ثانية إعدادي
+                      <span class="category-count" id="count-prep2">0</span>
+                    </div>
+                    <div class="category-option" data-category="prep3">
+                      ثالثة إعدادي
+                      <span class="category-count" id="count-prep3">0</span>
+                    </div>
+                  </div>
+                  <div class="dropdown-column">
+                    <h4><i class="fas fa-list"></i> عرض الكل</h4>
+                    <div class="category-option active" data-category="all">
+                      كل المستخدمين
+                      <span class="category-count" id="count-all">0</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="view-toggles">
+              <button id="toggleViewBtn" class="toggle-btn">
+                <i class="fas fa-ban"></i> عرض المحظورين
+              </button>
+              <button id="refreshUsersBtn" class="toggle-btn">
+                <i class="fas fa-sync-alt"></i> تحديث
+              </button>
+            </div>
           </div>
         </div>
-      </div>
 
-      <style>
-        /* Force SweetAlert2 Centering Aggressively */
-        .swal2-container {
-          z-index: 10000 !important;
-        }
-
-        .user-management-tools {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          background: var(--panel-bg);
-          backdrop-filter: blur(10px);
-          padding: 15px 25px;
-          border-radius: 16px;
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          margin-bottom: 30px;
-          flex-wrap: wrap;
-          gap: 20px;
-          position: relative;
-          top: auto;
-          z-index: 850;
-        }
-
-        .tools-left {
-          flex: 1;
-          min-width: 300px;
-        }
-
-        .tools-right {
-          flex: 2;
-          display: flex;
-          justify-content: flex-start;
-          align-items: center;
-          gap: 15px;
-          flex-wrap: wrap;
-        }
-
-        @media (max-width: 992px) {
-          .user-management-tools {
-            flex-direction: column;
-            align-items: stretch;
-            top: 10px;
-            padding: 15px;
-            gap: 15px;
+        <style>
+          .swal2-container {
+            z-index: 10000 !important;
           }
 
-          .tools-right {
+          .user-management-tools {
+            display: flex;
+            align-items: center;
             justify-content: space-between;
-            width: 100%;
+            background: var(--panel-bg);
+            backdrop-filter: blur(10px);
+            padding: 15px 25px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+            position: relative;
+            top: auto;
+            z-index: 850;
           }
 
           .tools-left {
-            min-width: auto;
-            width: 100%;
-          }
-
-          .view-toggles {
-            display: flex;
-            gap: 8px;
-            width: 100%;
-            justify-content: space-between;
-          }
-
-          .view-toggles .toggle-btn {
             flex: 1;
-            font-size: 13px;
-            padding: 10px 5px;
+            min-width: 300px;
           }
 
-          .category-toggle {
-            width: 100%;
+          .tools-right {
+            flex: 2;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
           }
-        }
-      </style>
 
-      <div id="usersSection">
-        <div id="usersList" class="users-grid"></div>
-        <div class="loading-state" id="loadingState" style="display:none">
-          <div class="spinner"></div>
-          <p>جاري تحميل المستخدمين...</p>
+          @media (max-width: 992px) {
+            .user-management-tools {
+              flex-direction: column;
+              align-items: stretch;
+              top: 10px;
+              padding: 15px;
+              gap: 15px;
+            }
+
+            .tools-right {
+              justify-content: space-between;
+              width: 100%;
+            }
+
+            .tools-left {
+              min-width: auto;
+              width: 100%;
+            }
+
+            .view-toggles {
+              display: flex;
+              gap: 8px;
+              width: 100%;
+              justify-content: space-between;
+            }
+
+            .view-toggles .toggle-btn {
+              flex: 1;
+              font-size: 13px;
+              padding: 10px 5px;
+            }
+
+            .category-toggle {
+              width: 100%;
+            }
+          }
+        </style>
+
+        <div id="usersSection">
+          <div id="usersList" class="users-grid"></div>
+          <div class="loading-state" id="loadingState" style="display: none">
+            <div class="spinner"></div>
+            <p>جاري تحميل المستخدمين...</p>
+          </div>
+        </div>
+
+        <div id="bannedSection" style="display: none">
+          <div id="bannedUsersList" class="users-grid"></div>
+        </div>
+
+        <div
+          class="pagination-controls"
+          id="paginationControls"
+          style="display: none"
+        >
+          <button id="prev-page" disabled>
+            <i class="fas fa-chevron-right"></i> السابق
+          </button>
+          <span id="page-info">صفحة 1</span>
+          <button id="next-page" disabled>
+            التالي <i class="fas fa-chevron-left"></i>
+          </button>
         </div>
       </div>
+    </main>
 
-      <div id="bannedSection" style="display:none">
-        <div id="bannedUsersList" class="users-grid"></div>
-      </div>
-
-      <div class="pagination-controls" id="paginationControls" style="display:none">
-        <button id="prev-page" disabled><i class="fas fa-chevron-right"></i> السابق</button>
-        <span id="page-info">صفحة 1</span>
-        <button id="next-page" disabled>التالي <i class="fas fa-chevron-left"></i></button>
+    <div id="editUserModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>تعديل المستخدم</h2>
+          <span class="close" id="closeEditModal">&times;</span>
+        </div>
+        <div class="modal-body">
+          <form id="editUserForm">
+            <input type="hidden" id="editUserId" />
+            <div class="form-row">
+              <div class="form-group">
+                <label for="editFirstName">الاسم الأول</label>
+                <input type="text" id="editFirstName" required />
+              </div>
+              <div class="form-group">
+                <label for="editSecondName">الاسم الثاني</label>
+                <input type="text" id="editSecondName" required />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="editUsername">اسم المستخدم</label>
+              <input type="text" id="editUsername" required />
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="editEmail">البريد الإلكتروني</label>
+                <input type="email" id="editEmail" required />
+              </div>
+              <div class="form-group">
+                <label for="editPhone">رقم الهاتف</label>
+                <input type="text" id="editPhone" required />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="editGrade">الصف</label>
+                <select id="editGrade" required>
+                  <option value="prep1">أولي إعدادي</option>
+                  <option value="prep2">ثانية إعدادي</option>
+                  <option value="prep3">ثالثة إعدادي</option>
+                  <option value="sec1">أولي ثانوي</option>
+                  <option value="sec2">ثانية ثانوي</option>
+                  <option value="sec3">ثالثة ثانوي</option>
+                  <option value="other">أخرى</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="editPassword"
+                >كلمة المرور (اتركه فارغاً للإبقاء على الحالية)</label
+              >
+              <input
+                type="password"
+                id="editPassword"
+                placeholder="كلمة مرور جديدة"
+              />
+            </div>
+            <div class="modal-actions">
+              <button type="submit" id="editSubmitBtn" class="btn-primary">
+                <span id="editBtnText">حفظ التغييرات</span>
+                <span id="editBtnLoading" style="display: none"
+                  ><i class="fas fa-spinner fa-spin"></i
+                ></span>
+              </button>
+              <button type="button" id="cancelEditModal" class="btn-secondary">
+                إلغاء
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
-  </main>
 
-  <!-- Edit User Modal -->
-  <div id="editUserModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>تعديل المستخدم</h2>
-        <span class="close" id="closeEditModal">&times;</span>
-      </div>
-      <div class="modal-body">
-        <form id="editUserForm">
-          <input type="hidden" id="editUserId" />
-          <div class="form-row">
+    <div id="banModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>حظر المستخدم</h2>
+          <span class="close" id="closeBanModal">&times;</span>
+        </div>
+        <div class="modal-body">
+          <form id="banForm">
+            <input type="hidden" id="banUserId" />
             <div class="form-group">
-              <label for="editFirstName">الاسم الأول</label>
-              <input type="text" id="editFirstName" required />
-            </div>
-            <div class="form-group">
-              <label for="editSecondName">الاسم الثاني</label>
-              <input type="text" id="editSecondName" required />
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="editUsername">اسم المستخدم</label>
-            <input type="text" id="editUsername" required />
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="editEmail">البريد الإلكتروني</label>
-              <input type="email" id="editEmail" required />
-            </div>
-            <div class="form-group">
-              <label for="editPhone">رقم الهاتف</label>
-              <input type="text" id="editPhone" required />
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="editGrade">الصف</label>
-              <select id="editGrade" required>
-                <option value="prep1">أولي إعدادي</option>
-                <option value="prep2">ثانية إعدادي</option>
-                <option value="prep3">ثالثة إعدادي</option>
-                <option value="sec1">أولي ثانوي</option>
-                <option value="sec2">ثانية ثانوي</option>
-                <option value="sec3">ثالثة ثانوي</option>
-                <option value="other">أخرى</option>
+              <label for="banType">نوع الحظر</label>
+              <select id="banType" required disabled>
+                <option value="all" selected>حظر شامل</option>
               </select>
             </div>
             <div class="form-group">
-              <label for="editRole">الدور</label>
-              <select id="editRole" required>
-                <option value="user">مستخدم</option>
-                <option value="admin">مشرف</option>
-                <option value="leadadmin">Lead Admin</option>
+              <label for="banDuration">المدة</label>
+              <select id="banDuration">
+                <option value="permanent">دائم</option>
+                <option value="24h">24 ساعة</option>
+                <option value="7d">7 أيام</option>
+                <option value="30d">30 يوم</option>
               </select>
             </div>
-          </div>
-          <div class="form-group">
-            <label for="editPassword">كلمة المرور (اتركه فارغاً للإبقاء على الحالية)</label>
-            <input type="password" id="editPassword" placeholder="كلمة مرور جديدة" />
-          </div>
-          <div class="modal-actions">
-            <button type="submit" id="editSubmitBtn" class="btn-primary">
-              <span id="editBtnText">حفظ التغييرات</span>
-              <span id="editBtnLoading" style="display:none"><i class="fas fa-spinner fa-spin"></i></span>
-            </button>
-            <button type="button" id="cancelEditModal" class="btn-secondary">إلغاء</button>
-          </div>
-        </form>
+            <div class="form-group">
+              <label for="banReason">السبب</label>
+              <textarea
+                id="banReason"
+                rows="3"
+                required
+                placeholder="سبب الحظر..."
+              ></textarea>
+            </div>
+            <div class="modal-actions">
+              <button type="submit" id="banSubmitBtn" class="btn-danger">
+                <span id="banBtnText">حظر</span>
+                <span id="banBtnLoading" style="display: none"
+                  ><i class="fas fa-spinner fa-spin"></i
+                ></span>
+              </button>
+              <button type="button" id="cancelBanModal" class="btn-secondary">
+                إلغاء
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Ban Modal -->
-  <div id="banModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>حظر المستخدم</h2>
-        <span class="close" id="closeBanModal">&times;</span>
-      </div>
-      <div class="modal-body">
-        <form id="banForm">
-          <input type="hidden" id="banUserId" />
-          <div class="form-group">
-            <label for="banType">نوع الحظر</label>
-            <select id="banType" required disabled>
-              <option value="all" selected>حظر شامل</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="banDuration">المدة</label>
-            <select id="banDuration">
-              <option value="permanent">دائم</option>
-              <option value="24h">24 ساعة</option>
-              <option value="7d">7 أيام</option>
-              <option value="30d">30 يوم</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="banReason">السبب</label>
-            <textarea id="banReason" rows="3" required placeholder="سبب الحظر..."></textarea>
-          </div>
-          <div class="modal-actions">
-            <button type="submit" id="banSubmitBtn" class="btn-danger">
-              <span id="banBtnText">حظر</span>
-              <span id="banBtnLoading" style="display:none"><i class="fas fa-spinner fa-spin"></i></span>
-            </button>
-            <button type="button" id="cancelBanModal" class="btn-secondary">إلغاء</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-
-
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js" defer></script>
-  <script src="/scripts/user-management-core.js?v=4" defer></script>
-  <script>
-    (function () {
-      function updatePendingBadges() {
-        if (document.visibilityState !== "visible") return;
-        fetch("/api/admin/pending-counts")
-          .then(function (r) { return r.json(); })
-          .then(function (d) {
-            var loginBadge = document.getElementById("nav-badge-login");
-            var giftBadge = document.getElementById("nav-badge-gift");
-            var loginCount = d.pendingRegistration || 0;
-            var giftCount = d.pendingGift || 0;
-            if (loginBadge) {
-              loginBadge.textContent = loginCount;
-              loginBadge.classList.toggle("empty", loginCount === 0);
-              loginBadge.setAttribute("aria-hidden", loginCount === 0 ? "true" : "false");
-            }
-            if (giftBadge) {
-              giftBadge.textContent = giftCount;
-              giftBadge.classList.toggle("empty", giftCount === 0);
-              giftBadge.setAttribute("aria-hidden", giftCount === 0 ? "true" : "false");
-            }
-          })
-          .catch(function () { });
-      }
-      updatePendingBadges();
-      setInterval(updatePendingBadges, 10000);
-      document.addEventListener("visibilitychange", function () {
-        if (document.visibilityState === "visible") updatePendingBadges();
-      });
-    })();
-  </script>
-</body>
-
+    <script
+      src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"
+      defer
+    ></script>
+    <script src="/scripts/user-management-core.js?v=4" defer></script>
+    <script>
+      (function () {
+        function updatePendingBadges() {
+          if (document.visibilityState !== "visible") return;
+          fetch("/api/admin/pending-counts")
+            .then(function (r) {
+              return r.json();
+            })
+            .then(function (d) {
+              var loginBadge = document.getElementById("nav-badge-login");
+              var giftBadge = document.getElementById("nav-badge-gift");
+              var loginCount = d.pendingRegistration || 0;
+              var giftCount = d.pendingGift || 0;
+              if (loginBadge) {
+                loginBadge.textContent = loginCount;
+                loginBadge.classList.toggle("empty", loginCount === 0);
+                loginBadge.setAttribute(
+                  "aria-hidden",
+                  loginCount === 0 ? "true" : "false",
+                );
+              }
+              if (giftBadge) {
+                giftBadge.textContent = giftCount;
+                giftBadge.classList.toggle("empty", giftCount === 0);
+                giftBadge.setAttribute(
+                  "aria-hidden",
+                  giftCount === 0 ? "true" : "false",
+                );
+              }
+            })
+            .catch(function () {});
+        }
+        updatePendingBadges();
+        setInterval(updatePendingBadges, 10000);
+        document.addEventListener("visibilitychange", function () {
+          if (document.visibilityState === "visible") updatePendingBadges();
+        });
+      })();
+    </script>
+  </body>
 </html>
