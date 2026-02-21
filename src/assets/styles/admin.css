@@ -994,6 +994,8 @@ body.admin-page-user-management .main-content {
 .grades-toggle.active+.grades-submenu-container .grades-submenu,
 .suggestions-toggle.active+.suggestions-submenu-container .suggestions-submenu {
   max-height: 300px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .section-submenu {
@@ -1006,6 +1008,8 @@ body.admin-page-user-management .main-content {
 
 .section-toggle.active+.section-submenu {
   max-height: 200px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .submenu-link {

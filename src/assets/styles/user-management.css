@@ -404,12 +404,16 @@
           width: min(92vw, 520px) !important;
           max-height: 92vh !important;
           overflow: hidden !important;
+          display: flex !important;
+          flex-direction: column !important;
         }
 
         .swal2-html-container {
           max-height: 68vh !important;
           overflow-y: auto !important;
           -webkit-overflow-scrolling: touch;
+          flex: 1 1 auto !important;
+          min-height: 0 !important;
         }
 
         .swal2-popup .reset-links-wrapper {

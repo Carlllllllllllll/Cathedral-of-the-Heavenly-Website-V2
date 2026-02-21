@@ -9,13 +9,13 @@
     <meta name="author" content="كاتدرائية السمائيين" />
     <meta name="theme-color" content="#402958" />
     <meta name="robots" content="noindex, nofollow" />
-    <meta property="og:title" content="لوحة الترتيب - dasd | كاتدرائية السمائيين" />
+    <meta property="og:title" content="لوحة الترتيب<% if (typeof form !== 'undefined' && form && form.topic) { %> - <%= form.topic %><% } %> | كاتدرائية السمائيين" />
     <meta property="og:description"
         content="كاتدرائية السمائيين – «اِفْرَحُوا فِي الرَّبِّ كُلَّ حِينٍ» (فيلبي ٤: ٤)" />
     <meta property="og:image" content="/UI/icon.png" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="ar_AR" />
-    <title>لوحة الترتيب - dasd | كاتدرائية السمائيين</title>
+    <title>لوحة الترتيب<% if (typeof form !== 'undefined' && form && form.topic) { %> - <%= form.topic %><% } %> | لوحة الإدارة | كاتدرائية السمائيين</title>
     <link rel="icon" href="/UI/icon.png" type="image/png" sizes="16x16" />
     <link rel="apple-touch-icon" href="/UI/icon.png" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -56,7 +56,15 @@
             font-weight: 700;
             padding: 4px 10px;
             border-radius: 999px;
-            line-height: 1;
+            background: rgba(255, 204, 0, 0.18);
+            color: var(--accent);
+            border: 1px solid rgba(255, 204, 0, 0.35);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            white-space: nowrap;
         }
 
         .top-nav .user-info,
@@ -237,6 +245,16 @@
             transition: max-height 0.3s ease;
             margin-right: 16px;
             margin-top: 5px;
+        }
+
+        .grades-toggle.active+.grades-submenu-container .grades-submenu {
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .section-toggle.active+.section-submenu {
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .submenu-link {
@@ -1054,7 +1072,7 @@
                 <img src="/UI/logo.png" alt="اللوغو" />
                 <div class="logo-text">
                     <h1>كاتدرائية السمائيين</h1>
-                    <p>لوحة الترتيب</p>
+                    <p>إحصائيات النتائج وترتيب المشاركين</p>
                 </div>
             </div>
         </div>
