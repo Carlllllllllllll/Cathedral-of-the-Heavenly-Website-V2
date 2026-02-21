@@ -65,14 +65,18 @@ function attachPasswordToggle(inputEl) {
   btn.style.display = "inline-flex";
   btn.style.alignItems = "center";
   btn.style.justifyContent = "center";
+  btn.style.padding = "0";
+  btn.style.lineHeight = "1";
+  btn.style.fontSize = "16px";
   btn.style.border = "none";
   btn.style.borderRadius = "10px";
   btn.style.cursor = "pointer";
   btn.style.background = "rgba(255,255,255,0.06)";
-  btn.style.color = "inherit";
+  btn.style.color = "#ffcc00";
 
   const icon = document.createElement("i");
   icon.className = "fas fa-eye";
+  icon.style.pointerEvents = "none";
   btn.appendChild(icon);
 
   const syncIcon = () => {
