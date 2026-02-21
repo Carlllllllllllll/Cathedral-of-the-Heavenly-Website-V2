@@ -81,8 +81,7 @@ body.admin-page-user-management .main-content {
 }
 
 .logo-text p {
-  font-size: 0.75rem;
-  color: var(--text-dim);
+  display: none;
 }
 
 .nav-menu {

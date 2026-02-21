@@ -833,6 +833,7 @@ async function generatePasswordResetLink(userId, username) {
               </button>
               <textarea readonly id="resetLinkTextarea" class="reset-created-simple-textarea">${data.link}</textarea>
             </div>
+            <div class="reset-created-simple-note">لو محتاج كود التحقق، افتح <strong>عرض الرابط</strong> من لوحة المستخدم.</div>
             ${data.message
               ? `<div class="reset-created-simple-note">${String(data.message).replace(/</g, "&lt;")}</div>`
               : ""}
@@ -882,7 +883,7 @@ async function showPasswordResetLinks(userId, username) {
   }
   Swal.fire({
     title: "جاري التحميل...",
-    text: "عرض روابط تغيير كلمة المرور",
+    text: "عرض رابط تغيير كلمة المرور",
     icon: "info",
     showConfirmButton: false,
     allowOutsideClick: false,
@@ -962,7 +963,7 @@ async function showPasswordResetLinks(userId, username) {
       </div>`;
     };
     Swal.fire({
-      title: `روابط تغيير كلمة المرور — ${username}`,
+      title: `رابط تغيير كلمة المرور — ${username}`,
       html: buildSingleHtml(),
       icon: "info",
       customClass: { popup: "reset-links-swal" },
