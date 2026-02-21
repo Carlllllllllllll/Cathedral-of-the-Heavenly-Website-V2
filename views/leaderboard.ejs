@@ -52,10 +52,9 @@
         }
 
         #user-role-pill.role-badge {
-            font-size: 0.68rem;
-            padding: 3px 8px;
-            line-height: 1.1;
-            max-width: 64px;
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            line-height: 1;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -1544,6 +1543,15 @@
                                     text-rendering: geometricPrecision !important;
                                     -webkit-font-smoothing: antialiased !important;
                                 }
+                                .leaderboard-table td { overflow: visible !important; }
+                                .grade-cell {
+                                    display: inline-flex !important;
+                                    align-items: center !important;
+                                    justify-content: center !important;
+                                    white-space: nowrap !important;
+                                    line-height: 1 !important;
+                                    vertical-align: middle !important;
+                                }
                                 .leaderboard-table-wrapper { overflow: visible !important; }
                             `;
                             clonedDoc.head.appendChild(style);
@@ -1551,20 +1559,63 @@
                     },
                 });
 
-                const cropCssRight = 90;
-                const cropRightPx = Math.max(0, Math.min(canvas.width - 1, Math.round((canvas.width / captureWidth) * cropCssRight)));
+                function autoCropCanvasToContent(sourceCanvas) {
+                    const ctx = sourceCanvas.getContext("2d", { willReadFrequently: true });
+                    if (!ctx) return sourceCanvas;
 
-                let outputCanvas = canvas;
-                if (cropRightPx > 0) {
-                    const cropped = document.createElement("canvas");
-                    cropped.width = canvas.width - cropRightPx;
-                    cropped.height = canvas.height;
-                    const ctx = cropped.getContext("2d");
-                    if (ctx) {
-                        ctx.drawImage(canvas, 0, 0, canvas.width - cropRightPx, canvas.height, 0, 0, canvas.width - cropRightPx, canvas.height);
-                        outputCanvas = cropped;
+                    const w = sourceCanvas.width;
+                    const h = sourceCanvas.height;
+                    if (w <= 1 || h <= 1) return sourceCanvas;
+
+                    const bg = { r: 42, g: 27, b: 60 };
+                    const threshold = 18;
+                    const pad = 6;
+                    const step = 2;
+
+                    const img = ctx.getImageData(0, 0, w, h);
+                    const d = img.data;
+
+                    let minX = w, minY = h, maxX = -1, maxY = -1;
+
+                    for (let y = 0; y < h; y += step) {
+                        const row = y * w * 4;
+                        for (let x = 0; x < w; x += step) {
+                            const i = row + x * 4;
+                            const a = d[i + 3];
+                            if (a === 0) continue;
+                            const r = d[i];
+                            const g = d[i + 1];
+                            const b = d[i + 2];
+                            const diff = Math.abs(r - bg.r) + Math.abs(g - bg.g) + Math.abs(b - bg.b);
+                            if (diff > threshold) {
+                                if (x < minX) minX = x;
+                                if (y < minY) minY = y;
+                                if (x > maxX) maxX = x;
+                                if (y > maxY) maxY = y;
+                            }
+                        }
                     }
+
+                    if (maxX < 0 || maxY < 0) return sourceCanvas;
+
+                    minX = Math.max(0, minX - pad);
+                    minY = Math.max(0, minY - pad);
+                    maxX = Math.min(w - 1, maxX + pad);
+                    maxY = Math.min(h - 1, maxY + pad);
+
+                    const cw = Math.max(1, maxX - minX + 1);
+                    const ch = Math.max(1, maxY - minY + 1);
+
+                    const cropped = document.createElement("canvas");
+                    cropped.width = cw;
+                    cropped.height = ch;
+                    const cctx = cropped.getContext("2d");
+                    if (!cctx) return sourceCanvas;
+                    cctx.drawImage(sourceCanvas, minX, minY, cw, ch, 0, 0, cw, ch);
+                    return cropped;
                 }
+
+                const outputCanvas = autoCropCanvasToContent(canvas);
 
                 const blob = await new Promise((resolve) => outputCanvas.toBlob(resolve, "image/png"));
                 if (!blob) return;
