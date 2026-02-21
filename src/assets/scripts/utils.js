@@ -59,7 +59,7 @@ function attachPasswordToggle(inputEl) {
   btn.style.position = "absolute";
   btn.style.left = "12px";
   btn.style.top = "50%";
-  btn.style.transform = "translateY(calc(-50% - 1px))";
+  btn.style.transform = "translateY(calc(-50% - 5px))";
   btn.style.width = "34px";
   btn.style.height = "34px";
   btn.style.display = "inline-flex";
