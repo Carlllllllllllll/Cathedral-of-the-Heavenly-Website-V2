@@ -1278,14 +1278,17 @@
       display: flex;
       flex-direction: column;
       gap: 0;
+      width: 100%;
     }
 
     .gift-shop-container {
-      max-width: 1700px;
+      max-width: 1900px;
+      width: 100%;
     }
 
     .gift-shop-section {
       padding: 2rem;
+      width: 100%;
     }
 
     .section-tabs {
@@ -1485,14 +1488,6 @@
           <i class="fas fa-box-open"></i>
           <span>مشترياتي السابقة</span>
         </div>
-        <div class="history-controls" style="display:flex;align-items:center;justify-content:flex-start;gap:12px;margin-bottom:14px;flex-wrap:wrap;">
-          <label for="historyRange" style="color:var(--muted);font-weight:800;">عرض:</label>
-          <select id="historyRange" class="history-range-select">
-            <option value="all">الكل</option>
-            <option value="month">آخر شهر</option>
-            <option value="year">آخر سنة</option>
-          </select>
-        </div>
         <div id="my-purchases-list" class="gift-shop-grid">
           <div class="empty-state" id="history-placeholder">
             <i class="fas fa-history"></i>
@@ -1525,7 +1520,6 @@
     let allPurchases = [];
     let purchasesObserver = null;
     let purchasesSort = "desc";
-    let purchasesRange = "all";
 
     let userPurchaseCounts = {};
     let historyLoaded = false;
@@ -1620,12 +1614,11 @@
       list.innerHTML = allPurchases.map(getPurchaseCardHtml).join("");
     }
 
-    async function fetchPurchasesPage(limit, skip, sort, range) {
+    async function fetchPurchasesPage(limit, skip, sort) {
       const params = new URLSearchParams({
         limit: String(limit),
         skip: String(skip),
         sort: String(sort || "desc"),
-        range: String(range || "all"),
       });
       const res = await fetch("/api/gift-shop/my-purchases?" + params.toString());
       const data = await res.json().catch(() => ({}));
@@ -1654,12 +1647,7 @@
       if (sentinel) setSentinelLoading(sentinel, true);
 
       try {
-        const page = await fetchPurchasesPage(
-          requestLimit,
-          purchasesSkip,
-          purchasesSort,
-          purchasesRange
-        );
+        const page = await fetchPurchasesPage(requestLimit, purchasesSkip, purchasesSort);
         if (purchasesTotal == null && page.total != null) purchasesTotal = page.total;
         const purchases = page.purchases || [];
 
@@ -2036,15 +2024,6 @@
         applySuggestionLinks(grade);
       }
       hideCurrentPageFromNav("gift-shop");
-
-      const historyRangeEl = document.getElementById("historyRange");
-      if (historyRangeEl) {
-        purchasesRange = historyRangeEl.value || "all";
-        historyRangeEl.addEventListener("change", function () {
-          purchasesRange = this.value || "all";
-          if (historyLoaded) loadMyPurchases();
-        });
-      }
 
       await initNavControls();
     });
