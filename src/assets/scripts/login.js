@@ -81,7 +81,67 @@ whenReady(() => {
   );
   const verificationInput = document.getElementById("verification-code");
 
+  const setCooldown = (seconds) => {
+    const secs = Math.max(0, Number.parseInt(String(seconds || "0"), 10) || 0);
+    if (!submitButton || secs <= 0) return;
+
+    let remaining = secs;
+    submitButton.disabled = true;
+
+    const tick = () => {
+      if (!submitButton) return;
+      if (remaining <= 0) {
+        if (typeof setButtonLoading === "function") {
+          setButtonLoading(submitButton, false);
+        } else {
+          submitButton.disabled = false;
+          submitButton.innerHTML = "تسجيل الدخول";
+        }
+        return;
+      }
+
+      const text = `يرجى الانتظار ${remaining} ثانية قبل المحاولة مرة أخرى`;
+      if (errorMessage) {
+        errorMessage.textContent = text;
+        errorMessage.style.color = "#ef4444";
+      }
+      remaining -= 1;
+      setTimeout(tick, 1000);
+    };
+
+    tick();
+  };
+
   if (loginForm) {
+    const usernameEl = document.getElementById("username");
+    const passwordEl = document.getElementById("password");
+
+    if (typeof attachPasswordToggle === "function" && passwordEl) {
+      attachPasswordToggle(passwordEl);
+    }
+
+    if (usernameEl) {
+      usernameEl.addEventListener("input", function () {
+        if (typeof containsArabicCharacters === "function" && containsArabicCharacters(this.value)) {
+          this.value = typeof removeArabicCharacters === "function" ? removeArabicCharacters(this.value) : this.value;
+          GlobalErrorHandler.show("العربية غير مسموحة في اسم المستخدم");
+        } else {
+          GlobalErrorHandler.clear();
+        }
+      });
+    }
+
+    if (passwordEl) {
+      passwordEl.addEventListener("input", function () {
+        if (typeof containsArabicCharacters === "function" && containsArabicCharacters(this.value)) {
+          this.value = typeof removeArabicCharacters === "function" ? removeArabicCharacters(this.value) : this.value;
+          GlobalErrorHandler.show("العربية غير مسموحة في كلمة المرور");
+        } else {
+          GlobalErrorHandler.clear();
+        }
+      });
+    }
+
     if (verificationInput) {
       verificationInput.addEventListener("input", function () {
         this.value = this.value.replace(/\D/g, "").slice(0, 6);
@@ -121,7 +181,7 @@ whenReady(() => {
         const result = await response.json();
 
         if (result.requiresVerification) {
-          const { value: verificationCode } = await Swal.fire({
+          const swalRes = await Swal.fire({
             title: "🔑 كود التحقق مطلوب",
             html: `
                             <p style="margin-bottom: 20px; color: #fff; font-size: 14px;">يرجى إدخال كود التحقق المكون من 6 أرقام الذي استلمته من المسؤول</p>
@@ -141,6 +201,8 @@ whenReady(() => {
             backdrop: "rgba(0,0,0,0.8)",
             allowOutsideClick: false,
             allowEscapeKey: false,
+            showLoaderOnConfirm: true,
+            allowOutsideClick: () => !Swal.isLoading(),
             customClass: {
               popup: "swal2-popup-responsive",
               container: "swal2-container-responsive",
@@ -154,49 +216,59 @@ whenReady(() => {
                 });
               }
             },
-            preConfirm: () => {
-              const code = document.getElementById(
-                "swal-verification-code"
-              ).value;
+            preConfirm: async () => {
+              const input = document.getElementById("swal-verification-code");
+              const code = input ? String(input.value || "").replace(/\D/g, "").slice(0, 6) : "";
               if (!code || code.length !== 6) {
                 Swal.showValidationMessage("يرجى إدخال 6 أرقام فقط");
                 return false;
               }
-              return code;
+
+              try {
+                const verifyResponse = await fetch("/login", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ username, password, verificationCode: code, redirect }),
+                });
+                const verifyResult = await verifyResponse.json().catch(() => ({}));
+
+                if (!verifyResponse.ok || !verifyResult.success) {
+                  const translated = translateAuthError(verifyResult.message || "كود التحقق غير صحيح");
+                  const waitSeconds = typeof parseCooldownSeconds === "function"
+                    ? parseCooldownSeconds(verifyResult.message)
+                    : 0;
+                  if (waitSeconds > 0) {
+                    Swal.showValidationMessage(`تم تنفيذ محاولات كثيرة. يرجى الانتظار ${waitSeconds} ثانية.`);
+                  } else if ((verifyResult.message || "").toString().toLowerCase().includes("expired") || (verifyResult.message || "").toString().toLowerCase().includes("link")) {
+                    Swal.showValidationMessage("كود التحقق غير صحيح");
+                  } else {
+                    Swal.showValidationMessage(translated);
+                  }
+                  return false;
+                }
+
+                return verifyResult;
+              } catch (err) {
+                Swal.showValidationMessage("تعذر الاتصال بالخادم. تحقق من الإنترنت وحاول مرة أخرى.");
+                return false;
+              }
             },
           });
 
-          if (verificationCode) {
-            try {
-              const verifyResponse = await fetch("/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username, password, verificationCode }),
-              });
-
-              const verifyResult = await verifyResponse.json();
-
-              if (!verifyResponse.ok || !verifyResult.success) {
-                if (
-                  verifyResult.message &&
-                  (verifyResult.message.includes("Verification code") || verifyResult.message.includes("6 digits"))
-                ) {
-                  throw new Error("يرجى إدخال 6 أرقام فقط");
-                }
-                throw new Error(
-                  translateAuthError(
-                    verifyResult.message || "كود التحقق غير صحيح"
-                  )
-                );
-              }
-
-              window.location.href = verifyResult.redirect || "/form-panel";
-            } catch (error) {
-              errorMessage.textContent = translateAuthError(error.message);
-              errorMessage.style.color = "#ef4444";
-            }
-          } else {
+          if (!swalRes.isConfirmed) {
+            return;
           }
+
+          const verifyResult = swalRes.value;
+          const waitSeconds = typeof parseCooldownSeconds === "function"
+            ? parseCooldownSeconds(verifyResult && verifyResult.message)
+            : 0;
+          if (waitSeconds > 0) {
+            setCooldown(waitSeconds);
+            return;
+          }
+
+          window.location.href = (verifyResult && verifyResult.redirect) || "/form-panel";
           return;
         }
 
@@ -210,6 +282,13 @@ whenReady(() => {
       } catch (error) {
         errorMessage.textContent = translateAuthError(error.message);
         errorMessage.style.color = "#ef4444";
+
+        const waitSeconds = typeof parseCooldownSeconds === "function"
+          ? parseCooldownSeconds(error && error.message)
+          : 0;
+        if (waitSeconds > 0) {
+          setCooldown(waitSeconds);
+        }
       } finally {
         if (typeof setButtonLoading === "function") {
           setButtonLoading(submitButton, false);
