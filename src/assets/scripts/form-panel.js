@@ -1742,7 +1742,7 @@ whenReady(() => {
           const result = await fetchUsers({
             search: currentSearch,
             grade: currentGrade,
-            limit: 10,
+            limit: 4,
             skip: 0,
           });
           currentUsers = result.users;
