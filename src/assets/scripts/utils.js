@@ -55,6 +55,7 @@ function attachPasswordToggle(inputEl) {
 
   const btn = document.createElement("button");
   btn.type = "button";
+  btn.className = "password-toggle-btn";
   btn.setAttribute("aria-label", "إظهار/إخفاء كلمة المرور");
   btn.style.position = "absolute";
   btn.style.left = "12px";

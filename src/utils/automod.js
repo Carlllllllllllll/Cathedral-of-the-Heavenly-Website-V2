@@ -17,6 +17,10 @@ const COOLDOWN_MS = 30000;
 const SPAM_THRESHOLD = 5;
 const AUTO_BAN_DURATION_DAYS = 3;
 
+function isAutoBanEnabled() {
+  return String(process.env.ENABLE_AUTOMOD_AUTOBAN || "").toLowerCase() === "true";
+}
+
 function isMalicious(input) {
   if (!input) return false;
   const searchStr = typeof input === "string" ? input : JSON.stringify(input);
@@ -77,7 +81,54 @@ async function spamBlocker(req, res, next) {
     record.triggerCount++;
     spamTracker.set(key, record);
 
-    if (record.triggerCount >= SPAM_THRESHOLD) {
+    if (global.sendWebhook) {
+      const waitSeconds = Math.ceil(
+        (COOLDOWN_MS - (now - record.lastAction)) / 1000,
+      );
+      const important = record.triggerCount >= SPAM_THRESHOLD;
+      global.sendWebhook("SECURITY_AUTOMOD", {
+        important,
+        embeds: [
+          {
+            title: important
+              ? "🚨 نظام الحماية: سبام شديد (محاولات متكررة)"
+              : "⚠️ نظام الحماية: محاولة متكررة خلال فترة الانتظار",
+            color: important ? 0xe74c3c : 0xf59e0b,
+            fields: [
+              {
+                name: "المستخدم/المفتاح",
+                value: String(key || "unknown"),
+                inline: true,
+              },
+              {
+                name: "المسار",
+                value: String(req.path || "unknown"),
+                inline: true,
+              },
+              {
+                name: "الطريقة",
+                value: String(req.method || "unknown"),
+                inline: true,
+              },
+              {
+                name: "عدد المحاولات",
+                value: String(record.triggerCount),
+                inline: true,
+              },
+              {
+                name: "الانتظار (ثانية)",
+                value: String(waitSeconds),
+                inline: true,
+              },
+              { name: "IP", value: String(req.ip || "unknown"), inline: true },
+            ],
+            timestamp: new Date().toISOString(),
+          },
+        ],
+      });
+    }
+
+    if (record.triggerCount >= SPAM_THRESHOLD && isAutoBanEnabled()) {
       return await autoBanUser(
         req,
         res,

@@ -59,9 +59,9 @@
           </div>
         </div>
         <div class="nav-right">
-          <a href="/login" class="user-nav-login">
-            <i class="fas fa-sign-in-alt"></i>
-            <span>تسجيل دخول</span>
+          <a href="/login" class="user-nav-login" id="userNavLink">
+            <i class="fas fa-sign-in-alt" id="userNavIcon"></i>
+            <span id="userNavText">تسجيل دخول</span>
           </a>
         </div>
       </div>
@@ -175,6 +175,30 @@
 
     <script>
       (function () {
+        async function hydrateUserNav() {
+          try {
+            var link = document.getElementById("userNavLink");
+            var icon = document.getElementById("userNavIcon");
+            var text = document.getElementById("userNavText");
+            if (!link || !icon || !text) return;
+
+            var res = await fetch("/api/user-info", { credentials: "include" });
+            if (!res.ok) return;
+            var data = await res.json().catch(function () {
+              return {};
+            });
+            if (!data || data.isAuthenticated !== true) return;
+
+            var username = (data.username || "").toString().trim();
+            if (!username) return;
+            var landing = (data.landing || "/").toString();
+
+            link.href = landing;
+            icon.className = "fas fa-user";
+            text.textContent = username;
+          } catch (e) {}
+        }
+
         function initMapLazyLoad() {
           var section = document.getElementById("map-section");
           if (!section) return;
@@ -224,8 +248,12 @@
         }
 
         if (document.readyState === "loading") {
-          document.addEventListener("DOMContentLoaded", initMapLazyLoad);
+          document.addEventListener("DOMContentLoaded", function () {
+            hydrateUserNav();
+            initMapLazyLoad();
+          });
         } else {
+          hydrateUserNav();
           initMapLazyLoad();
         }
       })();

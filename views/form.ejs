@@ -1483,24 +1483,96 @@
       const formLink = '<%= form.link %>';
       const totalQuestions = Number('<%= form.questions.length %>');
 
-      const draftKey = `form_draft_${formLink}`;
+      let draftOwner = 'guest';
+      const loadDraftOwner = async () => {
+        try {
+          const res = await fetch('/api/user-info', { credentials: 'include' });
+          if (!res.ok) return;
+          const data = await res.json().catch(() => ({}));
+          if (data && data.isAuthenticated === true && data.username) {
+            draftOwner = String(data.username).toLowerCase().trim() || 'guest';
+          }
+        } catch (e) {
+        }
+      };
+
+      const draftKey = `form_draft_${draftOwner}_${formLink}`;
+
+      const bufToB64 = (buf) => {
+        const bytes = buf instanceof ArrayBuffer ? new Uint8Array(buf) : new Uint8Array(buf.buffer || buf);
+        let binary = '';
+        for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+        return btoa(binary);
+      };
+
+      const b64ToBuf = (b64) => {
+        const binary = atob(b64);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+        return bytes.buffer;
+      };
+
+      const deriveDraftKey = async () => {
+        const seed = `${draftOwner}::${formLink}::draft:v1`;
+        const enc = new TextEncoder().encode(seed);
+        const hash = await crypto.subtle.digest('SHA-256', enc);
+        return crypto.subtle.importKey('raw', hash, { name: 'AES-GCM' }, false, ['encrypt', 'decrypt']);
+      };
+
+      const encryptDraft = async (payload) => {
+        const key = await deriveDraftKey();
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+        const plain = new TextEncoder().encode(JSON.stringify(payload));
+        const cipher = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, plain);
+        return {
+          v: 1,
+          owner: draftOwner,
+          formLink,
+          iv: bufToB64(iv),
+          data: bufToB64(cipher),
+        };
+      };
+
+      const decryptDraft = async (wrapped) => {
+        if (!wrapped || typeof wrapped !== 'object') return null;
+        if (wrapped.v !== 1) return null;
+        if (wrapped.owner !== draftOwner) return null;
+        if (wrapped.formLink !== formLink) return null;
+        if (!wrapped.iv || !wrapped.data) return null;
+        const key = await deriveDraftKey();
+        const iv = new Uint8Array(b64ToBuf(wrapped.iv));
+        const cipher = b64ToBuf(wrapped.data);
+        const plainBuf = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, cipher);
+        const plain = new TextDecoder().decode(plainBuf);
+        const parsed = JSON.parse(plain);
+        if (!parsed || typeof parsed !== 'object') return null;
+        return parsed;
+      };
 
       const loadDraft = () => {
         try {
           const raw = localStorage.getItem(draftKey);
           if (!raw) return;
-          const draft = JSON.parse(raw);
-          if (!draft || typeof draft !== 'object') return;
-          if (draft.formLink !== formLink) return;
-          if (!draft.answers || typeof draft.answers !== 'object') return;
 
-          for (let index = 0; index < totalQuestions; index++) {
-            const key = `q${index}`;
-            const value = draft.answers[key];
-            if (!value) continue;
-            const input = solveForm.querySelector(`input[name="${key}"][value="${CSS.escape(String(value))}"]`);
-            if (input) input.checked = true;
-          }
+          const wrapper = JSON.parse(raw);
+          if (!wrapper || typeof wrapper !== 'object') return;
+
+          decryptDraft(wrapper)
+            .then((draft) => {
+              if (!draft || typeof draft !== 'object') return;
+              if (draft.formLink !== formLink) return;
+              if (!draft.answers || typeof draft.answers !== 'object') return;
+
+              for (let index = 0; index < totalQuestions; index++) {
+                const key = `q${index}`;
+                const value = draft.answers[key];
+                if (!value) continue;
+                const input = solveForm.querySelector(`input[name="${key}"][value="${CSS.escape(String(value))}"]`);
+                if (input) input.checked = true;
+              }
+            })
+            .catch(() => {
+            });
         } catch (e) {
         }
       };
@@ -1512,11 +1584,16 @@
             const radio = solveForm.querySelector(`input[name="q${index}"]:checked`);
             if (radio) answers[`q${index}`] = radio.value;
           }
-          localStorage.setItem(draftKey, JSON.stringify({
+          encryptDraft({
             formLink,
             savedAt: new Date().toISOString(),
             answers,
-          }));
+          })
+            .then((wrapped) => {
+              localStorage.setItem(draftKey, JSON.stringify(wrapped));
+            })
+            .catch(() => {
+            });
         } catch (e) {
         }
       };
@@ -1528,9 +1605,12 @@
         }
       };
 
-      loadDraft();
-      solveForm.addEventListener('change', saveDraft);
-      window.addEventListener('beforeunload', saveDraft);
+      (async function initDraftStorage() {
+        await loadDraftOwner();
+        loadDraft();
+        solveForm.addEventListener('change', saveDraft);
+        window.addEventListener('beforeunload', saveDraft);
+      })();
 
       const generateDeviceId = () => {
         if (crypto && typeof crypto.randomUUID === 'function') return crypto.randomUUID();
