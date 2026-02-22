@@ -388,44 +388,17 @@ app.use(bodyParser.json({ limit: "10mb" }));
 app.use(bodyParser.urlencoded({ extended: true, limit: "10mb" }));
 app.get("/health", (req, res) => res.status(200).send("OK"));
 
-if (process.env.NODE_ENV === "production") {
-  app.get("/scripts/:file", (req, res, next) => {
-    const file = String(req.params.file || "");
-    if (!file.toLowerCase().endsWith(".js")) return next();
-
-    const entry = viteManifest?.[`src/assets/scripts/${file}`];
-    if (entry?.file) {
-      return res.redirect(302, `/dist/${entry.file}`);
-    }
-    return res.status(404).send("Not found");
-  });
-
-  app.get("/design/:file", (req, res, next) => {
-    const file = String(req.params.file || "");
-    if (!file.toLowerCase().endsWith(".css")) return next();
-
-    const entry = viteManifest?.[`src/assets/styles/${file}`];
-    if (entry?.file) {
-      return res.redirect(302, `/dist/${entry.file}`);
-    }
-    return res.status(404).send("Not found");
-  });
-} else {
-  app.use(
-    "/design",
-    express.static(
-      path.join(__dirname, "src/assets/styles"),
-      staticAssetOptions,
-    ),
-  );
-  app.use(
-    "/scripts",
-    express.static(
-      path.join(__dirname, "src/assets/scripts"),
-      staticAssetOptions,
-    ),
-  );
-}
+app.use(
+  "/design",
+  express.static(path.join(__dirname, "public", "design"), staticAssetOptions),
+);
+app.use(
+  "/scripts",
+  express.static(
+    path.join(__dirname, "public", "scripts"),
+    staticAssetOptions,
+  ),
+);
 
 app.use(
   "/UI",
